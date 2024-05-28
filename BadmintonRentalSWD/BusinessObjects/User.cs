@@ -23,5 +23,7 @@
         public int ModifiedBy { get; set; }
 
         public Company Company { get; set; }
+
+        public ICollection<Feedback> Feedbacks { get; set; }
     }
 }

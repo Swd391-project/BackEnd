@@ -1,5 +1,6 @@
 ﻿using BadmintonRentalSWD.BusinessObjects;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace BadmintonRentalSWD.Data
 {
@@ -45,6 +46,12 @@ namespace BadmintonRentalSWD.Data
         public DbSet<Payment> Payments { get; set; }
 
         public DbSet<PaymentMethod> PaymentMethods { get; set; }
+
+        public DbSet<ContactPoint> ContactPoints { get; set; }
+
+        public DbSet<Feedback> Feedbacks { get; set; }
+
+        public DbSet<Service> Services { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

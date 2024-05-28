@@ -6,10 +6,6 @@
 
         public string Status { get; set; }
 
-        public TimeOnly StartTime { get; set; }
-
-        public TimeOnly EndTime { get; set;}
-
         public DateTime CreatedDate { get; set; }
 
         public int CreatedBy { get; set; }

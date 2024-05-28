@@ -12,6 +12,8 @@
 
         public string Status { get; set; }  
 
+        public string Type { get; set; }
+
         public TimeOnly FromTime { get; set; }
 
         public TimeOnly ToTime { get; set; }

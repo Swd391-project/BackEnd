@@ -8,6 +8,20 @@
 
         public string Address { get; set; }
 
+        public float Rate { get; set; }
+
+        public string FromDay { get; set; }
+
+        public string ToDay { get; set; }
+
+        public TimeOnly StartTime { get; set; }
+
+        public TimeOnly EndTime { get; set; }
+
+        public string ProfileImage { get; set; }
+
+        public string CoverImage { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public int CreatedBy { get; set; }
@@ -21,5 +35,11 @@
         public ICollection<CourtSlot>? CourtSlots { get; set; }
 
         public Company Company { get; set; }    
+
+        public ICollection<ContactPoint>? ContactPoints { get; set; }
+
+        public ICollection<Feedback>? Feedbacks { get; set; }
+
+        public ICollection<Service>? Services { get; set; }
     }
 }

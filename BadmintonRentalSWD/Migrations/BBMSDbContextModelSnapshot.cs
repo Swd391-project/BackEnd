@@ -80,6 +80,10 @@ namespace BadmintonRentalSWD.Migrations
                     b.Property<TimeOnly>("ToTime")
                         .HasColumnType("time without time zone");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CourtId");
@@ -141,6 +145,28 @@ namespace BadmintonRentalSWD.Migrations
                     b.ToTable("Companies");
                 });
 
+            modelBuilder.Entity("BadmintonRentalSWD.BusinessObjects.ContactPoint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Contact")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("CourtGroupId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourtGroupId");
+
+                    b.ToTable("ContactPoints");
+                });
+
             modelBuilder.Entity("BadmintonRentalSWD.BusinessObjects.Court", b =>
                 {
                     b.Property<int>("Id")
@@ -158,17 +184,11 @@ namespace BadmintonRentalSWD.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<TimeOnly>("EndTime")
-                        .HasColumnType("time without time zone");
-
                     b.Property<int>("ModifiedBy")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<TimeOnly>("StartTime")
-                        .HasColumnType("time without time zone");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -196,11 +216,22 @@ namespace BadmintonRentalSWD.Migrations
                     b.Property<int>("CompanyId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("CoverImage")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("CreatedBy")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<TimeOnly>("EndTime")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<string>("FromDay")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("ModifiedBy")
                         .HasColumnType("integer");
@@ -209,6 +240,20 @@ namespace BadmintonRentalSWD.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ProfileImage")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<float>("Rate")
+                        .HasColumnType("real");
+
+                    b.Property<TimeOnly>("StartTime")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<string>("ToDay")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -270,9 +315,6 @@ namespace BadmintonRentalSWD.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Email")
-                        .HasColumnType("text");
-
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -284,6 +326,36 @@ namespace BadmintonRentalSWD.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("BadmintonRentalSWD.BusinessObjects.Feedback", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("CourtGroupId")
+                        .HasColumnType("integer");
+
+                    b.Property<float>("Rate")
+                        .HasColumnType("real");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourtGroupId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Feedbacks");
                 });
 
             modelBuilder.Entity("BadmintonRentalSWD.BusinessObjects.Payment", b =>
@@ -352,6 +424,35 @@ namespace BadmintonRentalSWD.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PaymentMethods");
+                });
+
+            modelBuilder.Entity("BadmintonRentalSWD.BusinessObjects.Service", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CourtGroupId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("Price")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourtGroupId");
+
+                    b.ToTable("Services");
                 });
 
             modelBuilder.Entity("BadmintonRentalSWD.BusinessObjects.User", b =>
@@ -478,6 +579,17 @@ namespace BadmintonRentalSWD.Migrations
                     b.Navigation("CourtSlot");
                 });
 
+            modelBuilder.Entity("BadmintonRentalSWD.BusinessObjects.ContactPoint", b =>
+                {
+                    b.HasOne("BadmintonRentalSWD.BusinessObjects.CourtGroup", "CourtGroup")
+                        .WithMany("ContactPoints")
+                        .HasForeignKey("CourtGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CourtGroup");
+                });
+
             modelBuilder.Entity("BadmintonRentalSWD.BusinessObjects.Court", b =>
                 {
                     b.HasOne("BadmintonRentalSWD.BusinessObjects.CourtGroup", "CourtGroup")
@@ -511,6 +623,25 @@ namespace BadmintonRentalSWD.Migrations
                     b.Navigation("CourtGroup");
                 });
 
+            modelBuilder.Entity("BadmintonRentalSWD.BusinessObjects.Feedback", b =>
+                {
+                    b.HasOne("BadmintonRentalSWD.BusinessObjects.CourtGroup", "CourtGroup")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("CourtGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BadmintonRentalSWD.BusinessObjects.User", "User")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CourtGroup");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("BadmintonRentalSWD.BusinessObjects.Payment", b =>
                 {
                     b.HasOne("BadmintonRentalSWD.BusinessObjects.Booking", "Booking")
@@ -536,6 +667,17 @@ namespace BadmintonRentalSWD.Migrations
                     b.Navigation("Company");
 
                     b.Navigation("PaymentMethod");
+                });
+
+            modelBuilder.Entity("BadmintonRentalSWD.BusinessObjects.Service", b =>
+                {
+                    b.HasOne("BadmintonRentalSWD.BusinessObjects.CourtGroup", "CourtGroup")
+                        .WithMany("Services")
+                        .HasForeignKey("CourtGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CourtGroup");
                 });
 
             modelBuilder.Entity("BadmintonRentalSWD.BusinessObjects.User", b =>
@@ -586,9 +728,15 @@ namespace BadmintonRentalSWD.Migrations
 
             modelBuilder.Entity("BadmintonRentalSWD.BusinessObjects.CourtGroup", b =>
                 {
+                    b.Navigation("ContactPoints");
+
                     b.Navigation("CourtSlots");
 
                     b.Navigation("Courts");
+
+                    b.Navigation("Feedbacks");
+
+                    b.Navigation("Services");
                 });
 
             modelBuilder.Entity("BadmintonRentalSWD.BusinessObjects.CourtSlot", b =>
@@ -604,6 +752,11 @@ namespace BadmintonRentalSWD.Migrations
             modelBuilder.Entity("BadmintonRentalSWD.BusinessObjects.PaymentMethod", b =>
                 {
                     b.Navigation("Payments");
+                });
+
+            modelBuilder.Entity("BadmintonRentalSWD.BusinessObjects.User", b =>
+                {
+                    b.Navigation("Feedbacks");
                 });
 #pragma warning restore 612, 618
         }

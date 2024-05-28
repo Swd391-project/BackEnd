@@ -35,8 +35,7 @@ namespace BadmintonRentalSWD.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     FullName = table.Column<string>(type: "text", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: true)
+                    PhoneNumber = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -69,6 +68,13 @@ namespace BadmintonRentalSWD.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Address = table.Column<string>(type: "text", nullable: false),
+                    Rate = table.Column<float>(type: "real", nullable: false),
+                    FromDay = table.Column<string>(type: "text", nullable: false),
+                    ToDay = table.Column<string>(type: "text", nullable: false),
+                    StartTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
+                    EndTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
+                    ProfileImage = table.Column<string>(type: "text", nullable: false),
+                    CoverImage = table.Column<string>(type: "text", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<int>(type: "integer", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -140,14 +146,32 @@ namespace BadmintonRentalSWD.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ContactPoints",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Contact = table.Column<string>(type: "text", nullable: false),
+                    CourtGroupId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContactPoints", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ContactPoints_CourtGroups_CourtGroupId",
+                        column: x => x.CourtGroupId,
+                        principalTable: "CourtGroups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Courts",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Status = table.Column<string>(type: "text", nullable: false),
-                    StartTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
-                    EndTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<int>(type: "integer", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -193,6 +217,56 @@ namespace BadmintonRentalSWD.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Services",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Price = table.Column<long>(type: "bigint", nullable: false),
+                    Unit = table.Column<string>(type: "text", nullable: false),
+                    CourtGroupId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Services", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Services_CourtGroups_CourtGroupId",
+                        column: x => x.CourtGroupId,
+                        principalTable: "CourtGroups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Feedbacks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Content = table.Column<string>(type: "text", nullable: false),
+                    Rate = table.Column<float>(type: "real", nullable: false),
+                    CourtGroupId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Feedbacks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Feedbacks_CourtGroups_CourtGroupId",
+                        column: x => x.CourtGroupId,
+                        principalTable: "CourtGroups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Feedbacks_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Bookings",
                 columns: table => new
                 {
@@ -202,6 +276,7 @@ namespace BadmintonRentalSWD.Migrations
                     Date = table.Column<DateOnly>(type: "date", nullable: false),
                     Note = table.Column<string>(type: "text", nullable: true),
                     Status = table.Column<string>(type: "text", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
                     FromTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     ToTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     CheckinTime = table.Column<TimeOnly>(type: "time without time zone", nullable: true),
@@ -314,6 +389,11 @@ namespace BadmintonRentalSWD.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ContactPoints_CourtGroupId",
+                table: "ContactPoints",
+                column: "CourtGroupId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CourtGroups_CompanyId",
                 table: "CourtGroups",
                 column: "CompanyId");
@@ -327,6 +407,16 @@ namespace BadmintonRentalSWD.Migrations
                 name: "IX_CourtSlots_CourtGroupId",
                 table: "CourtSlots",
                 column: "CourtGroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Feedbacks_CourtGroupId",
+                table: "Feedbacks",
+                column: "CourtGroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Feedbacks_UserId",
+                table: "Feedbacks",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_BookingId",
@@ -343,6 +433,11 @@ namespace BadmintonRentalSWD.Migrations
                 name: "IX_Payments_PaymentMethodId",
                 table: "Payments",
                 column: "PaymentMethodId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Services_CourtGroupId",
+                table: "Services",
+                column: "CourtGroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_CompanyId",
@@ -362,16 +457,25 @@ namespace BadmintonRentalSWD.Migrations
                 name: "BookingDetails");
 
             migrationBuilder.DropTable(
+                name: "ContactPoints");
+
+            migrationBuilder.DropTable(
+                name: "Feedbacks");
+
+            migrationBuilder.DropTable(
                 name: "Payments");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Services");
 
             migrationBuilder.DropTable(
                 name: "Withdraws");
 
             migrationBuilder.DropTable(
                 name: "CourtSlots");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Bookings");
