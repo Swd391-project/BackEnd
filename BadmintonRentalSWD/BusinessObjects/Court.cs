@@ -1,7 +1,13 @@
-﻿namespace BadmintonRentalSWD.BusinessObjects
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace BadmintonRentalSWD.BusinessObjects
 {
+    [Table("Court")]
     public class Court
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         public string Status { get; set; }
@@ -16,6 +22,6 @@
 
         public CourtGroup CourtGroup { get; set; }
 
-        public ICollection<Booking> Bookings { get; set; }
+        public ICollection<Booking>? Bookings { get; set; }
     }
 }

@@ -3,16 +3,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BadmintonRentalSWD.BusinessObjects
 {
-    [Table("Withdraw")]
-    public class Withdraw
+    [Table("BookingType")]
+    public class BookingType
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public DateTime Date { get; set; }
+        public string Name { get; set; }
 
-        public long Amount { get; set; }
+        public string? Description { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
@@ -22,6 +22,8 @@ namespace BadmintonRentalSWD.BusinessObjects
 
         public int ModifiedBy { get; set; }
 
-        public Company Company { get; set; }
+        public ICollection<Booking>? Bookings { get; set; }
+
+        public ICollection<Price>? Prices { get; set; }
     }
 }

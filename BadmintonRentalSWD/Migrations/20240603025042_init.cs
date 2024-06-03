@@ -13,23 +13,41 @@ namespace BadmintonRentalSWD.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Companies",
+                name: "BookingType",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<int>(type: "integer", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedBy = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookingType", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Company",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Balance = table.Column<string>(type: "text", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false)
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
+                    Email = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Companies", x => x.Id);
+                    table.PrimaryKey("PK_Company", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Customers",
+                name: "Customer",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -39,17 +57,17 @@ namespace BadmintonRentalSWD.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.PrimaryKey("PK_Customer", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "PaymentMethods",
+                name: "PaymentMethod",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     MethodName = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<int>(type: "integer", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -57,24 +75,24 @@ namespace BadmintonRentalSWD.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PaymentMethods", x => x.Id);
+                    table.PrimaryKey("PK_PaymentMethod", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "CourtGroups",
+                name: "CourtGroup",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Address = table.Column<string>(type: "text", nullable: false),
-                    Rate = table.Column<float>(type: "real", nullable: false),
+                    Rate = table.Column<float>(type: "real", nullable: true),
                     FromDay = table.Column<string>(type: "text", nullable: false),
                     ToDay = table.Column<string>(type: "text", nullable: false),
                     StartTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     EndTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
-                    ProfileImage = table.Column<string>(type: "text", nullable: false),
-                    CoverImage = table.Column<string>(type: "text", nullable: false),
+                    ProfileImage = table.Column<string>(type: "text", nullable: true),
+                    CoverImage = table.Column<string>(type: "text", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<int>(type: "integer", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -83,17 +101,17 @@ namespace BadmintonRentalSWD.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CourtGroups", x => x.Id);
+                    table.PrimaryKey("PK_CourtGroup", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CourtGroups_Companies_CompanyId",
+                        name: "FK_CourtGroup_Company_CompanyId",
                         column: x => x.CompanyId,
-                        principalTable: "Companies",
+                        principalTable: "Company",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "User",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -107,21 +125,20 @@ namespace BadmintonRentalSWD.Migrations
                     CreatedBy = table.Column<int>(type: "integer", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ModifiedBy = table.Column<int>(type: "integer", nullable: false),
-                    CompanyId = table.Column<int>(type: "integer", nullable: false)
+                    CompanyId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_User", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Users_Companies_CompanyId",
+                        name: "FK_User_Company_CompanyId",
                         column: x => x.CompanyId,
-                        principalTable: "Companies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalTable: "Company",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Withdraws",
+                name: "Withdraw",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -136,17 +153,44 @@ namespace BadmintonRentalSWD.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Withdraws", x => x.Id);
+                    table.PrimaryKey("PK_Withdraw", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Withdraws_Companies_CompanyId",
+                        name: "FK_Withdraw_Company_CompanyId",
                         column: x => x.CompanyId,
-                        principalTable: "Companies",
+                        principalTable: "Company",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ContactPoints",
+                name: "FlexibleBooking",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TotalHours = table.Column<int>(type: "integer", nullable: false),
+                    RemainingHours = table.Column<int>(type: "integer", nullable: false),
+                    IssuedDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    ExpiredDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<int>(type: "integer", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedBy = table.Column<int>(type: "integer", nullable: false),
+                    CustomerId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FlexibleBooking", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FlexibleBooking_Customer_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customer",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ContactPoint",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -156,17 +200,17 @@ namespace BadmintonRentalSWD.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ContactPoints", x => x.Id);
+                    table.PrimaryKey("PK_ContactPoint", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ContactPoints_CourtGroups_CourtGroupId",
+                        name: "FK_ContactPoint_CourtGroup_CourtGroupId",
                         column: x => x.CourtGroupId,
-                        principalTable: "CourtGroups",
+                        principalTable: "CourtGroup",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Courts",
+                name: "Court",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -180,17 +224,17 @@ namespace BadmintonRentalSWD.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Courts", x => x.Id);
+                    table.PrimaryKey("PK_Court", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Courts_CourtGroups_CourtGroupId",
+                        name: "FK_Court_CourtGroup_CourtGroupId",
                         column: x => x.CourtGroupId,
-                        principalTable: "CourtGroups",
+                        principalTable: "CourtGroup",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "CourtSlots",
+                name: "CourtSlot",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -207,17 +251,17 @@ namespace BadmintonRentalSWD.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CourtSlots", x => x.Id);
+                    table.PrimaryKey("PK_CourtSlot", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CourtSlots_CourtGroups_CourtGroupId",
+                        name: "FK_CourtSlot_CourtGroup_CourtGroupId",
                         column: x => x.CourtGroupId,
-                        principalTable: "CourtGroups",
+                        principalTable: "CourtGroup",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Services",
+                name: "Service",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -229,45 +273,45 @@ namespace BadmintonRentalSWD.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Services", x => x.Id);
+                    table.PrimaryKey("PK_Service", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Services_CourtGroups_CourtGroupId",
+                        name: "FK_Service_CourtGroup_CourtGroupId",
                         column: x => x.CourtGroupId,
-                        principalTable: "CourtGroups",
+                        principalTable: "CourtGroup",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Feedbacks",
+                name: "Feedback",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Content = table.Column<string>(type: "text", nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: true),
                     Rate = table.Column<float>(type: "real", nullable: false),
                     CourtGroupId = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Feedbacks", x => x.Id);
+                    table.PrimaryKey("PK_Feedback", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Feedbacks_CourtGroups_CourtGroupId",
+                        name: "FK_Feedback_CourtGroup_CourtGroupId",
                         column: x => x.CourtGroupId,
-                        principalTable: "CourtGroups",
+                        principalTable: "CourtGroup",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Feedbacks_Users_UserId",
+                        name: "FK_Feedback_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "Users",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Bookings",
+                name: "Booking",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -279,8 +323,6 @@ namespace BadmintonRentalSWD.Migrations
                     Type = table.Column<string>(type: "text", nullable: false),
                     FromTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     ToTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
-                    CheckinTime = table.Column<TimeOnly>(type: "time without time zone", nullable: true),
-                    CheckoutTime = table.Column<TimeOnly>(type: "time without time zone", nullable: true),
                     CheckinBy = table.Column<int>(type: "integer", nullable: true),
                     CheckoutBy = table.Column<int>(type: "integer", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -288,27 +330,66 @@ namespace BadmintonRentalSWD.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ModifiedBy = table.Column<int>(type: "integer", nullable: false),
                     CustomerId = table.Column<int>(type: "integer", nullable: false),
-                    CourtId = table.Column<int>(type: "integer", nullable: false)
+                    CourtId = table.Column<int>(type: "integer", nullable: false),
+                    FlexibleBookingId = table.Column<int>(type: "integer", nullable: true),
+                    BookingTypeId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Bookings", x => x.Id);
+                    table.PrimaryKey("PK_Booking", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Bookings_Courts_CourtId",
+                        name: "FK_Booking_BookingType_BookingTypeId",
+                        column: x => x.BookingTypeId,
+                        principalTable: "BookingType",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Booking_Court_CourtId",
                         column: x => x.CourtId,
-                        principalTable: "Courts",
+                        principalTable: "Court",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Bookings_Customers_CustomerId",
+                        name: "FK_Booking_Customer_CustomerId",
                         column: x => x.CustomerId,
-                        principalTable: "Customers",
+                        principalTable: "Customer",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Booking_FlexibleBooking_FlexibleBookingId",
+                        column: x => x.FlexibleBookingId,
+                        principalTable: "FlexibleBooking",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Price",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Cost = table.Column<long>(type: "bigint", nullable: false),
+                    CourtSlotId = table.Column<int>(type: "integer", nullable: false),
+                    BookingTypeId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Price", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Price_BookingType_BookingTypeId",
+                        column: x => x.BookingTypeId,
+                        principalTable: "BookingType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Price_CourtSlot_CourtSlotId",
+                        column: x => x.CourtSlotId,
+                        principalTable: "CourtSlot",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "BookingDetails",
+                name: "BookingDetail",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -318,23 +399,23 @@ namespace BadmintonRentalSWD.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookingDetails", x => x.Id);
+                    table.PrimaryKey("PK_BookingDetail", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BookingDetails_Bookings_BookingId",
+                        name: "FK_BookingDetail_Booking_BookingId",
                         column: x => x.BookingId,
-                        principalTable: "Bookings",
+                        principalTable: "Booking",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookingDetails_CourtSlots_CourtSlotId",
+                        name: "FK_BookingDetail_CourtSlot_CourtSlotId",
                         column: x => x.CourtSlotId,
-                        principalTable: "CourtSlots",
+                        principalTable: "CourtSlot",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Payments",
+                name: "Payment",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -347,106 +428,131 @@ namespace BadmintonRentalSWD.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Payments", x => x.Id);
+                    table.PrimaryKey("PK_Payment", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Payments_Bookings_BookingId",
+                        name: "FK_Payment_Booking_BookingId",
                         column: x => x.BookingId,
-                        principalTable: "Bookings",
+                        principalTable: "Booking",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Payments_Companies_CompanyId",
+                        name: "FK_Payment_Company_CompanyId",
                         column: x => x.CompanyId,
-                        principalTable: "Companies",
+                        principalTable: "Company",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Payments_PaymentMethods_PaymentMethodId",
+                        name: "FK_Payment_PaymentMethod_PaymentMethodId",
                         column: x => x.PaymentMethodId,
-                        principalTable: "PaymentMethods",
+                        principalTable: "PaymentMethod",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookingDetails_BookingId",
-                table: "BookingDetails",
-                column: "BookingId");
+                name: "IX_Booking_BookingTypeId",
+                table: "Booking",
+                column: "BookingTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookingDetails_CourtSlotId",
-                table: "BookingDetails",
-                column: "CourtSlotId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Bookings_CourtId",
-                table: "Bookings",
+                name: "IX_Booking_CourtId",
+                table: "Booking",
                 column: "CourtId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bookings_CustomerId",
-                table: "Bookings",
+                name: "IX_Booking_CustomerId",
+                table: "Booking",
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ContactPoints_CourtGroupId",
-                table: "ContactPoints",
+                name: "IX_Booking_FlexibleBookingId",
+                table: "Booking",
+                column: "FlexibleBookingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookingDetail_BookingId",
+                table: "BookingDetail",
+                column: "BookingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookingDetail_CourtSlotId",
+                table: "BookingDetail",
+                column: "CourtSlotId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ContactPoint_CourtGroupId",
+                table: "ContactPoint",
                 column: "CourtGroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CourtGroups_CompanyId",
-                table: "CourtGroups",
+                name: "IX_Court_CourtGroupId",
+                table: "Court",
+                column: "CourtGroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CourtGroup_CompanyId",
+                table: "CourtGroup",
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Courts_CourtGroupId",
-                table: "Courts",
+                name: "IX_CourtSlot_CourtGroupId",
+                table: "CourtSlot",
                 column: "CourtGroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CourtSlots_CourtGroupId",
-                table: "CourtSlots",
+                name: "IX_Feedback_CourtGroupId",
+                table: "Feedback",
                 column: "CourtGroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Feedbacks_CourtGroupId",
-                table: "Feedbacks",
-                column: "CourtGroupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Feedbacks_UserId",
-                table: "Feedbacks",
+                name: "IX_Feedback_UserId",
+                table: "Feedback",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Payments_BookingId",
-                table: "Payments",
+                name: "IX_FlexibleBooking_CustomerId",
+                table: "FlexibleBooking",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payment_BookingId",
+                table: "Payment",
                 column: "BookingId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Payments_CompanyId",
-                table: "Payments",
+                name: "IX_Payment_CompanyId",
+                table: "Payment",
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Payments_PaymentMethodId",
-                table: "Payments",
+                name: "IX_Payment_PaymentMethodId",
+                table: "Payment",
                 column: "PaymentMethodId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Services_CourtGroupId",
-                table: "Services",
+                name: "IX_Price_BookingTypeId",
+                table: "Price",
+                column: "BookingTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Price_CourtSlotId",
+                table: "Price",
+                column: "CourtSlotId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Service_CourtGroupId",
+                table: "Service",
                 column: "CourtGroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_CompanyId",
-                table: "Users",
+                name: "IX_User_CompanyId",
+                table: "User",
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Withdraws_CompanyId",
-                table: "Withdraws",
+                name: "IX_Withdraw_CompanyId",
+                table: "Withdraw",
                 column: "CompanyId");
         }
 
@@ -454,46 +560,55 @@ namespace BadmintonRentalSWD.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BookingDetails");
+                name: "BookingDetail");
 
             migrationBuilder.DropTable(
-                name: "ContactPoints");
+                name: "ContactPoint");
 
             migrationBuilder.DropTable(
-                name: "Feedbacks");
+                name: "Feedback");
 
             migrationBuilder.DropTable(
-                name: "Payments");
+                name: "Payment");
 
             migrationBuilder.DropTable(
-                name: "Services");
+                name: "Price");
 
             migrationBuilder.DropTable(
-                name: "Withdraws");
+                name: "Service");
 
             migrationBuilder.DropTable(
-                name: "CourtSlots");
+                name: "Withdraw");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "User");
 
             migrationBuilder.DropTable(
-                name: "Bookings");
+                name: "Booking");
 
             migrationBuilder.DropTable(
-                name: "PaymentMethods");
+                name: "PaymentMethod");
 
             migrationBuilder.DropTable(
-                name: "Courts");
+                name: "CourtSlot");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "BookingType");
 
             migrationBuilder.DropTable(
-                name: "CourtGroups");
+                name: "Court");
 
             migrationBuilder.DropTable(
-                name: "Companies");
+                name: "FlexibleBooking");
+
+            migrationBuilder.DropTable(
+                name: "CourtGroup");
+
+            migrationBuilder.DropTable(
+                name: "Customer");
+
+            migrationBuilder.DropTable(
+                name: "Company");
         }
     }
 }

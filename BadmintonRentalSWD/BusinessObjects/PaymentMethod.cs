@@ -1,14 +1,20 @@
-﻿namespace BadmintonRentalSWD.BusinessObjects
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace BadmintonRentalSWD.BusinessObjects
 {
+    [Table("PaymentMethod")]
     public class PaymentMethod
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         public string MethodName { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
-        public ICollection<Payment> Payments { get; set; }
+        public ICollection<Payment>? Payments { get; set; }
 
         public DateTime CreatedDate { get; set; }
 

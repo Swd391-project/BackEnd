@@ -53,20 +53,14 @@ namespace BadmintonRentalSWD.Data
 
         public DbSet<Service> Services { get; set; }
 
+        public DbSet<FlexibleBooking> FlexibleBookings { get; set; }
+
+        public DbSet<Price> Prices { get; set; }
+
+        public DbSet<BookingType> BookingTypes { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            /*
-            modelBuilder.Entity<BookingDetail>()
-                .HasKey(bd => bd.Id);
-            modelBuilder.Entity<BookingDetail>()
-                .HasOne(bd => bd.Booking)
-                .WithMany(b => b.BookingDetails)
-                .HasForeignKey(bd => bd.BookingId);
-            modelBuilder.Entity<BookingDetail>()
-                .HasOne(bd => bd.CourtSlot)
-                .WithMany(cs => cs.BookingDetails)
-                .HasForeignKey(bd => bd.CourtSlotId);
-            */
 
             modelBuilder.Entity<Booking>()
                 .HasOne(b => b.Payment)
@@ -75,6 +69,45 @@ namespace BadmintonRentalSWD.Data
             modelBuilder.Entity<Payment>()
                 .HasIndex(p => p.BookingId)
                 .IsUnique();
+
+            /*
+            modelBuilder.Entity<BookingDetail>()
+                .HasKey(bd => bd.Id);
+            modelBuilder.Entity<BookingDetail>()
+                .HasOne(bd => bd.Booking)
+                .WithMany(b => b.BookingDetails)
+                .HasForeignKey(bd => bd.BookingId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<BookingDetail>()
+                .HasOne(bd => bd.CourtSlot)
+                .WithMany(cs => cs.BookingDetails)
+                .HasForeignKey(bd => bd.CourtSlotId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Payment>()
+                .HasOne(p => p.Company)
+                .WithMany(c => c.Payments)
+                .HasForeignKey(p => p.CompanyId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Payment>()
+                .HasOne(p => p.PaymentMethod)
+                .WithMany(pm => pm.Payments)
+                .HasForeignKey(p => p.PaymentMethodId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Price>()
+                .HasOne(p => p.BookingType)
+                .WithMany(bt => bt.Prices)
+                .HasForeignKey(p => p.BookingTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Price>()
+                .HasOne(p => p.CourtSlot)
+                .WithMany(cs => cs.Prices)
+                .HasForeignKey(p => p.CourtSlotId)
+                .OnDelete(DeleteBehavior.Restrict);
+            */
         }
     }
 }
