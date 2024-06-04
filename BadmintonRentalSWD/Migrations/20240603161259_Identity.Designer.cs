@@ -3,6 +3,7 @@ using System;
 using BadmintonRentalSWD.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BadmintonRentalSWD.Migrations
 {
     [DbContext(typeof(BBMSDbContext))]
-    partial class BBMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240603161259_Identity")]
+    partial class Identity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -648,30 +651,6 @@ namespace BadmintonRentalSWD.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "cde65a51-2ce3-4226-a8da-ac7288416cff",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "95f99bab-a098-44f2-b178-6babf9b9c291",
-                            CreatedBy = 0,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "admin@bbms.com",
-                            EmailConfirmed = false,
-                            FullName = "System Admin",
-                            LockoutEnabled = false,
-                            ModifiedBy = 0,
-                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "Admin@123",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMw3zJOn+2aCr91ZaNQAgRM5sEddq754wPNSwIQ4FBetvUutC/VpE8km4BTmID3caA==",
-                            PhoneNumber = "1234567890",
-                            PhoneNumberConfirmed = false,
-                            Role = "Admin",
-                            SecurityStamp = "e260aadb-daba-4d72-b5be-51f32e153bd8",
-                            TwoFactorEnabled = false,
-                            UserName = "admin@bbms.com"
-                        });
                 });
 
             modelBuilder.Entity("BadmintonRentalSWD.Entities.Withdraw", b =>
@@ -734,32 +713,6 @@ namespace BadmintonRentalSWD.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "fa7fa35b-41db-4831-9831-a0d1116fc8fe",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "08cc045c-3bf6-4e5b-b68f-ddb880dd392d",
-                            Name = "Staff",
-                            NormalizedName = "STAFF"
-                        },
-                        new
-                        {
-                            Id = "8b8a51f2-8276-46a8-9611-affde9ed4591",
-                            Name = "Manager",
-                            NormalizedName = "MANAGER"
-                        },
-                        new
-                        {
-                            Id = "cc00904c-9efe-4433-bfc5-1b3deb93d5d8",
-                            Name = "Customer",
-                            NormalizedName = "CUSTOMER"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

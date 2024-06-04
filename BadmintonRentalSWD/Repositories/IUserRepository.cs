@@ -1,4 +1,4 @@
-﻿using BadmintonRentalSWD.BusinessObjects;
+﻿using BadmintonRentalSWD.Entities;
 
 namespace BadmintonRentalSWD.Repositories
 {
@@ -11,5 +11,7 @@ namespace BadmintonRentalSWD.Repositories
         User? GetUserById(int id);
 
         void UpdateUser(User user);
+
+        User GetUserByUsername(string username);
     }
 }

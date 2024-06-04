@@ -1,16 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace BadmintonRentalSWD.BusinessObjects
+namespace BadmintonRentalSWD.Entities
 {
-    [Table("Court")]
-    public class Court
+    [Table("Withdraw")]
+    public class Withdraw
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public string Status { get; set; }
+        public DateTime Date { get; set; }
+
+        public long Amount { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
@@ -20,8 +22,6 @@ namespace BadmintonRentalSWD.BusinessObjects
 
         public int ModifiedBy { get; set; }
 
-        public CourtGroup CourtGroup { get; set; }
-
-        public ICollection<Booking>? Bookings { get; set; }
+        public Company Company { get; set; }
     }
 }

@@ -1,22 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace BadmintonRentalSWD.BusinessObjects
+namespace BadmintonRentalSWD.Entities
 {
-    [Table("CourtSlot")]
-    public class CourtSlot
+    [Table("Court")]
+    public class Court
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public TimeOnly FromTime { get; set; }
-
-        public TimeOnly ToTime { get; set; }
-
         public string Status { get; set; }
-
-        public long Price { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
@@ -28,8 +22,6 @@ namespace BadmintonRentalSWD.BusinessObjects
 
         public CourtGroup CourtGroup { get; set; }
 
-        public ICollection<BookingDetail>? BookingDetails { get; set; }
-
-        public ICollection<Price>? Prices { get; set; }
+        public ICollection<Booking>? Bookings { get; set; }
     }
 }

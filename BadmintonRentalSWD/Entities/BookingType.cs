@@ -1,20 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace BadmintonRentalSWD.BusinessObjects
+namespace BadmintonRentalSWD.Entities
 {
-    [Table("PaymentMethod")]
-    public class PaymentMethod
+    [Table("BookingType")]
+    public class BookingType
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public string MethodName { get; set; }
+        public string Name { get; set; }
 
         public string? Description { get; set; }
-
-        public ICollection<Payment>? Payments { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
@@ -23,5 +21,9 @@ namespace BadmintonRentalSWD.BusinessObjects
         public DateTime ModifiedDate { get; set; }
 
         public int ModifiedBy { get; set; }
+
+        public ICollection<Booking>? Bookings { get; set; }
+
+        public ICollection<Price>? Prices { get; set; }
     }
 }

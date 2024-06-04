@@ -1,21 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace BadmintonRentalSWD.BusinessObjects
+namespace BadmintonRentalSWD.Entities
 {
-    [Table("Service")]
-    public class Service
+    [Table("Feedback")]
+    public class Feedback
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string? Content { get; set; }
 
-        public long Price { get; set; }
-
-        public string Unit { get; set; }
+        public float Rate { get; set; }
 
         public CourtGroup CourtGroup { get; set; }
+
+        public User User { get; set; }
     }
 }

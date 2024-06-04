@@ -1,4 +1,4 @@
-﻿using BadmintonRentalSWD.BusinessObjects;
+﻿using BadmintonRentalSWD.Entities;
 using BadmintonRentalSWD.Repositories;
 
 namespace BadmintonRentalSWD.Services
@@ -20,6 +20,11 @@ namespace BadmintonRentalSWD.Services
         public User? GetUserById(int id)
         {
             return userRepository.GetUserById(id);
+        }
+
+        public User GetUserByUsername(string username)
+        {
+            return userRepository.GetUserByUsername(username);
         }
 
         public List<User> GetUsers()

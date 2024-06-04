@@ -1,10 +1,12 @@
-﻿using BadmintonRentalSWD.BusinessObjects;
+﻿using BadmintonRentalSWD.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 
 namespace BadmintonRentalSWD.Data
 {
-    public partial class BBMSDbContext : DbContext
+    public partial class BBMSDbContext : IdentityDbContext<User>
     {
         public BBMSDbContext()
         {
@@ -62,7 +64,51 @@ namespace BadmintonRentalSWD.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<Booking>()
+            base.OnModelCreating(modelBuilder);
+
+            List<IdentityRole> roles = new List<IdentityRole>
+            {
+                new IdentityRole
+                {
+                    Name = "Admin",
+                    NormalizedName = "ADMIN"
+                },
+                new IdentityRole
+                {
+                    Name = "Staff",
+                    NormalizedName = "STAFF"
+                },
+                new IdentityRole
+                {
+                    Name = "Manager",
+                    NormalizedName = "MANAGER"
+                },
+                new IdentityRole
+                {
+                    Name = "Customer",
+                    NormalizedName = "CUSTOMER"
+                }
+            };
+
+            modelBuilder.Entity<IdentityRole>().HasData(roles);
+
+
+            var hasher = new PasswordHasher<User>();
+            User user = new User
+            {
+                FullName = "System Admin",
+                UserName = "admin@bbms.com",
+                NormalizedUserName = "ADMIN@BBMS.COM",
+                Role = "Admin",
+                Password = "Admin@123",
+                Email = "admin@bbms.com",
+                PhoneNumber = "1234567890",
+                PasswordHash = hasher.HashPassword(null, "Admin@123")
+            };
+
+            modelBuilder.Entity<User>().HasData(user);
+            
+                modelBuilder.Entity<Booking>()
                 .HasOne(b => b.Payment)
                 .WithOne(p => p.Booking)
                 .HasForeignKey<Payment>(p => p.BookingId);

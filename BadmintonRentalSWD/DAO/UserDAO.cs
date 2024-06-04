@@ -1,5 +1,6 @@
-﻿using BadmintonRentalSWD.BusinessObjects;
+﻿using BadmintonRentalSWD.Entities;
 using BadmintonRentalSWD.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace BadmintonRentalSWD.DAO
 {
@@ -52,6 +53,12 @@ namespace BadmintonRentalSWD.DAO
             {
                 throw new Exception(ex.Message);
             }
+        }
+        
+        public static User GetUserByUsername(string username)
+        {
+            using var dbContext = new BBMSDbContext();
+            return dbContext.Users.FirstOrDefault(u => u.UserName.Equals(username));
         }
     }
 }

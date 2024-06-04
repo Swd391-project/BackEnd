@@ -3,6 +3,7 @@ using System;
 using BadmintonRentalSWD.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BadmintonRentalSWD.Migrations
 {
     [DbContext(typeof(BBMSDbContext))]
-    partial class BBMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240604152249_seed")]
+    partial class seed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -652,9 +655,9 @@ namespace BadmintonRentalSWD.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "cde65a51-2ce3-4226-a8da-ac7288416cff",
+                            Id = "2c6b8c7a-8619-42f6-becc-b7136af92be3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "95f99bab-a098-44f2-b178-6babf9b9c291",
+                            ConcurrencyStamp = "9e80e2a9-92ac-4a5d-ab59-43273551e1ad",
                             CreatedBy = 0,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@bbms.com",
@@ -664,11 +667,10 @@ namespace BadmintonRentalSWD.Migrations
                             ModifiedBy = 0,
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "Admin@123",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMw3zJOn+2aCr91ZaNQAgRM5sEddq754wPNSwIQ4FBetvUutC/VpE8km4BTmID3caA==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
                             Role = "Admin",
-                            SecurityStamp = "e260aadb-daba-4d72-b5be-51f32e153bd8",
+                            SecurityStamp = "e16de295-d2e6-4a08-b00d-c7d85a7e14f1",
                             TwoFactorEnabled = false,
                             UserName = "admin@bbms.com"
                         });
@@ -738,25 +740,25 @@ namespace BadmintonRentalSWD.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "fa7fa35b-41db-4831-9831-a0d1116fc8fe",
+                            Id = "ca67d6db-7468-473a-917f-909c4271fe5a",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "08cc045c-3bf6-4e5b-b68f-ddb880dd392d",
+                            Id = "7def34bd-f46d-430e-a6e0-53560e316a3a",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "8b8a51f2-8276-46a8-9611-affde9ed4591",
+                            Id = "a7644cd1-712b-487f-b9cc-eb3e4892da20",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "cc00904c-9efe-4433-bfc5-1b3deb93d5d8",
+                            Id = "f922e0b7-f1a5-48d5-ace1-cbe1afeae015",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });

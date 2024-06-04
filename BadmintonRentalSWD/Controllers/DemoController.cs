@@ -4,7 +4,7 @@ namespace BadmintonRentalSWD.Controllers
 {
 
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/demo")]
     public class DemoController : Controller
     {
         public DemoController() { }

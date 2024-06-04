@@ -1,21 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace BadmintonRentalSWD.BusinessObjects
+namespace BadmintonRentalSWD.Entities
 {
-    [Table("Feedback")]
-    public class Feedback
+    [Table("ContactPoint")]
+    public class ContactPoint
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public string? Content { get; set; }
-
-        public float Rate { get; set; }
+        public string Contact { get; set; }
 
         public CourtGroup CourtGroup { get; set; }
-
-        public User User { get; set; }
     }
 }

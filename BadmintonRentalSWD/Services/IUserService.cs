@@ -1,4 +1,4 @@
-﻿using BadmintonRentalSWD.BusinessObjects;
+﻿using BadmintonRentalSWD.Entities;
 
 namespace BadmintonRentalSWD.Services
 {
@@ -11,5 +11,7 @@ namespace BadmintonRentalSWD.Services
         List<User> GetUsers();
 
         void UpdateUser(User user);
+
+        User GetUserByUsername(string username);   
     }
 }
