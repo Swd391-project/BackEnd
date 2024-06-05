@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Repositories\SWD.BBMS.Repositories.csproj" />
+    <Folder Include="Interfaces\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
+    <ProjectReference Include="..\SWD.BBMS.Repositories\SWD.BBMS.Repositories.csproj" />
   </ItemGroup>
 
 </Project>

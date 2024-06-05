@@ -1,4 +1,4 @@
-using BadmintonRentalSWD;
+
 using SWD.BBMS.Repositories.Data;
 using SWD.BBMS.Repositories.Entities;
 using SWD.BBMS.Services.Interfaces;
@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using SWD.BBMS.Repositories.Interfaces;
 using SWD.BBMS.Repositories;
+using BadmintonRentalSWD;
 
 var MyAllowSpecificOrigins = "myAllowSpecificOrigins";
 
@@ -24,7 +25,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSwaggerGen(option =>
 {
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "BadmintonRentalSWD", Version = "v1" });
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "SWD.BBMS.API", Version = "v1" });
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,

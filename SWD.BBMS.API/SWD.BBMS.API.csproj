@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Services\SWD.BBMS.Services.csproj" />
+    <ProjectReference Include="..\SWD.BBMS.Services\SWD.BBMS.Services.csproj" />
   </ItemGroup>
 
 </Project>
