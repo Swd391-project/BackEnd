@@ -15,5 +15,12 @@ namespace BadmintonRentalSWD.Controllers
         {
             return Ok("Hello, this is Badminton Booking Management System API.");
         }
+
+        [HttpGet("test")]
+        public IActionResult HelloWorld()
+        {
+            return Ok("Hello World!");
+        }
     }
+
 }
