@@ -51,6 +51,8 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
+
+
 builder.Services.AddTransient<Seed>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -125,11 +127,24 @@ if (args.Length == 1 && args[0].ToLower() == "seeddata")
     SeedData(app);
 
 // Configure the HTTP request pipeline.
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
+
+
+/*
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    //app.UseSwagger();
+    //app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/index.html", "v1");
+        options.RoutePrefix = string.Empty;
+    });
 }
+*/
 
 app.UseHttpsRedirection();
 
