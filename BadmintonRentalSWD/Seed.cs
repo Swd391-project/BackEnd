@@ -1,5 +1,5 @@
-﻿using BadmintonRentalSWD.Data;
-using BadmintonRentalSWD.Entities;
+﻿using SWD.BBMS.Repositories.Data;
+using SWD.BBMS.Repositories.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Win32;
 

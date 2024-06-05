@@ -1,13 +1,17 @@
 using BadmintonRentalSWD;
-using BadmintonRentalSWD.Data;
-using BadmintonRentalSWD.Entities;
-using BadmintonRentalSWD.Repositories;
-using BadmintonRentalSWD.Services;
+using SWD.BBMS.Repositories.Data;
+using SWD.BBMS.Repositories.Entities;
+using SWD.BBMS.Services.Interfaces;
+using SWD.BBMS.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using SWD.BBMS.Repositories.Interfaces;
+using SWD.BBMS.Repositories;
+
+var MyAllowSpecificOrigins = "myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -89,6 +93,19 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
+//CORS config
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(MyAllowSpecificOrigins,
+            policy =>
+            {
+                policy.WithOrigins("http://localhost:3000", "http://127.0.0.1:5500")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+            }
+        );
+});
+
 var app = builder.Build();
 
 //Seed data
@@ -114,6 +131,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthentication();
 app.UseAuthorization();

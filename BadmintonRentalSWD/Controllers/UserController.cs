@@ -1,5 +1,5 @@
-﻿using BadmintonRentalSWD.Entities;
-using BadmintonRentalSWD.Services;
+﻿using SWD.BBMS.Services.Interfaces;
+using SWD.BBMS.Repositories.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

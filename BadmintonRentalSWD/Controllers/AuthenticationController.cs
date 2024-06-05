@@ -1,16 +1,18 @@
 ﻿using BadmintonRentalSWD.DTOs.Request;
-using BadmintonRentalSWD.Entities;
-using BadmintonRentalSWD.Services;
+using SWD.BBMS.Repositories.Entities;
+using SWD.BBMS.Services.Interfaces;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
-namespace BadmintonRentalSWD.Controllers
+namespace SWD.BBMS.API.Controllers
 {
     [ApiController]
     [Route("api/auth")]
+    //[EnableCors("")]
     public class AuthenticationController : Controller
     {
         private readonly UserManager<User> userManager;
