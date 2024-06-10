@@ -1,13 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace SWD.BBMS.Repositories.Entities
+namespace SWD.BBMS.Services.BusinessModels
 {
-    [Table("Booking")]
-    public class Booking
+    public class BookingModel
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         public string Code { get; set; }
@@ -38,15 +35,15 @@ namespace SWD.BBMS.Repositories.Entities
 
         public int ModifiedBy { get; set; }
 
-        public Customer Customer { get; set; }
+        public CustomerModel Customer { get; set; }
 
-        public ICollection<BookingDetail> BookingDetails { get; set; }
+        public List<BookingDetailModel> BookingDetails { get; set; }
 
-        public Payment? Payment { get; set; }
+        public PaymentModel? Payment { get; set; }
 
-        public Court Court { get; set; }
+        public CourtModel Court { get; set; }
 
-        public FlexibleBooking? FlexibleBooking { get; set; }
+        public FlexibleBookingModel? FlexibleBooking { get; set; }
 
     }
 }

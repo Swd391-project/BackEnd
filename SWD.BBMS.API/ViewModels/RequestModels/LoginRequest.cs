@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BadmintonRentalSWD.DTOs.Request
+namespace SWD.BBMS.API.ViewModels.RequestModels
 {
     public class LoginRequest
     {

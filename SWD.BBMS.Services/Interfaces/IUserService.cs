@@ -1,4 +1,5 @@
 ﻿using SWD.BBMS.Repositories.Entities;
+using SWD.BBMS.Services.BusinessModels;
 
 namespace SWD.BBMS.Services.Interfaces
 {
@@ -6,9 +7,9 @@ namespace SWD.BBMS.Services.Interfaces
     {
         void CreateUser(User user);
 
-        User? GetUserById(int id);
+        Task<UserModel>? GetUserById(string id);
 
-        List<User> GetUsers();
+        Task<List<UserModel>> GetUsers();
 
         void UpdateUser(User user);
 

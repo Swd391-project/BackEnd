@@ -1,5 +1,4 @@
-﻿using BadmintonRentalSWD.DTOs.Request;
-using SWD.BBMS.Repositories.Entities;
+﻿using SWD.BBMS.Repositories.Entities;
 using SWD.BBMS.Services.Interfaces;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using SWD.BBMS.API.ViewModels.ResponseModels;
+using SWD.BBMS.API.ViewModels.RequestModels;
 
 namespace SWD.BBMS.API.Controllers
 {
@@ -57,7 +58,14 @@ namespace SWD.BBMS.API.Controllers
                     if (roleResult.Succeeded)
                     {
                         var jwtToken = jwtService.GenerateJwtToken(user);
-                        return Ok(jwtToken);
+                        var tokenResponse = new TokenResponse
+                        {
+                            Token = jwtToken,
+                            FullName = user.FullName,
+                            Role = user.Role,
+                            Image = user.Image,
+                        };
+                        return Ok(tokenResponse);
                     }
                     else
                     {
@@ -94,7 +102,15 @@ namespace SWD.BBMS.API.Controllers
                 {
                     return Unauthorized("Wrong password.");
                 }
-                return Ok(jwtService.GenerateJwtToken(user));
+                var jwtToken = jwtService.GenerateJwtToken(user);
+                var tokenResponse = new TokenResponse
+                {
+                    Token = jwtToken,
+                    FullName = user.FullName,
+                    Role = user.Role,
+                    Image = user.Image
+                };
+                return Ok(tokenResponse);
             }
             catch (Exception ex)
             {

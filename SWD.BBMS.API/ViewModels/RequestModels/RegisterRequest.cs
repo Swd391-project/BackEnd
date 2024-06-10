@@ -1,17 +1,20 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SWD.BBMS.API.Validations;
+using System.ComponentModel.DataAnnotations;
 
-namespace BadmintonRentalSWD.DTOs.Request
+namespace SWD.BBMS.API.ViewModels.RequestModels
 {
     public class RegisterRequest
     {
         [Required]
         public string FullName { get; set; }
 
-        [EmailAddress]
+        //[EmailAddress]
+        [ValidEmail]
         public string? Email { get; set; }
 
-        [MaxLength(12)]
-        [MinLength(8)]
+        //[MaxLength(12)]
+        //[MinLength(8)]
+        [ValidPhoneNumber]
         public string? PhoneNumber { get; set; }
 
         [Required]

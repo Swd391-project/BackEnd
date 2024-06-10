@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using SWD.BBMS.API.ViewModels.ResponseModels;
 
 namespace BadmintonRentalSWD.Controllers
 {
@@ -26,16 +27,22 @@ namespace BadmintonRentalSWD.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        [ProducesResponseType(200, Type = typeof(List<User>))]
-        public IActionResult GetUsers()
+        public async Task<IActionResult> GetUsers()
         {
-            var users = userService.GetUsers();
+            var users = await userService.GetUsers();
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            return Ok(users);
+            var userResponses = users.Select(u => new UserListResponse
+            {
+                Id = u.Id,
+                FullName = u.FullName,
+                Username = u.UserName,
+                Role = u.Role
+            }).ToList();
+            return Ok(userResponses);
         }
 
         [HttpGet("role")]
@@ -76,20 +83,37 @@ namespace BadmintonRentalSWD.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(200, Type = typeof(User))]
         [Authorize]
-        public IActionResult GetUserById(int id)
+        public async Task<IActionResult> GetUserById(string id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var user = userService.GetUserById(id);
-            if (user == null)
+            try
             {
-                return Ok("There is no user with id " + id +".");
+                var user = await userManager.FindByIdAsync(id);
+                if (user == null)
+                {
+                    return Ok("There is no user with id " + id + ".");
+                }
+                var userResponse = new UserDetailResponse
+                {
+                    Id = user.Id,
+                    FullName = user.FullName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    Role = user.Role,
+                    Image = user.Image,
+                    CompanyId = user.Company != null ? user.Company.Id : null,
+                    CompanyName = user.Company != null ? user.Company.Name : null
+                };
+                return Ok(userResponse);
             }
-            return Ok(user);
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         private User GetCurrentUser()

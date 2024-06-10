@@ -98,6 +98,7 @@ namespace SWD.BBMS.Repositories.Data
             var hasher = new PasswordHasher<User>();
             User user = new User
             {
+                Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                 FullName = "System Admin",
                 UserName = "admin@bbms.com",
                 NormalizedUserName = "ADMIN@BBMS.COM",

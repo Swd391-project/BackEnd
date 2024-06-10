@@ -26,7 +26,9 @@ namespace SWD.BBMS.Services
         {
             var claims = new List<Claim> { 
                 new Claim(ClaimTypes.NameIdentifier, user.UserName),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(ClaimTypes.Role, user.Role),
+                new Claim(ClaimTypes.Name, user.FullName),
+                new Claim(ClaimTypes.GivenName, user.Image.IsNullOrEmpty() ? "" : user.Image)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:SigningKey"]));

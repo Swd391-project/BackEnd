@@ -1,5 +1,7 @@
-﻿using SWD.BBMS.Repositories.Entities;
+﻿using AutoMapper;
+using SWD.BBMS.Repositories.Entities;
 using SWD.BBMS.Repositories.Interfaces;
+using SWD.BBMS.Services.BusinessModels;
 using SWD.BBMS.Services.Interfaces;
 
 namespace SWD.BBMS.Services
@@ -8,9 +10,12 @@ namespace SWD.BBMS.Services
     {
         private readonly IUserRepository userRepository;
 
-        public UserService(IUserRepository userRepository)
+        private readonly IMapper mapper;
+
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
             this.userRepository = userRepository;
+            this.mapper = mapper;
         }
 
         public void CreateUser(User user)
@@ -18,9 +23,18 @@ namespace SWD.BBMS.Services
             userRepository.CreateUser(user);
         }
 
-        public User? GetUserById(int id)
+        public async Task<UserModel>? GetUserById(string id)
         {
-            return userRepository.GetUserById(id);
+            try
+            {
+                var user = await userRepository.GetUserById(id);
+                var userModel = mapper.Map<UserModel>(user);
+                return userModel;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public User GetUserByUsername(string username)
@@ -28,9 +42,18 @@ namespace SWD.BBMS.Services
             return userRepository.GetUserByUsername(username);
         }
 
-        public List<User> GetUsers()
+        public async Task<List<UserModel>> GetUsers()
         {
-            return userRepository.GetUsers();
+            try
+            {
+                var users = await userRepository.GetUsers();
+                var userModels = mapper.Map<List<UserModel>>(users);
+                return userModels;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public void UpdateUser(User user)

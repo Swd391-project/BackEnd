@@ -2,13 +2,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SWD.BBMS.Repositories.Entities
+namespace SWD.BBMS.Services.BusinessModels
 {
-    [Table("User")]
-    public class User : IdentityUser
+    public class UserModel : IdentityUser
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
 
         public string FullName { get; set; }
@@ -31,8 +28,8 @@ namespace SWD.BBMS.Repositories.Entities
 
         public int ModifiedBy { get; set; }
 
-        public Company? Company { get; set; }
+        public CompanyModel? Company { get; set; }
 
-        public ICollection<Feedback>? Feedbacks { get; set; }
+        public List<FeedbackModel>? Feedbacks { get; set; }
     }
 }

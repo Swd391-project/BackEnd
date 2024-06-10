@@ -8,12 +8,16 @@ namespace SWD.BBMS.Repositories.Interfaces
     {
         void CreateUser(User user);
 
-        List<User> GetUsers();
+        Task<List<User>> GetUsers();
 
-        User? GetUserById(int id);
+        Task<User>? GetUserById(string id);
 
         void UpdateUser(User user);
 
         User GetUserByUsername(string username);
+
+        bool ExistsByEmail(string email);
+
+        bool ExistsByPhoneNumber(string phoneNumber);
     }
 }

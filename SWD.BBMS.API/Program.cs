@@ -54,6 +54,7 @@ builder.Services.AddSwaggerGen(option =>
 
 
 builder.Services.AddTransient<Seed>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
@@ -67,7 +68,7 @@ builder.Services.AddIdentity<User, IdentityRole>(
             options.Password.RequireDigit = true;
             options.Password.RequireUppercase = true;
             options.Password.RequireLowercase = true;
-            options.Password.RequireNonAlphanumeric = true;
+            options.Password.RequireNonAlphanumeric = false;
             options.Password.RequiredLength = 8;
         }
     )
@@ -102,7 +103,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(MyAllowSpecificOrigins,
             policy =>
             {
-                policy.WithOrigins("http://localhost:3000", "http://127.0.0.1:5500")
+                policy.AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
             }
