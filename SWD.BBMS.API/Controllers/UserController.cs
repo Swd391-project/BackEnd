@@ -14,6 +14,7 @@ using System.Text.Json;
 using AutoMapper;
 using SWD.BBMS.Services.BusinessModels;
 using System.Net.Http.Json;
+using Microsoft.OpenApi.Extensions;
 
 namespace BadmintonRentalSWD.Controllers
 {
@@ -56,7 +57,8 @@ namespace BadmintonRentalSWD.Controllers
                 Id = u.Id,
                 FullName = u.FullName,
                 Username = u.UserName,
-                Role = u.Role
+                Role = u.Role,
+                Status = u.Status.GetDisplayName()
             }).ToList();
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
             return Ok(userResponses);
@@ -120,6 +122,7 @@ namespace BadmintonRentalSWD.Controllers
                     PhoneNumber = userModel.PhoneNumber,
                     Role = userModel.Role,
                     Image = userModel.Image,
+                    Status = userModel.Status.GetDisplayName(),
                     CompanyId = userModel.Company != null ? userModel.Company.Id : null,
                     CompanyName = userModel.Company != null ? userModel.Company.Name : null
                 };

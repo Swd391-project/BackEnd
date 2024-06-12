@@ -20,6 +20,8 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public string? Image {  get; set; }
 
+        public UserModelStatus Status { get; set; }
+
         public DateTime? CreatedDate { get; set; }
 
         public int? CreatedBy { get; set; }

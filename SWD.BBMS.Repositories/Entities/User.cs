@@ -23,6 +23,8 @@ namespace SWD.BBMS.Repositories.Entities
 
         public string? Image {  get; set; }
 
+        public UserStatus Status { get; set; }
+
         public DateTime? CreatedDate { get; set; }
 
         public int? CreatedBy { get; set; }

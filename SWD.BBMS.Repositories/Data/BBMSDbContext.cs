@@ -104,6 +104,7 @@ namespace SWD.BBMS.Repositories.Data
                 NormalizedUserName = "ADMIN@BBMS.COM",
                 Role = "Admin",
                 Email = "admin@bbms.com",
+                Status = UserStatus.Active,
                 PhoneNumber = "1234567890",
                 PasswordHash = hasher.HashPassword(null, "Admin@123"),
                 CreatedDate = DateTime.UtcNow,

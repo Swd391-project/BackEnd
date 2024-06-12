@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 using SWD.BBMS.Repositories.Entities;
 using SWD.BBMS.Services.BusinessModels;
 using System;
@@ -20,8 +21,25 @@ namespace SWD.BBMS.Services.Mappers
                 //.ForMember(dest => dest.Court, opt => opt.MapFrom(src => src.Court))
                 //.ForMember(dest => dest.FlexibleBooking, opt => opt.MapFrom(src => src.FlexibleBooking))
                 ;
-            CreateMap<User, UserModel>();
+            CreateMap<User, UserModel>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapUserStatusToUserModelStatus(src.Status)));
             CreateMap<UserModel, User>();
+            
+        }
+
+        private UserModelStatus MapUserStatusToUserModelStatus(UserStatus status)
+        {
+            switch (status)
+            {
+                case UserStatus.Active:
+                    return UserModelStatus.Active;
+                case UserStatus.Inactive:
+                    return UserModelStatus.Inactive;
+                case UserStatus.Closed:
+                    return UserModelStatus.Closed;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled user status.");
+            }
         }
     }
 }

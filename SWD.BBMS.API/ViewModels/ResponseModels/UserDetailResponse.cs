@@ -19,6 +19,8 @@ namespace SWD.BBMS.API.ViewModels.ResponseModels
 
         public string? Image { get; set; }
 
+        public string Status { get; set; }
+
         [JsonPropertyName("company-id")]
         public int? CompanyId { get; set; }
 
