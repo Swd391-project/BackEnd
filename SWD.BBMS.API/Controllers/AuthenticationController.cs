@@ -45,8 +45,7 @@ namespace SWD.BBMS.API.Controllers
                     UserName = register.Email.IsNullOrEmpty() ? register.PhoneNumber : register.Email,
                     Email = register.Email,
                     PhoneNumber = register.PhoneNumber,
-                    Role = register.Role,
-                    Password = register.Password
+                    Role = register.Role
                 };
 
                 var createdUser = await userManager.CreateAsync(user, register.Password);

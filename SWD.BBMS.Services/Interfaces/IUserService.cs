@@ -1,4 +1,5 @@
-﻿using SWD.BBMS.Repositories.Entities;
+﻿using SWD.BBMS.Repositories;
+using SWD.BBMS.Repositories.Entities;
 using SWD.BBMS.Services.BusinessModels;
 
 namespace SWD.BBMS.Services.Interfaces
@@ -9,9 +10,9 @@ namespace SWD.BBMS.Services.Interfaces
 
         Task<UserModel>? GetUserById(string id);
 
-        Task<List<UserModel>> GetUsers();
+        Task<PagedList<UserModel>> GetUsers(int pageNumber, int pageSize);
 
-        void UpdateUser(User user);
+        Task<bool> UpdateUser(string id, UserUpdateDictionary userModel);
 
         User GetUserByUsername(string username);   
     }

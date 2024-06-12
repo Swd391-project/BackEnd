@@ -21,7 +21,7 @@ namespace SWD.BBMS.Services.Mappers
                 //.ForMember(dest => dest.FlexibleBooking, opt => opt.MapFrom(src => src.FlexibleBooking))
                 ;
             CreateMap<User, UserModel>();
-           
+            CreateMap<UserModel, User>();
         }
     }
 }

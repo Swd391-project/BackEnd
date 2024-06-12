@@ -8,6 +8,12 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using SWD.BBMS.API.ViewModels.ResponseModels;
+using SWD.BBMS.API.ViewModels.RequestModels;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using AutoMapper;
+using SWD.BBMS.Services.BusinessModels;
+using System.Net.Http.Json;
 
 namespace BadmintonRentalSWD.Controllers
 {
@@ -17,24 +23,34 @@ namespace BadmintonRentalSWD.Controllers
     {
         private readonly IUserService userService;
 
-        private readonly UserManager<User> userManager;
+        private readonly IMapper mapper;
 
-        public UserController(IUserService userService, UserManager<User> userManager)
+
+        public UserController(IUserService userService, IMapper mapper)
         {
             this.userService = userService;
-            this.userManager = userManager;
+            this.mapper = mapper;
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers([FromQuery] OwnerParameters ownerParameters)
         {
-            var users = await userService.GetUsers();
+            var users = await userService.GetUsers(ownerParameters.PageNumber, ownerParameters.PageSize);
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            var metadata = new
+            {
+                users.TotalCount,
+                users.PageSize,
+                users.CurrentPage,
+                users.TotalPages,
+                users.HasNext,
+                users.HasPrevious
+            };
             var userResponses = users.Select(u => new UserListResponse
             {
                 Id = u.Id,
@@ -42,9 +58,11 @@ namespace BadmintonRentalSWD.Controllers
                 Username = u.UserName,
                 Role = u.Role
             }).ToList();
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
             return Ok(userResponses);
         }
 
+        /*
         [HttpGet("role")]
         [Authorize]
         public async Task<IActionResult> GetRoles()
@@ -57,6 +75,7 @@ namespace BadmintonRentalSWD.Controllers
             }
             return Ok("Hello " + user.FullName + ", you are a/an " + user.Role);
         }
+        */
 
         [HttpPost]
         [ProducesResponseType(201)]
@@ -73,7 +92,7 @@ namespace BadmintonRentalSWD.Controllers
             }
             try
             {
-                userService.CreateUser(user);
+                 userService.CreateUser(user);
             }
             catch (Exception ex)
             {
@@ -92,21 +111,17 @@ namespace BadmintonRentalSWD.Controllers
             }
             try
             {
-                var user = await userManager.FindByIdAsync(id);
-                if (user == null)
-                {
-                    return Ok("There is no user with id " + id + ".");
-                }
+                var userModel = await userService.GetUserById(id);
                 var userResponse = new UserDetailResponse
                 {
-                    Id = user.Id,
-                    FullName = user.FullName,
-                    Email = user.Email,
-                    PhoneNumber = user.PhoneNumber,
-                    Role = user.Role,
-                    Image = user.Image,
-                    CompanyId = user.Company != null ? user.Company.Id : null,
-                    CompanyName = user.Company != null ? user.Company.Name : null
+                    Id = userModel.Id,
+                    FullName = userModel.FullName,
+                    Email = userModel.Email,
+                    PhoneNumber = userModel.PhoneNumber,
+                    Role = userModel.Role,
+                    Image = userModel.Image,
+                    CompanyId = userModel.Company != null ? userModel.Company.Id : null,
+                    CompanyName = userModel.Company != null ? userModel.Company.Name : null
                 };
                 return Ok(userResponse);
             }
@@ -116,6 +131,35 @@ namespace BadmintonRentalSWD.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser([FromBody] UserUpdateRequest request, string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var userDictModel = new UserUpdateDictionary();
+                foreach(var keyValuePair in request)
+                {
+                    userDictModel.Add(keyValuePair.Key, keyValuePair.Value);
+                }
+                var success = await userService.UpdateUser(id, userDictModel);
+                if (success)
+                {
+                    return Ok("User is updated.");
+                }
+                return Ok("User is not updated.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        
+
+        /*
         private User GetCurrentUser()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -132,5 +176,6 @@ namespace BadmintonRentalSWD.Controllers
             var user = userService.GetUserByUsername(username);
             return user;
         }
+        */
     }
 }

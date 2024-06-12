@@ -38,12 +38,40 @@ namespace SWD.BBMS.Repositories
             }
         }
 
+        public async Task<bool> ExistsById(string id)
+        {
+            try
+            {
+                using var dbContext = new BBMSDbContext();
+                var result = await dbContext.Users.AnyAsync(u => u.Id.Equals(id));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public bool ExistsByPhoneNumber(string phoneNumber)
         {
             try
             {
                 using var dbContext = new BBMSDbContext();
                 var result = dbContext.Users.Any(u => u.PhoneNumber.Equals(phoneNumber));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<bool> ExistsByUserName(string userName)
+        {
+            try
+            {
+                using var dbContext = new BBMSDbContext();
+                var result = await dbContext.Users.AnyAsync(u => u.UserName.Equals(userName));
                 return result;
             }
             catch (Exception ex)
@@ -71,13 +99,13 @@ namespace SWD.BBMS.Repositories
             return dbContext.Users.FirstOrDefault(u => u.UserName.Equals(username));
         }
 
-        public async Task<List<User>> GetUsers()
+        public async Task<PagedList<User>> GetUsers(int pageNumber, int pageSize)
         {
-            var users = new List<User>();
+            var users = new PagedList<User>();
             try
             {
                 using var dbContext = new BBMSDbContext();
-                users = await dbContext.Users.ToListAsync();
+                users = await PagedList<User>.ToPagedList(dbContext.Users.OrderBy(u => u.FullName), pageNumber, pageSize);
             }
             catch (Exception ex)
             {
@@ -86,16 +114,21 @@ namespace SWD.BBMS.Repositories
             return users;
         }
 
-        public void UpdateUser(User user)
+        public async Task<bool> UpdateUser(User user)
         {
             try
             {
                 using var dbContext = new BBMSDbContext();
-                dbContext.Entry<User>(user).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-                dbContext.SaveChanges();
+                //dbContext.Entry(user).State = EntityState.Detached;
+                //dbContext.Entry<User>(user).State = EntityState.Modified;
+                //dbContext.Users.Update(user);
+                dbContext.Attach(user).State = EntityState.Modified;
+                await dbContext.SaveChangesAsync();
+                return true;
             }
             catch (Exception ex)
             {
+                return false;
                 throw new Exception(ex.Message);
             }
         }

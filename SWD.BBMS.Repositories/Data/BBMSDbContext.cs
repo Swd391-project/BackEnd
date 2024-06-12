@@ -19,7 +19,7 @@ namespace SWD.BBMS.Repositories.Data
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseNpgsql(GetConnectionString());
+            => optionsBuilder.UseNpgsql("Host=ep-round-mouse-a1tew6z0-pooler.ap-southeast-1.aws.neon.tech; Database=bbms; Username=default; Password=UfGsaI7yBe5o");
 
         private string GetConnectionString()
         {
@@ -103,10 +103,11 @@ namespace SWD.BBMS.Repositories.Data
                 UserName = "admin@bbms.com",
                 NormalizedUserName = "ADMIN@BBMS.COM",
                 Role = "Admin",
-                Password = "Admin@123",
                 Email = "admin@bbms.com",
                 PhoneNumber = "1234567890",
-                PasswordHash = hasher.HashPassword(null, "Admin@123")
+                PasswordHash = hasher.HashPassword(null, "Admin@123"),
+                CreatedDate = DateTime.UtcNow,
+                ModifiedDate = DateTime.UtcNow
             };
 
             modelBuilder.Entity<User>().HasData(user);
@@ -157,6 +158,61 @@ namespace SWD.BBMS.Repositories.Data
                 .HasForeignKey(p => p.CourtSlotId)
                 .OnDelete(DeleteBehavior.Restrict);
             */
+
+            modelBuilder.Entity<User>()
+                .Property(u => u.CreatedDate)
+                //.HasColumnType("datetime")
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+            modelBuilder.Entity<User>()
+                .Property(u => u.ModifiedDate)
+                //.HasColumnType("datetime")
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+
+            modelBuilder.Entity<Booking>()
+                .Property(u => u.CreatedDate)
+                //.HasColumnType("datetime")
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+            modelBuilder.Entity<Booking>()
+                .Property(u => u.ModifiedDate)
+                //.HasColumnType("datetime")
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+
+            modelBuilder.Entity<Court>()
+                .Property(u => u.CreatedDate)
+                //.HasColumnType("datetime")
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+            modelBuilder.Entity<Court>()
+                .Property(u => u.ModifiedDate)
+                //.HasColumnType("datetime")
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+
+            modelBuilder.Entity<CourtGroup>()
+                .Property(u => u.CreatedDate)
+                //.HasColumnType("datetime")
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+            modelBuilder.Entity<CourtGroup>()
+                .Property(u => u.ModifiedDate)
+                //.HasColumnType("datetime")
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+
+            modelBuilder.Entity<BookingType>()
+                .Property(u => u.CreatedDate)
+                //.HasColumnType("datetime")
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+            modelBuilder.Entity<BookingType>()
+                .Property(u => u.ModifiedDate)
+                //.HasColumnType("datetime")
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+
+            modelBuilder.Entity<CourtSlot>()
+                .Property(u => u.CreatedDate)
+                //.HasColumnType("datetime")
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+            modelBuilder.Entity<CourtSlot>()
+                .Property(u => u.ModifiedDate)
+                //.HasColumnType("datetime")
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+
         }
     }
 }
