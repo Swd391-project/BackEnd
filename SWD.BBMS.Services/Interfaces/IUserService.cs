@@ -12,7 +12,7 @@ namespace SWD.BBMS.Services.Interfaces
 
         Task<PagedList<UserModel>> GetUsers(int pageNumber, int pageSize);
 
-        Task<bool> UpdateUser(string id, UserUpdateDictionary userModel);
+        Task<bool> UpdateUser(string id, Dictionary<string, object> userModel);
 
         User GetUserByUsername(string username);   
     }

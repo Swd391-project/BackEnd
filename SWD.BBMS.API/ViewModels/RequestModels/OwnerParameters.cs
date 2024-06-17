@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace SWD.BBMS.API.ViewModels.RequestModels
 {
-    public class OwnerParameters
+    public class OwnerParameters : IQueryModel
     {
         const int maxPageSize = 50;
 
@@ -22,7 +22,7 @@ namespace SWD.BBMS.API.ViewModels.RequestModels
             }
             set
             {
-                pageSize = value > maxPageSize ? maxPageSize : value;
+                pageSize = (value > maxPageSize ? maxPageSize : value);
             }
         }
     }

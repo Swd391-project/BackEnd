@@ -135,7 +135,7 @@ namespace BadmintonRentalSWD.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser([FromBody] UserUpdateRequest request, string id)
+        public async Task<IActionResult> UpdateUser([FromBody] UserRequest request, string id)
         {
             if (!ModelState.IsValid)
             {
@@ -143,10 +143,22 @@ namespace BadmintonRentalSWD.Controllers
             }
             try
             {
+                /*
                 var userDictModel = new UserUpdateDictionary();
                 foreach(var keyValuePair in request)
                 {
                     userDictModel.Add(keyValuePair.Key, keyValuePair.Value);
+                }
+                */
+                var json = JsonSerializer.Serialize(request);
+                if (json.IsNullOrEmpty())
+                {
+                    return BadRequest(ModelState);
+                }
+                var userDictModel = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+                if (userDictModel == null)
+                {
+                    return BadRequest(ModelState);
                 }
                 var success = await userService.UpdateUser(id, userDictModel);
                 if (success)

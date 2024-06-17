@@ -72,7 +72,7 @@ namespace SWD.BBMS.Services
             }
         }
 
-        public async Task<bool> UpdateUser(string id, UserUpdateDictionary userModel)
+        public async Task<bool> UpdateUser(string id, Dictionary<string, object> userModel)
         {
             try
             {
@@ -107,16 +107,16 @@ namespace SWD.BBMS.Services
 
         private void SetPropertyValueFromDictionary(User user, KeyValuePair<string, object> dict)
         {
-            var property = user.GetType().GetProperty(KebabToPascalCase(dict.Key));
+            var property = user.GetType().GetProperty(dict.Key);
             if (property != null && property.CanWrite)
             {
                 var propertyType = property.PropertyType;
 
                 object value;
 
-                if (dict.Value == null)
+                if (dict.Value == null || dict.Value.Equals(""))
                 {
-                    value = null;
+                    return;
                 }
                 else if (propertyType.IsAssignableFrom(dict.Value.GetType()))
                 {
@@ -137,6 +137,10 @@ namespace SWD.BBMS.Services
                     // Use JSON serialization/deserialization for complex types
                     var json = JsonSerializer.Serialize(dict.Value);
                     value = JsonSerializer.Deserialize(json, propertyType);
+                    if (value == null || value.Equals(""))
+                    {
+                        return;
+                    }
                 }
 
                 // Set the property value

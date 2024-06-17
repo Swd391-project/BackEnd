@@ -6,7 +6,6 @@ namespace SWD.BBMS.API.ViewModels.ResponseModels
     {
         public string Id { get; set; }
 
-        [JsonPropertyName("full-name")]
         public string FullName { get; set; }
 
         public string Username { get; set; }
