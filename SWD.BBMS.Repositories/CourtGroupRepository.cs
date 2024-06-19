@@ -22,7 +22,11 @@ namespace SWD.BBMS.Repositories
         public async Task<CourtGroup?> GetCourtGroupById(int id)
         {
             using var dbContext = new BBMSDbContext();
-            return await dbContext.CourtGroups.FirstOrDefaultAsync(cg => cg.Id == id);
+            return await dbContext.CourtGroups
+                .Include(cg => cg.CourtSlots)
+                .Include(cg => cg.Courts)
+                .Include(cg => cg.CourtGroupActivities).ThenInclude(cga => cga.WeekdayActivity)
+                .FirstOrDefaultAsync(cg => cg.Id == id);
         }
 
         public async Task<PagedList<CourtGroup>> GetCourtGroups(int pageNumber, int pageSize)
@@ -51,26 +55,23 @@ namespace SWD.BBMS.Repositories
             {
                 using var dbContext = new BBMSDbContext();
                 var courtGroupActivities = courtGroup.CourtGroupActivities;
-                //courtGroup?.CourtGroupActivities?.Clear();
                 courtGroup.CourtGroupActivities = new List<CourtGroupActivity>();
-                /*
-                var companyId = courtGroup.CompanyId;
-                courtGroup.CompanyId = 0;
-                if (companyId != null)
-                {
-                    var company = await dbContext.Companies.FindAsync(companyId);
-                    if (company != null)
-                    {
-                        courtGroup.Company = company;
-                    }
-                }
-                */
+                var courtSlots = courtGroup.CourtSlots;
+                courtGroup.CourtSlots = new List<CourtSlot>();
+
                 await dbContext.CourtGroups.AddAsync(courtGroup);
                 if (!courtGroupActivities.IsNullOrEmpty())
                 {
                     foreach (var courtGroupActivity in courtGroupActivities)
                     {
                         await dbContext.CourtGroupActivities.AddAsync(courtGroupActivity);
+                    }
+                }
+                if (!courtSlots.IsNullOrEmpty())
+                {
+                    foreach(var courtSlot in courtSlots)
+                    {
+                        await dbContext.CourtSlots.AddAsync(courtSlot);
                     }
                 }
                 

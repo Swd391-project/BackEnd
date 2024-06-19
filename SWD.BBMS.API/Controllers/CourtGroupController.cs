@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Extensions;
 using SWD.BBMS.API.ViewModels.RequestModels;
+using SWD.BBMS.API.ViewModels.ResponseModels;
 using SWD.BBMS.Repositories.Entities;
 using SWD.BBMS.Services.BusinessModels;
 using SWD.BBMS.Services.Interfaces;
@@ -87,7 +89,27 @@ namespace SWD.BBMS.API.Controllers
             try
             {
                 var courtGroupModel = await courtGroupService.GetCourtGroupById(id);
-                return Ok(courtGroupModel);
+                var weekdayActivityResponse = courtGroupModel.CourtGroupActivities
+                    .Select(cga => new WeekdayActivityCourtGroupDetails
+                    {
+                        Id = cga.WeekdayActivityId,
+                        Weekday = cga.WeekdayActivity.Weekday.GetDisplayName(),
+                        ActivityStatus = cga.ActivityStatus.GetDisplayName()
+                    })
+                    .ToList();
+                var response = new CourtGroupDetailsResponse
+                {
+                    Id = courtGroupModel.Id,
+                    Name = courtGroupModel.Name,
+                    Address = courtGroupModel.Address,
+                    StartTime = courtGroupModel.StartTime,
+                    EndTime = courtGroupModel.EndTime,
+                    CoverImage = courtGroupModel.CoverImage,
+                    ProfileImage = courtGroupModel.ProfileImage,
+                    Rate = courtGroupModel.Rate,
+                    WeekdayActivities = weekdayActivityResponse
+                };
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -95,7 +117,6 @@ namespace SWD.BBMS.API.Controllers
             }
         }
 
-        /*
         [HttpGet("booking-page/{id}")]
         public async Task<IActionResult> LoadBookingPageByCourtGroup(int id)
         {
@@ -103,14 +124,37 @@ namespace SWD.BBMS.API.Controllers
                 return BadRequest(ModelState);
             try
             {
-
+                var courtGroupModel = await courtGroupService.GetCourtGroupById(id);
+                if (courtGroupModel == null)
+                {
+                    return Ok("Court group with id " + id + " is not existed.");
+                }
+                var courtSlotResponse = courtGroupModel?.CourtSlots?.Select(cs => new CourtSlotBookingPage
+                {
+                    Id = cs.Id,
+                    FromTime = cs.FromTime,
+                    ToTime = cs.ToTime,
+                    Price = cs.Price,
+                    Status = cs.Status.GetDisplayName()
+                }).ToList();
+                var courtResponse = courtGroupModel?.Courts?.Select(c => new CourtBookingPage
+                {
+                    Id = c.Id,
+                    Status = c.Status.GetDisplayName()
+                }).ToList();
+                var response = new BookingPageResponse
+                {
+                    Id = courtGroupModel.Id,
+                    CourtSlots = courtSlotResponse,
+                    Courts = courtResponse
+                };
+                return Ok(response);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
         }
-        */
         
     }
 }

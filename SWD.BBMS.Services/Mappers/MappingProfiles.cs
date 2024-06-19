@@ -23,7 +23,8 @@ namespace SWD.BBMS.Services.Mappers
                 ;
             CreateMap<User, UserModel>()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToUserModelStatus(src.Status)));
-            CreateMap<UserModel, User>();
+            CreateMap<UserModel, User>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToUserStatus(src.Status)));
             //CreateMap<CourtGroupModel, CourtGroup>();
             CreateMap<CourtGroup, CourtGroupModel>().ReverseMap();
             //CreateMap<CourtModel, Court>();
@@ -31,6 +32,21 @@ namespace SWD.BBMS.Services.Mappers
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToCourtModelStatus(src.Status)))
                 .ReverseMap()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToCourtStatus(src.Status)));
+
+            CreateMap<CourtSlot, CourtSlotModel>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToSlotModelStatus(src.Status)))
+                .ReverseMap()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToSlotStatus(src.Status)));
+
+            CreateMap<CourtGroupActivity, CourtGroupActivityModel>()
+                .ForMember(dest => dest.ActivityStatus, opt => opt.MapFrom(src => MapToActivityModelStatus(src.ActivityStatus)))
+                .ReverseMap()
+                .ForMember(dest => dest.ActivityStatus, opt => opt.MapFrom(src => MapToActivityStatus(src.ActivityStatus)));
+
+            CreateMap<WeekdayActivity, WeekdayActivityModel>()
+                .ForMember(dest => dest.Weekday, opt => opt.MapFrom(src => MapToWeekdayModel(src.Weekday)))
+                .ReverseMap()
+                .ForMember(dest => dest.Weekday, opt => opt.MapFrom(src => MapToWeekday(src.Weekday)));
         }
 
         private UserModelStatus MapToUserModelStatus(UserStatus status)
@@ -48,6 +64,21 @@ namespace SWD.BBMS.Services.Mappers
             }
         }
 
+        private UserStatus MapToUserStatus(UserModelStatus status)
+        {
+            switch (status)
+            {
+                case UserModelStatus.Active:
+                    return UserStatus.Active;
+                case UserModelStatus.Inactive:
+                    return UserStatus.Inactive;
+                case UserModelStatus.Closed:
+                    return UserStatus.Closed;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled user status.");
+            }
+        }
+
         private ActivityModelStatus MapToActivityModelStatus(ActivityStatus status)
         {
             switch (status)
@@ -56,6 +87,19 @@ namespace SWD.BBMS.Services.Mappers
                     return ActivityModelStatus.Open;
                 case ActivityStatus.Close:
                     return ActivityModelStatus.Close;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled activity status.");
+            }
+        }
+
+        private ActivityStatus MapToActivityStatus(ActivityModelStatus status)
+        {
+            switch (status)
+            {
+                case ActivityModelStatus.Open:
+                    return ActivityStatus.Open;
+                case ActivityModelStatus.Close:
+                    return ActivityStatus.Close;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled activity status.");
             }
@@ -79,6 +123,29 @@ namespace SWD.BBMS.Services.Mappers
                     return WeekdayModel.Saturday;
                 case Weekday.Sunday:
                     return WeekdayModel.Sunday;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled weekday.");
+            }
+        }
+
+        private Weekday MapToWeekday(WeekdayModel status)
+        {
+            switch (status)
+            {
+                case WeekdayModel.Monday:
+                    return Weekday.Monday;
+                case WeekdayModel.Tuesday:
+                    return Weekday.Tuesday;
+                case WeekdayModel.Wednesday:
+                    return Weekday.Wednesday;
+                case WeekdayModel.Thursday:
+                    return Weekday.Thursday;
+                case WeekdayModel.Friday:
+                    return Weekday.Friday;
+                case WeekdayModel.Saturday:
+                    return Weekday.Saturday;
+                case WeekdayModel.Sunday:
+                    return Weekday.Sunday;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled weekday.");
             }
@@ -111,6 +178,32 @@ namespace SWD.BBMS.Services.Mappers
                     return CourtStatus.Closed;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled court status.");
+            }
+        }
+
+        private SlotModelStatus MapToSlotModelStatus (SlotStatus status)
+        {
+            switch (status)
+            {
+                case SlotStatus.Available:
+                    return SlotModelStatus.Available;
+                case SlotStatus.Closed:
+                    return SlotModelStatus.Closed;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled court slot status.");
+            }
+        }
+
+        private SlotStatus MapToSlotStatus(SlotModelStatus status)
+        {
+            switch (status)
+            {
+                case SlotModelStatus.Available:
+                    return SlotStatus.Available;
+                case SlotModelStatus.Closed:
+                    return SlotStatus.Closed;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled court slot status.");
             }
         }
     }

@@ -37,9 +37,9 @@ namespace SWD.BBMS.Repositories.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
-                    CreatedBy = table.Column<int>(type: "integer", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
-                    ModifiedBy = table.Column<int>(type: "integer", nullable: false)
+                    ModifiedBy = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -85,9 +85,9 @@ namespace SWD.BBMS.Repositories.Migrations
                     MethodName = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CreatedBy = table.Column<int>(type: "integer", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModifiedBy = table.Column<int>(type: "integer", nullable: false)
+                    ModifiedBy = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -140,9 +140,9 @@ namespace SWD.BBMS.Repositories.Migrations
                     Image = table.Column<string>(type: "text", nullable: true),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
-                    CreatedBy = table.Column<int>(type: "integer", nullable: true),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
-                    ModifiedBy = table.Column<int>(type: "integer", nullable: true),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: true),
                     CompanyId = table.Column<int>(type: "integer", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -181,9 +181,9 @@ namespace SWD.BBMS.Repositories.Migrations
                     ProfileImage = table.Column<string>(type: "text", nullable: true),
                     CoverImage = table.Column<string>(type: "text", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
-                    CreatedBy = table.Column<int>(type: "integer", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
-                    ModifiedBy = table.Column<int>(type: "integer", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: false),
                     CompanyId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -206,9 +206,9 @@ namespace SWD.BBMS.Repositories.Migrations
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Amount = table.Column<long>(type: "bigint", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CreatedBy = table.Column<int>(type: "integer", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModifiedBy = table.Column<int>(type: "integer", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: false),
                     CompanyId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -233,9 +233,9 @@ namespace SWD.BBMS.Repositories.Migrations
                     IssuedDate = table.Column<DateOnly>(type: "date", nullable: false),
                     ExpiredDate = table.Column<DateOnly>(type: "date", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CreatedBy = table.Column<int>(type: "integer", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModifiedBy = table.Column<int>(type: "integer", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: false),
                     CustomerId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -362,9 +362,9 @@ namespace SWD.BBMS.Repositories.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
-                    CreatedBy = table.Column<int>(type: "integer", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
-                    ModifiedBy = table.Column<int>(type: "integer", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: false),
                     CourtGroupId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -411,12 +411,12 @@ namespace SWD.BBMS.Repositories.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     FromTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     ToTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     Price = table.Column<long>(type: "bigint", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
-                    CreatedBy = table.Column<int>(type: "integer", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
-                    ModifiedBy = table.Column<int>(type: "integer", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: false),
                     CourtGroupId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -438,6 +438,10 @@ namespace SWD.BBMS.Repositories.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Content = table.Column<string>(type: "text", nullable: true),
                     Rate = table.Column<float>(type: "real", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CourtGroupId = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: true)
                 },
@@ -466,6 +470,10 @@ namespace SWD.BBMS.Repositories.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Price = table.Column<long>(type: "bigint", nullable: false),
                     Unit = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: false),
                     CourtGroupId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -494,12 +502,12 @@ namespace SWD.BBMS.Repositories.Migrations
                     ToTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     CheckinTime = table.Column<TimeOnly>(type: "time without time zone", nullable: true),
                     CheckoutTime = table.Column<TimeOnly>(type: "time without time zone", nullable: true),
-                    CheckinBy = table.Column<int>(type: "integer", nullable: true),
-                    CheckoutBy = table.Column<int>(type: "integer", nullable: true),
+                    CheckinBy = table.Column<string>(type: "text", nullable: true),
+                    CheckoutBy = table.Column<string>(type: "text", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
-                    CreatedBy = table.Column<int>(type: "integer", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
-                    ModifiedBy = table.Column<int>(type: "integer", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: false),
                     CustomerId = table.Column<int>(type: "integer", nullable: false),
                     CourtId = table.Column<int>(type: "integer", nullable: false),
                     FlexibleBookingId = table.Column<int>(type: "integer", nullable: true),
@@ -625,16 +633,16 @@ namespace SWD.BBMS.Repositories.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "702559db-c09c-475b-9a86-cb46da58e0b6", null, "Manager", "MANAGER" },
-                    { "7c4a10c9-df41-4be5-b4d9-beee3bf0392c", null, "Customer", "CUSTOMER" },
-                    { "85b7151d-48b6-443d-b59e-752e33dc3e85", null, "Admin", "ADMIN" },
-                    { "9df94baa-70a6-448d-976b-d9e5ba1b2418", null, "Staff", "STAFF" }
+                    { "4dbe0ec6-78db-41fe-ad71-7be25cc7c33f", null, "Admin", "ADMIN" },
+                    { "a39824fd-74cd-4197-99dd-5f52a94dced5", null, "Manager", "MANAGER" },
+                    { "ad78a9cf-2651-4c39-91f8-d002fb0f695c", null, "Customer", "CUSTOMER" },
+                    { "da12a4f9-8727-4c24-b455-3430a71f3b48", null, "Staff", "STAFF" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "CompanyId", "ConcurrencyStamp", "CreatedBy", "CreatedDate", "Email", "EmailConfirmed", "FullName", "Image", "LockoutEnabled", "LockoutEnd", "ModifiedBy", "ModifiedDate", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Role", "SecurityStamp", "Status", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, null, "d248484c-0341-42d7-a2d6-6e30fe11c699", null, new DateTime(2024, 6, 19, 4, 16, 35, 513, DateTimeKind.Utc).AddTicks(5644), "admin@bbms.com", false, "System Admin", null, false, null, null, new DateTime(2024, 6, 19, 4, 16, 35, 513, DateTimeKind.Utc).AddTicks(5652), null, "ADMIN@BBMS.COM", "AQAAAAIAAYagAAAAEJz3Mq4rI+VgjsR2aoDRzD2woxPeoHWLxpPL2iGnOK+zj3rk2lcevJp+t0jxitkbjQ==", "1234567890", false, "Admin", "37d137ef-d1f3-4ea9-8397-0999dd0baddb", 0, false, "admin@bbms.com" });
+                values: new object[] { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, null, "ffa312a8-0112-441a-aaee-a4bbc63c8ca3", null, new DateTime(2024, 6, 19, 10, 40, 53, 230, DateTimeKind.Utc).AddTicks(8765), "admin@bbms.com", false, "System Admin", null, false, null, null, new DateTime(2024, 6, 19, 10, 40, 53, 230, DateTimeKind.Utc).AddTicks(8772), null, "ADMIN@BBMS.COM", "AQAAAAIAAYagAAAAEKZMXET0ScuVYuileDYcOBsBLfL0RqzzA7WtgPDCoWegmaM7o/ZRkK2HI6ncBXMmEQ==", "1234567890", false, "Admin", "3665fa55-4864-4171-badf-d48a5914a2e0", 0, false, "admin@bbms.com" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

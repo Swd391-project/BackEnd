@@ -44,5 +44,7 @@ namespace SWD.BBMS.Services.BusinessModels
         public List<FeedbackModel>? Feedbacks { get; set; }
 
         public List<ServiceModel>? Services { get; set; }
+
+        public List<CourtGroupActivityModel>? CourtGroupActivities { get; set; }
     }
 }

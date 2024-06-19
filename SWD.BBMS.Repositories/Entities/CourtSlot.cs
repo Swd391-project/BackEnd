@@ -14,7 +14,7 @@ namespace SWD.BBMS.Repositories.Entities
 
         public TimeOnly ToTime { get; set; }
 
-        public string Status { get; set; }
+        public SlotStatus Status { get; set; }
 
         public long Price { get; set; }
 

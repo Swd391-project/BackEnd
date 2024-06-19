@@ -57,6 +57,7 @@ namespace SWD.BBMS.Services
             try
             {
                 var courtGroup = mapper.Map<CourtGroup>(courtGroupModel);
+                //Week day activities
                 var weekdayActivities = await weekdayActivityRepository.GetWeekdayActivities();
                 courtGroup.CourtGroupActivities = new List<CourtGroupActivity>();
                 foreach (var weekdayActivity in weekdayActivities)
@@ -67,8 +68,28 @@ namespace SWD.BBMS.Services
                     };
                     courtGroup.CourtGroupActivities.Add(courtGroupActivity);
                 }
+                //Company
                 var companies = await companyRepository.GetCompanies();
                 courtGroup.CompanyId = companies.First().Id;
+                //Court slots
+                courtGroup.CourtSlots = new List<CourtSlot>();
+                var time = new TimeOnly(0, 0);
+                var closeTime = new TimeOnly(23, 0);
+                var openTime = new TimeOnly(5, 0);
+                var price = (long)100000;
+                do
+                {
+                    var courtSlot = new CourtSlot();
+                    courtSlot.FromTime = time;
+                    courtSlot.ToTime = time.AddMinutes(30);
+                    courtSlot.Status = (time >= closeTime && time < openTime) ? SlotStatus.Closed : SlotStatus.Available;
+                    courtSlot.Price = price;
+                    courtSlot.CreatedBy = courtGroupModel.CreatedBy;
+                    courtSlot.ModifiedBy = courtGroupModel.ModifiedBy;
+                    courtSlot.CourtGroup = courtGroup;
+                    courtGroup.CourtSlots.Add(courtSlot);
+                    time = time.AddMinutes(30);
+                } while (time != new TimeOnly(0, 0));
                 result = await courtGroupRepository.SaveCourtGroup(courtGroup);
             }
             catch (Exception ex)

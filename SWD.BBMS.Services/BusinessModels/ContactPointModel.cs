@@ -9,6 +9,8 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public string Contact { get; set; }
 
+        public ContactModelType ContactType { get; set; }
+
         public CourtGroupModel CourtGroup { get; set; }
     }
 }

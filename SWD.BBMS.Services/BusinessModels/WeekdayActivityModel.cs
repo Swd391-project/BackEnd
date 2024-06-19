@@ -12,6 +12,6 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public WeekdayModel Weekday { get; set; }
 
-        public ICollection<CourtGroupActivityModel>? CourtGroupActivities { get; set; }
+        public List<CourtGroupActivityModel>? CourtGroupActivities { get; set; }
     }
 }

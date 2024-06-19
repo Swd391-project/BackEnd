@@ -11,7 +11,7 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public TimeOnly ToTime { get; set; }
 
-        public string Status { get; set; }
+        public SlotModelStatus Status { get; set; }
 
         public long Price { get; set; }
 

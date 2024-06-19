@@ -50,25 +50,25 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "33dda32c-431f-427d-b26a-2bacd8e806d3",
+                            Id = "4dbe0ec6-78db-41fe-ad71-7be25cc7c33f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "075015bd-9783-4bc1-b386-e6e85e407d3e",
+                            Id = "da12a4f9-8727-4c24-b455-3430a71f3b48",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "2e8aca06-9dfb-4f5d-93ad-8da5461e0606",
+                            Id = "a39824fd-74cd-4197-99dd-5f52a94dced5",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "6d53bcb2-0c12-44b4-98bd-a010610a76a8",
+                            Id = "ad78a9cf-2651-4c39-91f8-d002fb0f695c",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -528,9 +528,8 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<long>("Price")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.Property<TimeOnly>("ToTime")
                         .HasColumnType("time without time zone");
@@ -891,19 +890,19 @@ namespace SWD.BBMS.Repositories.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0082c443-07d9-4053-b671-3f1b3712ae98",
-                            CreatedDate = new DateTime(2024, 6, 19, 8, 44, 11, 941, DateTimeKind.Utc).AddTicks(1028),
+                            ConcurrencyStamp = "ffa312a8-0112-441a-aaee-a4bbc63c8ca3",
+                            CreatedDate = new DateTime(2024, 6, 19, 10, 40, 53, 230, DateTimeKind.Utc).AddTicks(8765),
                             Email = "admin@bbms.com",
                             EmailConfirmed = false,
                             FullName = "System Admin",
                             LockoutEnabled = false,
-                            ModifiedDate = new DateTime(2024, 6, 19, 8, 44, 11, 941, DateTimeKind.Utc).AddTicks(1035),
+                            ModifiedDate = new DateTime(2024, 6, 19, 10, 40, 53, 230, DateTimeKind.Utc).AddTicks(8772),
                             NormalizedUserName = "ADMIN@BBMS.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEL1GHle+vzTvdFyEk5OB6iC7oIDPY3Ycua6KK5Lwl47lS1AqPfBJQVQQYdf3VJJx0g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKZMXET0ScuVYuileDYcOBsBLfL0RqzzA7WtgPDCoWegmaM7o/ZRkK2HI6ncBXMmEQ==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
                             Role = "Admin",
-                            SecurityStamp = "093c23c4-2ac7-4369-b984-ecf6e0154b39",
+                            SecurityStamp = "3665fa55-4864-4171-badf-d48a5914a2e0",
                             Status = 0,
                             TwoFactorEnabled = false,
                             UserName = "admin@bbms.com"
