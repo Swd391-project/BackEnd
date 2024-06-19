@@ -63,6 +63,10 @@ namespace SWD.BBMS.Repositories.Data
 
         public DbSet<BookingType> BookingTypes { get; set; }
 
+        public DbSet<WeekdayActivity> WeekdayActivities { get; set; }
+
+        public DbSet<CourtGroupActivity> CourtGroupActivities { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -121,45 +125,6 @@ namespace SWD.BBMS.Repositories.Data
                 .HasIndex(p => p.BookingId)
                 .IsUnique();
 
-            /*
-            modelBuilder.Entity<BookingDetail>()
-                .HasKey(bd => bd.Id);
-            modelBuilder.Entity<BookingDetail>()
-                .HasOne(bd => bd.Booking)
-                .WithMany(b => b.BookingDetails)
-                .HasForeignKey(bd => bd.BookingId)
-                .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<BookingDetail>()
-                .HasOne(bd => bd.CourtSlot)
-                .WithMany(cs => cs.BookingDetails)
-                .HasForeignKey(bd => bd.CourtSlotId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Payment>()
-                .HasOne(p => p.Company)
-                .WithMany(c => c.Payments)
-                .HasForeignKey(p => p.CompanyId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Payment>()
-                .HasOne(p => p.PaymentMethod)
-                .WithMany(pm => pm.Payments)
-                .HasForeignKey(p => p.PaymentMethodId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Price>()
-                .HasOne(p => p.BookingType)
-                .WithMany(bt => bt.Prices)
-                .HasForeignKey(p => p.BookingTypeId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Price>()
-                .HasOne(p => p.CourtSlot)
-                .WithMany(cs => cs.Prices)
-                .HasForeignKey(p => p.CourtSlotId)
-                .OnDelete(DeleteBehavior.Restrict);
-            */
-
             modelBuilder.Entity<User>()
                 .Property(u => u.CreatedDate)
                 //.HasColumnType("datetime")
@@ -213,6 +178,27 @@ namespace SWD.BBMS.Repositories.Data
                 .Property(u => u.ModifiedDate)
                 //.HasColumnType("datetime")
                 .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+
+            modelBuilder.Entity<CourtGroupActivity>()
+                .HasKey(cga => new {cga.CourtGroupId, cga.WeekdayActivityId});
+            modelBuilder.Entity<CourtGroupActivity>()
+                .HasOne(cga => cga.CourtGroup)
+                .WithMany(cg => cg.CourtGroupActivities)
+                .HasForeignKey(cga => cga.CourtGroupId);
+            modelBuilder.Entity<CourtGroupActivity>()
+                .HasOne(cga => cga.WeekdayActivity)
+                .WithMany(wa => wa.CourtGroupActivities)
+                .HasForeignKey(cga => cga.WeekdayActivityId);
+
+            modelBuilder.Entity<CourtGroup>()
+                .HasOne(cg => cg.Company)
+                .WithMany(c => c.CourtGroups)
+                .HasForeignKey(cg => cg.CompanyId);
+
+            modelBuilder.Entity<Court>()
+                .HasOne(c => c.CourtGroup)
+                .WithMany(cg => cg.Courts)
+                .HasForeignKey(c => c.CourtGroupId);
 
         }
     }

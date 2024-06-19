@@ -12,5 +12,9 @@ namespace SWD.BBMS.Services.Interfaces
     public interface ICourtGroupService
     {
         Task<PagedList<CourtGroupModel>> GetCourtGroups(int pageNumber, int pageSize);
+
+        Task<bool> SaveCourtGroup(CourtGroupModel courtGroupModel);
+
+        Task<CourtGroupModel> GetCourtGroupById(int id);
     }
 }

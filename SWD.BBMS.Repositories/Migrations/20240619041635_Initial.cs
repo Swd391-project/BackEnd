@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SWD.BBMS.Repositories.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -36,9 +36,9 @@ namespace SWD.BBMS.Repositories.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
                     CreatedBy = table.Column<int>(type: "integer", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
                     ModifiedBy = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -95,6 +95,19 @@ namespace SWD.BBMS.Repositories.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "WeekdayActivity",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Weekday = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WeekdayActivity", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -121,14 +134,15 @@ namespace SWD.BBMS.Repositories.Migrations
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
                     FullName = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    PhoneNumber = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
                     Role = table.Column<string>(type: "text", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CreatedBy = table.Column<int>(type: "integer", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModifiedBy = table.Column<int>(type: "integer", nullable: false),
+                    Image = table.Column<string>(type: "text", nullable: true),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
+                    CreatedBy = table.Column<int>(type: "integer", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
+                    ModifiedBy = table.Column<int>(type: "integer", nullable: true),
                     CompanyId = table.Column<int>(type: "integer", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -162,15 +176,13 @@ namespace SWD.BBMS.Repositories.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Address = table.Column<string>(type: "text", nullable: false),
                     Rate = table.Column<float>(type: "real", nullable: true),
-                    FromDay = table.Column<string>(type: "text", nullable: false),
-                    ToDay = table.Column<string>(type: "text", nullable: false),
                     StartTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     EndTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     ProfileImage = table.Column<string>(type: "text", nullable: true),
                     CoverImage = table.Column<string>(type: "text", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
                     CreatedBy = table.Column<int>(type: "integer", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
                     ModifiedBy = table.Column<int>(type: "integer", nullable: false),
                     CompanyId = table.Column<int>(type: "integer", nullable: false)
                 },
@@ -348,10 +360,10 @@ namespace SWD.BBMS.Repositories.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Status = table.Column<string>(type: "text", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
                     CreatedBy = table.Column<int>(type: "integer", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
                     ModifiedBy = table.Column<int>(type: "integer", nullable: false),
                     CourtGroupId = table.Column<int>(type: "integer", nullable: false)
                 },
@@ -367,6 +379,31 @@ namespace SWD.BBMS.Repositories.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CourtGroupActivity",
+                columns: table => new
+                {
+                    CourtGroupId = table.Column<int>(type: "integer", nullable: false),
+                    WeekdayActivityId = table.Column<int>(type: "integer", nullable: false),
+                    ActivityStatus = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CourtGroupActivity", x => new { x.CourtGroupId, x.WeekdayActivityId });
+                    table.ForeignKey(
+                        name: "FK_CourtGroupActivity_CourtGroup_CourtGroupId",
+                        column: x => x.CourtGroupId,
+                        principalTable: "CourtGroup",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CourtGroupActivity_WeekdayActivity_WeekdayActivityId",
+                        column: x => x.WeekdayActivityId,
+                        principalTable: "WeekdayActivity",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CourtSlot",
                 columns: table => new
                 {
@@ -376,9 +413,9 @@ namespace SWD.BBMS.Repositories.Migrations
                     ToTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false),
                     Price = table.Column<long>(type: "bigint", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
                     CreatedBy = table.Column<int>(type: "integer", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
                     ModifiedBy = table.Column<int>(type: "integer", nullable: false),
                     CourtGroupId = table.Column<int>(type: "integer", nullable: false)
                 },
@@ -402,7 +439,7 @@ namespace SWD.BBMS.Repositories.Migrations
                     Content = table.Column<string>(type: "text", nullable: true),
                     Rate = table.Column<float>(type: "real", nullable: false),
                     CourtGroupId = table.Column<int>(type: "integer", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: false)
+                    UserId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -411,8 +448,7 @@ namespace SWD.BBMS.Repositories.Migrations
                         name: "FK_Feedback_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Feedback_CourtGroup_CourtGroupId",
                         column: x => x.CourtGroupId,
@@ -456,11 +492,13 @@ namespace SWD.BBMS.Repositories.Migrations
                     Type = table.Column<string>(type: "text", nullable: false),
                     FromTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     ToTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
+                    CheckinTime = table.Column<TimeOnly>(type: "time without time zone", nullable: true),
+                    CheckoutTime = table.Column<TimeOnly>(type: "time without time zone", nullable: true),
                     CheckinBy = table.Column<int>(type: "integer", nullable: true),
                     CheckoutBy = table.Column<int>(type: "integer", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
                     CreatedBy = table.Column<int>(type: "integer", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
                     ModifiedBy = table.Column<int>(type: "integer", nullable: false),
                     CustomerId = table.Column<int>(type: "integer", nullable: false),
                     CourtId = table.Column<int>(type: "integer", nullable: false),
@@ -587,16 +625,16 @@ namespace SWD.BBMS.Repositories.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "769e4cbd-ef5d-427c-8cf7-a5eaee2518ac", null, "Staff", "STAFF" },
-                    { "8fabbbe7-1bd4-451f-bd7d-99f8c1c35a0a", null, "Manager", "MANAGER" },
-                    { "d802416f-d19a-40ec-99fd-b155862fc8c0", null, "Customer", "CUSTOMER" },
-                    { "f2b07be4-f13e-48f1-8e7b-6a9734737f07", null, "Admin", "ADMIN" }
+                    { "702559db-c09c-475b-9a86-cb46da58e0b6", null, "Manager", "MANAGER" },
+                    { "7c4a10c9-df41-4be5-b4d9-beee3bf0392c", null, "Customer", "CUSTOMER" },
+                    { "85b7151d-48b6-443d-b59e-752e33dc3e85", null, "Admin", "ADMIN" },
+                    { "9df94baa-70a6-448d-976b-d9e5ba1b2418", null, "Staff", "STAFF" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "CompanyId", "ConcurrencyStamp", "CreatedBy", "CreatedDate", "Email", "EmailConfirmed", "FullName", "LockoutEnabled", "LockoutEnd", "ModifiedBy", "ModifiedDate", "NormalizedEmail", "NormalizedUserName", "Password", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Role", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "52f387f1-e975-4f39-949c-0e14bd95143b", 0, null, "c036d1ac-3605-4386-b96f-b7e6d8623141", 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@bbms.com", false, "System Admin", false, null, 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "ADMIN@BBMS.COM", "Admin@123", "AQAAAAIAAYagAAAAEHLMPx6heWaF+kc+hVFRuU64s/kvccywfuEkQsOrFXKyrx0UAJ88vXuE9X8wOCXlOA==", "1234567890", false, "Admin", "70a830c1-45d4-4063-9477-d4b889dca57f", false, "admin@bbms.com" });
+                columns: new[] { "Id", "AccessFailedCount", "CompanyId", "ConcurrencyStamp", "CreatedBy", "CreatedDate", "Email", "EmailConfirmed", "FullName", "Image", "LockoutEnabled", "LockoutEnd", "ModifiedBy", "ModifiedDate", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Role", "SecurityStamp", "Status", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, null, "d248484c-0341-42d7-a2d6-6e30fe11c699", null, new DateTime(2024, 6, 19, 4, 16, 35, 513, DateTimeKind.Utc).AddTicks(5644), "admin@bbms.com", false, "System Admin", null, false, null, null, new DateTime(2024, 6, 19, 4, 16, 35, 513, DateTimeKind.Utc).AddTicks(5652), null, "ADMIN@BBMS.COM", "AQAAAAIAAYagAAAAEJz3Mq4rI+VgjsR2aoDRzD2woxPeoHWLxpPL2iGnOK+zj3rk2lcevJp+t0jxitkbjQ==", "1234567890", false, "Admin", "37d137ef-d1f3-4ea9-8397-0999dd0baddb", 0, false, "admin@bbms.com" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -686,6 +724,11 @@ namespace SWD.BBMS.Repositories.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CourtGroupActivity_WeekdayActivityId",
+                table: "CourtGroupActivity",
+                column: "WeekdayActivityId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CourtSlot_CourtGroupId",
                 table: "CourtSlot",
                 column: "CourtGroupId");
@@ -767,6 +810,9 @@ namespace SWD.BBMS.Repositories.Migrations
                 name: "ContactPoint");
 
             migrationBuilder.DropTable(
+                name: "CourtGroupActivity");
+
+            migrationBuilder.DropTable(
                 name: "Feedback");
 
             migrationBuilder.DropTable(
@@ -783,6 +829,9 @@ namespace SWD.BBMS.Repositories.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "WeekdayActivity");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

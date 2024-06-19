@@ -6,6 +6,8 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using SWD.BBMS.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace SWD.BBMS.Services
 {
@@ -14,11 +16,17 @@ namespace SWD.BBMS.Services
 
         private readonly IConfiguration configuration;
 
-       // private readonly SymmetricSecurityKey _symmetricSecurityKey;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public JwtService(IConfiguration configuration)
+        private readonly UserManager<User> userManager;
+
+        // private readonly SymmetricSecurityKey _symmetricSecurityKey;
+
+        public JwtService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager)
         {
             this.configuration = configuration;
+            this.httpContextAccessor = httpContextAccessor;
+            this.userManager = userManager;
             //_symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SigningKey"]));
         }
 
@@ -49,6 +57,21 @@ namespace SWD.BBMS.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
+        }
+
+        public async Task<string> GetUserId()
+        {
+            var userId = "";
+            var username = httpContextAccessor?.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (username != null)
+            {
+                var user = await userManager.FindByNameAsync(username);
+                if (user != null)
+                {
+                    userId = user.Id;
+                }
+            }
+            return userId;
         }
     }
 }

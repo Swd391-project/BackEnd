@@ -26,17 +26,17 @@ namespace SWD.BBMS.Repositories.Entities
         public TimeOnly? CheckinTime { get; set; }
         public TimeOnly? CheckoutTime { get; set; }
 
-        public int? CheckinBy { get; set; }
+        public string? CheckinBy { get; set; }
 
-        public int? CheckoutBy { get; set; }
+        public string? CheckoutBy { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
-        public int CreatedBy { get; set; }
+        public string CreatedBy { get; set; }
 
         public DateTime ModifiedDate { get; set; }
 
-        public int ModifiedBy { get; set; }
+        public string ModifiedBy { get; set; }
 
         public Customer Customer { get; set; }
 

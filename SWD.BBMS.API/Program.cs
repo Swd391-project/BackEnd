@@ -12,6 +12,7 @@ using SWD.BBMS.Repositories.Interfaces;
 using SWD.BBMS.Repositories;
 using BadmintonRentalSWD;
 using SWD.BBMS.API.NamingPolicy;
+using SWD.BBMS.API.JsonConverter;
 
 var MyAllowSpecificOrigins = "myAllowSpecificOrigins";
 
@@ -23,6 +24,7 @@ builder.Services.AddControllers();
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.PropertyNamingPolicy = new KebabCaseNamingPolicy();
+    options.JsonSerializerOptions.Converters.Add(new TimeOnlyJsonConverter());
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -67,6 +69,8 @@ builder.Services.AddScoped<ICourtGroupRepository, CourtGroupRepository>();
 builder.Services.AddScoped<ICourtGroupService, CourtGroupService>();
 builder.Services.AddScoped<ICourtRepository, CourtRepository>();
 builder.Services.AddScoped<ICourtService, CourtService>();
+builder.Services.AddScoped<IWeekdayActivityRepository, WeekdayActivityRepository>();
+builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 
 
 builder.Services.AddDbContext<BBMSDbContext>();

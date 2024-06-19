@@ -22,12 +22,18 @@ namespace SWD.BBMS.Services.Mappers
                 //.ForMember(dest => dest.FlexibleBooking, opt => opt.MapFrom(src => src.FlexibleBooking))
                 ;
             CreateMap<User, UserModel>()
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapUserStatusToUserModelStatus(src.Status)));
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToUserModelStatus(src.Status)));
             CreateMap<UserModel, User>();
-            
+            //CreateMap<CourtGroupModel, CourtGroup>();
+            CreateMap<CourtGroup, CourtGroupModel>().ReverseMap();
+            //CreateMap<CourtModel, Court>();
+            CreateMap<Court, CourtModel>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToCourtModelStatus(src.Status)))
+                .ReverseMap()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToCourtStatus(src.Status)));
         }
 
-        private UserModelStatus MapUserStatusToUserModelStatus(UserStatus status)
+        private UserModelStatus MapToUserModelStatus(UserStatus status)
         {
             switch (status)
             {
@@ -39,6 +45,72 @@ namespace SWD.BBMS.Services.Mappers
                     return UserModelStatus.Closed;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled user status.");
+            }
+        }
+
+        private ActivityModelStatus MapToActivityModelStatus(ActivityStatus status)
+        {
+            switch (status)
+            {
+                case ActivityStatus.Open:
+                    return ActivityModelStatus.Open;
+                case ActivityStatus.Close:
+                    return ActivityModelStatus.Close;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled activity status.");
+            }
+        }
+
+        private WeekdayModel MapToWeekdayModel(Weekday status)
+        {
+            switch (status)
+            {
+                case Weekday.Monday:
+                    return WeekdayModel.Monday;
+                case Weekday.Tuesday:
+                    return WeekdayModel.Tuesday;
+                case Weekday.Wednesday:
+                    return WeekdayModel.Wednesday;
+                case Weekday.Thursday:
+                    return WeekdayModel.Thursday;
+                case Weekday.Friday:
+                    return WeekdayModel.Friday;
+                case Weekday.Saturday:
+                    return WeekdayModel.Saturday;
+                case Weekday.Sunday:
+                    return WeekdayModel.Sunday;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled weekday.");
+            }
+        }
+
+        private CourtModelStatus MapToCourtModelStatus(CourtStatus status)
+        {
+            switch (status)
+            {
+                case CourtStatus.Available:
+                    return CourtModelStatus.Available;
+                case CourtStatus.Occupied:
+                    return CourtModelStatus.Occupied;
+                case CourtStatus.Closed:
+                    return CourtModelStatus.Closed;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled court status.");
+            }
+        }
+
+        private CourtStatus MapToCourtStatus(CourtModelStatus status)
+        {
+            switch (status)
+            {
+                case CourtModelStatus.Available:
+                    return CourtStatus.Available;
+                case CourtModelStatus.Occupied:
+                    return CourtStatus.Occupied;
+                case CourtModelStatus.Closed:
+                    return CourtStatus.Closed;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled court status.");
             }
         }
     }

@@ -7,15 +7,17 @@ namespace SWD.BBMS.Services.BusinessModels
     {
         public int Id { get; set; }
 
-        public string Status { get; set; }
+        public CourtModelStatus Status { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
-        public int CreatedBy { get; set; }
+        public string CreatedBy { get; set; }
 
         public DateTime ModifiedDate { get; set; }
 
-        public int ModifiedBy { get; set; }
+        public string ModifiedBy { get; set; }
+
+        public int CourtGroupId { get; set; }
 
         public CourtGroupModel CourtGroup { get; set; }
 

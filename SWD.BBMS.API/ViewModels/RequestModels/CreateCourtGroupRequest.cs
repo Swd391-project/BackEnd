@@ -13,14 +13,6 @@ namespace SWD.BBMS.API.ViewModels.RequestModels
         [MinLength(3)]
         public string Address { get; set; }
 
-        public float? Rate { get; set; }
-
-        [Required]
-        public string FromDay { get; set; }
-
-        [Required]
-        public string ToDay { get; set; }
-
         [Required]
         public TimeOnly StartTime { get; set; }
 

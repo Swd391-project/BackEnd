@@ -12,8 +12,8 @@ using SWD.BBMS.Repositories.Data;
 namespace SWD.BBMS.Repositories.Migrations
 {
     [DbContext(typeof(BBMSDbContext))]
-    [Migration("20240611153339_created and modified date for admin")]
-    partial class createdandmodifieddateforadmin
+    [Migration("20240619084412_Created by and modified from int to string")]
+    partial class Createdbyandmodifiedfrominttostring
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,25 +53,25 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0ab2180a-0360-4aeb-94fd-c2e649d6ce5f",
+                            Id = "33dda32c-431f-427d-b26a-2bacd8e806d3",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "aee6eca7-9f6b-4a93-ada1-26f6bee2a93a",
+                            Id = "075015bd-9783-4bc1-b386-e6e85e407d3e",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "e8ee408e-6c51-4a96-9c17-cb7c8d88b221",
+                            Id = "2e8aca06-9dfb-4f5d-93ad-8da5461e0606",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "27fd46a7-da07-489d-8af5-308a954c20fb",
+                            Id = "6d53bcb2-0c12-44b4-98bd-a010610a76a8",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -194,14 +194,14 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<int?>("BookingTypeId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("CheckinBy")
-                        .HasColumnType("integer");
+                    b.Property<string>("CheckinBy")
+                        .HasColumnType("text");
 
                     b.Property<TimeOnly?>("CheckinTime")
                         .HasColumnType("time without time zone");
 
-                    b.Property<int?>("CheckoutBy")
-                        .HasColumnType("integer");
+                    b.Property<string>("CheckoutBy")
+                        .HasColumnType("text");
 
                     b.Property<TimeOnly?>("CheckoutTime")
                         .HasColumnType("time without time zone");
@@ -213,11 +213,14 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<int>("CourtId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("integer");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("integer");
@@ -231,11 +234,14 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<TimeOnly>("FromTime")
                         .HasColumnType("time without time zone");
 
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("integer");
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
 
                     b.Property<string>("Note")
                         .HasColumnType("text");
@@ -295,20 +301,26 @@ namespace SWD.BBMS.Repositories.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("integer");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("integer");
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -379,21 +391,26 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<int>("CourtGroupId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Status")
+                    b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -420,24 +437,26 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<string>("CoverImage")
                         .HasColumnType("text");
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("integer");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
 
                     b.Property<TimeOnly>("EndTime")
                         .HasColumnType("time without time zone");
 
-                    b.Property<string>("FromDay")
+                    b.Property<string>("ModifiedBy")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -452,15 +471,29 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<TimeOnly>("StartTime")
                         .HasColumnType("time without time zone");
 
-                    b.Property<string>("ToDay")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
                     b.ToTable("CourtGroup");
+                });
+
+            modelBuilder.Entity("SWD.BBMS.Repositories.Entities.CourtGroupActivity", b =>
+                {
+                    b.Property<int>("CourtGroupId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("WeekdayActivityId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ActivityStatus")
+                        .HasColumnType("integer");
+
+                    b.HasKey("CourtGroupId", "WeekdayActivityId");
+
+                    b.HasIndex("WeekdayActivityId");
+
+                    b.ToTable("CourtGroupActivity");
                 });
 
             modelBuilder.Entity("SWD.BBMS.Repositories.Entities.CourtSlot", b =>
@@ -474,20 +507,26 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<int>("CourtGroupId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("integer");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
 
                     b.Property<TimeOnly>("FromTime")
                         .HasColumnType("time without time zone");
 
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("integer");
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
 
                     b.Property<long>("Price")
                         .HasColumnType("bigint");
@@ -541,6 +580,20 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<int>("CourtGroupId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<float>("Rate")
                         .HasColumnType("real");
 
@@ -564,8 +617,9 @@ namespace SWD.BBMS.Repositories.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("integer");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
@@ -579,8 +633,9 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<DateOnly>("IssuedDate")
                         .HasColumnType("date");
 
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("integer");
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
@@ -641,8 +696,9 @@ namespace SWD.BBMS.Repositories.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("integer");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
@@ -654,8 +710,9 @@ namespace SWD.BBMS.Repositories.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("integer");
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
@@ -702,6 +759,20 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<int>("CourtGroupId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -735,16 +806,15 @@ namespace SWD.BBMS.Repositories.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("integer");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
@@ -764,10 +834,10 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("integer");
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
 
-                    b.Property<DateTime>("ModifiedDate")
+                    b.Property<DateTime?>("ModifiedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
@@ -780,15 +850,10 @@ namespace SWD.BBMS.Repositories.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("PhoneNumberConfirmed")
@@ -800,6 +865,9 @@ namespace SWD.BBMS.Repositories.Migrations
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
@@ -826,25 +894,39 @@ namespace SWD.BBMS.Repositories.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6487dc1d-4aeb-4ad2-b01e-3a79e55e7039",
-                            CreatedBy = 0,
-                            CreatedDate = new DateTime(2024, 6, 11, 15, 33, 39, 415, DateTimeKind.Utc).AddTicks(4998),
+                            ConcurrencyStamp = "0082c443-07d9-4053-b671-3f1b3712ae98",
+                            CreatedDate = new DateTime(2024, 6, 19, 8, 44, 11, 941, DateTimeKind.Utc).AddTicks(1028),
                             Email = "admin@bbms.com",
                             EmailConfirmed = false,
                             FullName = "System Admin",
                             LockoutEnabled = false,
-                            ModifiedBy = 0,
-                            ModifiedDate = new DateTime(2024, 6, 11, 15, 33, 39, 415, DateTimeKind.Utc).AddTicks(5003),
+                            ModifiedDate = new DateTime(2024, 6, 19, 8, 44, 11, 941, DateTimeKind.Utc).AddTicks(1035),
                             NormalizedUserName = "ADMIN@BBMS.COM",
-                            Password = "Admin@123",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGiYTzYm1IkH175KWlIho8aeKyeqbcqqgA53nV0TatL53bTkxtMpVqDEyY4T4evN8Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEL1GHle+vzTvdFyEk5OB6iC7oIDPY3Ycua6KK5Lwl47lS1AqPfBJQVQQYdf3VJJx0g==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
                             Role = "Admin",
-                            SecurityStamp = "aca309df-aa22-4c6b-8cc3-33bfdc663220",
+                            SecurityStamp = "093c23c4-2ac7-4369-b984-ecf6e0154b39",
+                            Status = 0,
                             TwoFactorEnabled = false,
                             UserName = "admin@bbms.com"
                         });
+                });
+
+            modelBuilder.Entity("SWD.BBMS.Repositories.Entities.WeekdayActivity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Weekday")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WeekdayActivity");
                 });
 
             modelBuilder.Entity("SWD.BBMS.Repositories.Entities.Withdraw", b =>
@@ -861,8 +943,9 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<int>("CompanyId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("integer");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
@@ -870,8 +953,9 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("integer");
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
@@ -1013,6 +1097,25 @@ namespace SWD.BBMS.Repositories.Migrations
                         .IsRequired();
 
                     b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("SWD.BBMS.Repositories.Entities.CourtGroupActivity", b =>
+                {
+                    b.HasOne("SWD.BBMS.Repositories.Entities.CourtGroup", "CourtGroup")
+                        .WithMany("CourtGroupActivities")
+                        .HasForeignKey("CourtGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SWD.BBMS.Repositories.Entities.WeekdayActivity", "WeekdayActivity")
+                        .WithMany("CourtGroupActivities")
+                        .HasForeignKey("WeekdayActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CourtGroup");
+
+                    b.Navigation("WeekdayActivity");
                 });
 
             modelBuilder.Entity("SWD.BBMS.Repositories.Entities.CourtSlot", b =>
@@ -1165,6 +1268,8 @@ namespace SWD.BBMS.Repositories.Migrations
                 {
                     b.Navigation("ContactPoints");
 
+                    b.Navigation("CourtGroupActivities");
+
                     b.Navigation("CourtSlots");
 
                     b.Navigation("Courts");
@@ -1201,6 +1306,11 @@ namespace SWD.BBMS.Repositories.Migrations
             modelBuilder.Entity("SWD.BBMS.Repositories.Entities.User", b =>
                 {
                     b.Navigation("Feedbacks");
+                });
+
+            modelBuilder.Entity("SWD.BBMS.Repositories.Entities.WeekdayActivity", b =>
+                {
+                    b.Navigation("CourtGroupActivities");
                 });
 #pragma warning restore 612, 618
         }

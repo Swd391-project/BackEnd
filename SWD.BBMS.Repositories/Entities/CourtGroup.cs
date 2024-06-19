@@ -16,10 +16,6 @@ namespace SWD.BBMS.Repositories.Entities
 
         public float? Rate { get; set; }
 
-        public string FromDay { get; set; }
-
-        public string ToDay { get; set; }
-
         public TimeOnly StartTime { get; set; }
 
         public TimeOnly EndTime { get; set; }
@@ -30,16 +26,17 @@ namespace SWD.BBMS.Repositories.Entities
 
         public DateTime CreatedDate { get; set; }
 
-        public int CreatedBy { get; set; }
+        public string CreatedBy { get; set; }
 
         public DateTime ModifiedDate { get; set; }
 
-        public int ModifiedBy { get; set; }
+        public string ModifiedBy { get; set; }
 
         public ICollection<Court>? Courts { get; set; }
 
         public ICollection<CourtSlot>? CourtSlots { get; set; }
 
+        public int CompanyId { get; set; }
         public Company Company { get; set; }
 
         public ICollection<ContactPoint>? ContactPoints { get; set; }
@@ -47,5 +44,7 @@ namespace SWD.BBMS.Repositories.Entities
         public ICollection<Feedback>? Feedbacks { get; set; }
 
         public ICollection<Service>? Services { get; set; }
+
+        public ICollection<CourtGroupActivity>? CourtGroupActivities { get; set; }
     }
 }

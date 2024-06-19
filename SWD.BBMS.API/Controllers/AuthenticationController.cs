@@ -38,14 +38,16 @@ namespace SWD.BBMS.API.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-
+                var createdBy = await jwtService.GetUserId();
                 var user = new User
                 {
                     FullName = register.FullName,
                     UserName = register.Email.IsNullOrEmpty() ? register.PhoneNumber : register.Email,
                     Email = register.Email,
                     PhoneNumber = register.PhoneNumber,
-                    Role = register.Role
+                    Role = register.Role,
+                    CreatedBy = createdBy,
+                    ModifiedBy = createdBy
                 };
 
                 var createdUser = await userManager.CreateAsync(user, register.Password);

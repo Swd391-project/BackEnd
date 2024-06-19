@@ -25,5 +25,22 @@ namespace SWD.BBMS.Repositories
             }
             return courts;
         }
+
+        public async Task<bool> SaveCourt(Court court)
+        {
+            var result = false;
+            try
+            {
+                using var dbContext = new BBMSDbContext();
+                await dbContext.Courts.AddAsync(court);
+                await dbContext.SaveChangesAsync();
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return result;
+        }
     }
 }

@@ -11,5 +11,7 @@ namespace SWD.BBMS.Services.Interfaces
     public interface ICourtService
     {
         Task<PagedList<CourtModel>> GetCourts(int pageNumber, int pageSize);
+
+        Task<bool> SaveCourt(CourtModel model);
     }
 }

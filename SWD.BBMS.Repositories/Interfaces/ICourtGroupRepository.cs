@@ -10,5 +10,11 @@ namespace SWD.BBMS.Repositories.Interfaces
     public interface ICourtGroupRepository
     {
         Task<PagedList<CourtGroup>> GetCourtGroups(int pageNumber, int pageSize);
+
+        Task<bool> SaveCourtGroup(CourtGroup courtGroup);
+
+        Task<CourtGroup?> FindCourtGroup(int id);
+
+        Task<CourtGroup?> GetCourtGroupById(int id);
     }
 }
