@@ -15,11 +15,11 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public BookingModel Booking { get; set; }
 
-        //public int CompanyId { get; set; }
+        public int CompanyId { get; set; }
 
         public CompanyModel Company { get; set; }
 
-        //public int PaymentMethodId { get; set; }
+        public int PaymentMethodId { get; set; }
 
         public PaymentMethodModel PaymentMethod { get; set; }
     }

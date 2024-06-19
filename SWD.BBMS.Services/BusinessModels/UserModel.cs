@@ -6,15 +6,11 @@ namespace SWD.BBMS.Services.BusinessModels
 {
     public class UserModel : IdentityUser
     {
-        //public string Id { get; set; }
-
         public string FullName { get; set; }
 
         public string? Email { get; set; }
 
         public string? PhoneNumber { get; set; }
-
-        //public string Password { get; set; }
 
         public string Role { get; set; }
 
@@ -29,6 +25,8 @@ namespace SWD.BBMS.Services.BusinessModels
         public DateTime? ModifiedDate { get; set; }
 
         public string? ModifiedBy { get; set; }
+
+        public int? CompanyId { get; set; }
 
         public CompanyModel? Company { get; set; }
 

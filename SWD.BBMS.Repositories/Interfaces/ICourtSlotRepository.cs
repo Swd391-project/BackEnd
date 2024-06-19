@@ -7,12 +7,8 @@ using System.Threading.Tasks;
 
 namespace SWD.BBMS.Repositories.Interfaces
 {
-    public interface ICourtRepository
+    public interface ICourtSlotRepository
     {
-        Task<PagedList<Court>> GetCourts(int pageNumber, int pageSize);
-
-        Task<Court?> FindCourt(int id);
-
-        Task<bool> SaveCourt(Court court);  
+        Task<List<CourtSlot>> GetAvailableCourtSlotsByCourtGroupId(int courtGroupId);
     }
 }

@@ -71,6 +71,10 @@ builder.Services.AddScoped<ICourtRepository, CourtRepository>();
 builder.Services.AddScoped<ICourtService, CourtService>();
 builder.Services.AddScoped<IWeekdayActivityRepository, WeekdayActivityRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<ICourtSlotRepository, CourtSlotRepository>();
 
 
 builder.Services.AddDbContext<BBMSDbContext>();

@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 
 namespace SWD.BBMS.Repositories.Interfaces
 {
-    public interface ICourtRepository
+    public interface ICustomerRepository
     {
-        Task<PagedList<Court>> GetCourts(int pageNumber, int pageSize);
+        Task<Customer?> FindCustomer(int customerId);
 
-        Task<Court?> FindCourt(int id);
-
-        Task<bool> SaveCourt(Court court);  
+        Task<Customer?> GetCustomerByPhoneNumber(string phoneNumber);
     }
 }

@@ -19,6 +19,8 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public string ModifiedBy { get; set; }
 
+        public int CompanyId { get; set; }
+
         public CompanyModel Company { get; set; }
     }
 }

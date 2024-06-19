@@ -117,10 +117,10 @@ namespace SWD.BBMS.Repositories.Data
 
             modelBuilder.Entity<User>().HasData(user);
             
-                modelBuilder.Entity<Booking>()
-                .HasOne(b => b.Payment)
-                .WithOne(p => p.Booking)
-                .HasForeignKey<Payment>(p => p.BookingId);
+            modelBuilder.Entity<Booking>()
+            .HasOne(b => b.Payment)
+            .WithOne(p => p.Booking)
+            .HasForeignKey<Payment>(p => p.BookingId);
             modelBuilder.Entity<Payment>()
                 .HasIndex(p => p.BookingId)
                 .IsUnique();
@@ -199,6 +199,96 @@ namespace SWD.BBMS.Repositories.Data
                 .HasOne(c => c.CourtGroup)
                 .WithMany(cg => cg.Courts)
                 .HasForeignKey(c => c.CourtGroupId);
+
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.BookingType)
+                .WithMany(bt => bt.Bookings)
+                .HasForeignKey(b => b.BookingTypeId);
+
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.Customer)
+                .WithMany(c => c.Bookings)
+                .HasForeignKey(b => b.CustomerId);
+
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.Court)
+                .WithMany(c => c.Bookings)
+                .HasForeignKey(b => b.CourtId);
+
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.FlexibleBooking)
+                .WithMany(fb => fb.Bookings)
+                .HasForeignKey(b => b.FlexibleBookingId);
+
+            modelBuilder.Entity<BookingDetail>()
+                .HasKey(bd => new {bd.CourtSlotId, bd.BookingId});
+            modelBuilder.Entity<BookingDetail>()
+                .HasOne(bd => bd.CourtSlot)
+                .WithMany(cs => cs.BookingDetails)
+                .HasForeignKey(bd => bd.CourtSlotId);
+            modelBuilder.Entity<BookingDetail>()
+                .HasOne(bd => bd.Booking)
+                .WithMany(b => b.BookingDetails)
+                .HasForeignKey(bd => bd.BookingId);
+
+            modelBuilder.Entity<Price>()
+                .HasKey(p => new {p.CourtSlotId, p.BookingTypeId});
+            modelBuilder.Entity<Price>()
+                .HasOne(p => p.CourtSlot)
+                .WithMany(cs => cs.Prices)
+                .HasForeignKey(p =>  p.CourtSlotId);
+            modelBuilder.Entity<Price>()
+                .HasOne(p => p.BookingType)
+                .WithMany(bt => bt.Prices)
+                .HasForeignKey(p => p.BookingTypeId);
+
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Company)
+                .WithMany(c => c.Users)
+                .HasForeignKey(u => u.CompanyId);
+
+            modelBuilder.Entity<Feedback>()
+                .HasOne(f => f.CourtGroup)
+                .WithMany(cg => cg.Feedbacks)
+                .HasForeignKey(f => f.CourtGroupId);
+            modelBuilder.Entity<Feedback>()
+                .HasOne(f => f.User)
+                .WithMany(u => u.Feedbacks)
+                .HasForeignKey(f => f.UserId);
+
+            modelBuilder.Entity<Withdraw>()
+                .HasOne(w => w.Company)
+                .WithMany(c => c.Withdraws)
+                .HasForeignKey(w => w.CompanyId);
+
+            modelBuilder.Entity<Payment>()
+                .HasOne(p => p.PaymentMethod)
+                .WithMany(pm => pm.Payments)
+                .HasForeignKey(p => p.PaymentMethodId);
+            modelBuilder.Entity<Payment>()
+                .HasOne(p => p.Company)
+                .WithMany(c => c.Payments)
+                .HasForeignKey(p => p.CompanyId);
+
+            modelBuilder.Entity<ContactPoint>()
+                .HasOne(cp => cp.CourtGroup)
+                .WithMany(cg => cg.ContactPoints)
+                .HasForeignKey(cp => cp.CourtGroupId);
+
+            modelBuilder.Entity<CourtSlot>()
+                .HasOne(cs => cs.CourtGroup)
+                .WithMany(cg => cg.CourtSlots)
+                .HasForeignKey(cs => cs.CourtGroupId);
+
+            modelBuilder.Entity<FlexibleBooking>()
+                .HasOne(fb => fb.Customer)
+                .WithMany(c => c.FlexibleBookings)
+                .HasForeignKey(fb => fb.CustomerId);
+
+            modelBuilder.Entity<Service>()
+                .HasOne(s => s.CourtGroup)
+                .WithMany(cg => cg.Services)
+                .HasForeignKey(s => s.CourtGroupId);
 
         }
     }

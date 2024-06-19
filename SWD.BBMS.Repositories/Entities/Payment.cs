@@ -18,11 +18,11 @@ namespace SWD.BBMS.Repositories.Entities
 
         public Booking Booking { get; set; }
 
-        //public int CompanyId { get; set; }
+        public int CompanyId { get; set; }
 
         public Company Company { get; set; }
 
-        //public int PaymentMethodId { get; set; }
+        public int PaymentMethodId { get; set; }
 
         public PaymentMethod PaymentMethod { get; set; }
     }

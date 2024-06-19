@@ -26,6 +26,8 @@ namespace SWD.BBMS.Repositories.Entities
 
         public string ModifiedBy { get; set; }
 
+        public int CustomerId { get; set; }
+
         public Customer Customer { get; set; }
 
         public ICollection<Booking>? Bookings { get; set; }

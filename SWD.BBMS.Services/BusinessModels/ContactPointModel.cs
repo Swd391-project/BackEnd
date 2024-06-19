@@ -11,6 +11,7 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public ContactModelType ContactType { get; set; }
 
+        public int CourtGroupId { get; set; }
         public CourtGroupModel CourtGroup { get; set; }
     }
 }

@@ -37,6 +37,8 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public List<CourtSlotModel>? CourtSlots { get; set; }
 
+        public int CompanyId { get; set; }
+
         public CompanyModel Company { get; set; }
 
         public List<ContactPointModel>? ContactPoints { get; set; }

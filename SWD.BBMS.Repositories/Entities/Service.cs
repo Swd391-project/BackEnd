@@ -24,6 +24,8 @@ namespace SWD.BBMS.Repositories.Entities
 
         public string ModifiedBy { get; set; }
 
+        public int CourtGroupId {  get; set; }
+        
         public CourtGroup CourtGroup { get; set; }
     }
 }

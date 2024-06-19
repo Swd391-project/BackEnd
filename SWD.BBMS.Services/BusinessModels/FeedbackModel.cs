@@ -19,7 +19,11 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public string ModifiedBy { get; set; }
 
+        public int CourtGroupId { get; set; }
+
         public CourtGroupModel CourtGroup { get; set; }
+
+        public string UserId { get; set; }
 
         public UserModel User { get; set; }
     }

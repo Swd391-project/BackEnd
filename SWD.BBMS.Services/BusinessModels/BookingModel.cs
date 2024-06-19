@@ -7,15 +7,13 @@ namespace SWD.BBMS.Services.BusinessModels
     {
         public int Id { get; set; }
 
-        public string Code { get; set; }
+        public string? Code { get; set; }
 
         public DateOnly Date { get; set; }
 
         public string? Note { get; set; }
 
-        public string Status { get; set; }
-
-        public string Type { get; set; }
+        public BookingModelStatus Status { get; set; }
 
         public TimeOnly FromTime { get; set; }
 
@@ -35,13 +33,23 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public string ModifiedBy { get; set; }
 
+        public int BookingTypeId { get; set; }
+
+        public BookingTypeModel BookingType { get; set; }
+
+        public int CustomerId { get; set; }
+
         public CustomerModel Customer { get; set; }
 
         public List<BookingDetailModel> BookingDetails { get; set; }
 
         public PaymentModel? Payment { get; set; }
 
+        public int CourtId { get; set; }
+
         public CourtModel Court { get; set; }
+
+        public int? FlexibleBookingId { get; set; }
 
         public FlexibleBookingModel? FlexibleBooking { get; set; }
 

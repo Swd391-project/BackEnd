@@ -11,6 +11,12 @@ namespace SWD.BBMS.Repositories
 {
     public class CourtRepository : ICourtRepository
     {
+        public async Task<Court?> FindCourt(int id)
+        {
+            using var dbContext = new BBMSDbContext();
+            return await dbContext.Courts.FindAsync(id);
+        }
+
         public async Task<PagedList<Court>> GetCourts(int pageNumber, int pageSize)
         {
             var courts = new PagedList<Court>();

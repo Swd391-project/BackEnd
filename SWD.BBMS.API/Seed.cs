@@ -24,7 +24,6 @@ namespace BadmintonRentalSWD
             {
                 var paymentMethod = new PaymentMethod
                 {
-                    //Id = 1,
                     MethodName = "Banking",
                     Description = "ashfksajhfskf",
                     CreatedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9",
@@ -59,6 +58,36 @@ namespace BadmintonRentalSWD
                     Email = "pack@bbms.com"
                 };
                 dbContext.Companies.Add(company);
+                dbContext.SaveChanges();
+            }
+            if (!dbContext.BookingTypes.Any())
+            {
+                var bookingType1 = new BookingType
+                {
+                    Name = "Daily",
+                    Description = "This type allows users to reserve a badminton court for a single day.",
+                    CreatedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                    ModifiedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9"
+                };
+                dbContext.BookingTypes.Add(bookingType1);
+
+                var bookingType2 = new BookingType
+                {
+                    Name = "Fixed",
+                    Description = "This booking type is for users who want to secure a court over a prolonged period, typically for a season or several months.",
+                    CreatedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                    ModifiedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9"
+                };
+                dbContext.BookingTypes.Add(bookingType2);
+
+                var bookingType3 = new BookingType
+                {
+                    Name = "Flexible",
+                    Description = "In this model, users purchase a bundle of hours upfront and can use these hours to book court time flexibly.",
+                    CreatedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                    ModifiedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9"
+                };
+                dbContext.BookingTypes.Add(bookingType3);
                 dbContext.SaveChanges();
             }
         }

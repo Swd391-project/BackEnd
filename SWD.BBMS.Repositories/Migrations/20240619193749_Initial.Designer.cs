@@ -12,7 +12,7 @@ using SWD.BBMS.Repositories.Data;
 namespace SWD.BBMS.Repositories.Migrations
 {
     [DbContext(typeof(BBMSDbContext))]
-    [Migration("20240619104053_Initial")]
+    [Migration("20240619193749_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -53,25 +53,25 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "4dbe0ec6-78db-41fe-ad71-7be25cc7c33f",
+                            Id = "c36a8f36-ad83-437b-8a53-242691ce8c4d",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "da12a4f9-8727-4c24-b455-3430a71f3b48",
+                            Id = "cb305145-20ed-4132-bc4b-94861badc5f7",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "a39824fd-74cd-4197-99dd-5f52a94dced5",
+                            Id = "f647500a-7d6e-4dec-8717-de9b6f8844a5",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "ad78a9cf-2651-4c39-91f8-d002fb0f695c",
+                            Id = "dbdb6d51-2d25-4bed-aef0-573b6e236936",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -191,7 +191,7 @@ namespace SWD.BBMS.Repositories.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("BookingTypeId")
+                    b.Property<int>("BookingTypeId")
                         .HasColumnType("integer");
 
                     b.Property<string>("CheckinBy")
@@ -207,7 +207,6 @@ namespace SWD.BBMS.Repositories.Migrations
                         .HasColumnType("time without time zone");
 
                     b.Property<string>("Code")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("CourtId")
@@ -246,16 +245,11 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("text");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.Property<TimeOnly>("ToTime")
                         .HasColumnType("time without time zone");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -272,23 +266,15 @@ namespace SWD.BBMS.Repositories.Migrations
 
             modelBuilder.Entity("SWD.BBMS.Repositories.Entities.BookingDetail", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("CourtSlotId")
                         .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("BookingId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("CourtSlotId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
+                    b.HasKey("CourtSlotId", "BookingId");
 
                     b.HasIndex("BookingId");
-
-                    b.HasIndex("CourtSlotId");
 
                     b.ToTable("BookingDetail");
                 });
@@ -371,6 +357,9 @@ namespace SWD.BBMS.Repositories.Migrations
                         .HasColumnType("text");
 
                     b.Property<int>("CourtGroupId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Type")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -579,10 +568,6 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<int>("CourtGroupId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -597,6 +582,7 @@ namespace SWD.BBMS.Repositories.Migrations
                         .HasColumnType("real");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -723,11 +709,8 @@ namespace SWD.BBMS.Repositories.Migrations
 
             modelBuilder.Entity("SWD.BBMS.Repositories.Entities.Price", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("CourtSlotId")
                         .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("BookingTypeId")
                         .HasColumnType("integer");
@@ -735,14 +718,9 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<long>("Cost")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("CourtSlotId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
+                    b.HasKey("CourtSlotId", "BookingTypeId");
 
                     b.HasIndex("BookingTypeId");
-
-                    b.HasIndex("CourtSlotId");
 
                     b.ToTable("Price");
                 });
@@ -893,19 +871,19 @@ namespace SWD.BBMS.Repositories.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ffa312a8-0112-441a-aaee-a4bbc63c8ca3",
-                            CreatedDate = new DateTime(2024, 6, 19, 10, 40, 53, 230, DateTimeKind.Utc).AddTicks(8765),
+                            ConcurrencyStamp = "2a77681f-4ee6-4b57-9085-0454fdd75315",
+                            CreatedDate = new DateTime(2024, 6, 19, 19, 37, 49, 717, DateTimeKind.Utc).AddTicks(219),
                             Email = "admin@bbms.com",
                             EmailConfirmed = false,
                             FullName = "System Admin",
                             LockoutEnabled = false,
-                            ModifiedDate = new DateTime(2024, 6, 19, 10, 40, 53, 230, DateTimeKind.Utc).AddTicks(8772),
+                            ModifiedDate = new DateTime(2024, 6, 19, 19, 37, 49, 717, DateTimeKind.Utc).AddTicks(232),
                             NormalizedUserName = "ADMIN@BBMS.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKZMXET0ScuVYuileDYcOBsBLfL0RqzzA7WtgPDCoWegmaM7o/ZRkK2HI6ncBXMmEQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEKZyIYK9hfdbiCxgTLp54TWgPX8DLJf9iWBTZCeDyHuFnBWUC5whQLsSNJ5Wau5Ww==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
                             Role = "Admin",
-                            SecurityStamp = "3665fa55-4864-4171-badf-d48a5914a2e0",
+                            SecurityStamp = "8df2c98c-b66a-4ea5-a51e-b101ad784bcd",
                             Status = 0,
                             TwoFactorEnabled = false,
                             UserName = "admin@bbms.com"
@@ -1019,9 +997,11 @@ namespace SWD.BBMS.Repositories.Migrations
 
             modelBuilder.Entity("SWD.BBMS.Repositories.Entities.Booking", b =>
                 {
-                    b.HasOne("SWD.BBMS.Repositories.Entities.BookingType", null)
+                    b.HasOne("SWD.BBMS.Repositories.Entities.BookingType", "BookingType")
                         .WithMany("Bookings")
-                        .HasForeignKey("BookingTypeId");
+                        .HasForeignKey("BookingTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SWD.BBMS.Repositories.Entities.Court", "Court")
                         .WithMany("Bookings")
@@ -1038,6 +1018,8 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.HasOne("SWD.BBMS.Repositories.Entities.FlexibleBooking", "FlexibleBooking")
                         .WithMany("Bookings")
                         .HasForeignKey("FlexibleBookingId");
+
+                    b.Navigation("BookingType");
 
                     b.Navigation("Court");
 
@@ -1138,7 +1120,9 @@ namespace SWD.BBMS.Repositories.Migrations
 
                     b.HasOne("SWD.BBMS.Repositories.Entities.User", "User")
                         .WithMany("Feedbacks")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("CourtGroup");
 

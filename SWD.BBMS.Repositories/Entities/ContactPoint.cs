@@ -14,6 +14,8 @@ namespace SWD.BBMS.Repositories.Entities
 
         public ContactType Type { get; set; }
 
+        public int CourtGroupId { get; set; }
+
         public CourtGroup CourtGroup { get; set; }
     }
 }

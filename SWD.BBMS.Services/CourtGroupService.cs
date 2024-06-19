@@ -74,15 +74,16 @@ namespace SWD.BBMS.Services
                 //Court slots
                 courtGroup.CourtSlots = new List<CourtSlot>();
                 var time = new TimeOnly(0, 0);
-                var closeTime = new TimeOnly(23, 0);
-                var openTime = new TimeOnly(5, 0);
+                var closeTime = courtGroupModel.EndTime == time ? new TimeOnly(23, 59) : courtGroupModel.EndTime;
+                var openTime = courtGroupModel.StartTime;
+                var status = SlotStatus.Available;
                 var price = (long)100000;
                 do
                 {
                     var courtSlot = new CourtSlot();
                     courtSlot.FromTime = time;
                     courtSlot.ToTime = time.AddMinutes(30);
-                    courtSlot.Status = (time >= closeTime && time < openTime) ? SlotStatus.Closed : SlotStatus.Available;
+                    courtSlot.Status = GetCourtSlotStatus(openTime, closeTime, time);
                     courtSlot.Price = price;
                     courtSlot.CreatedBy = courtGroupModel.CreatedBy;
                     courtSlot.ModifiedBy = courtGroupModel.ModifiedBy;
@@ -97,6 +98,21 @@ namespace SWD.BBMS.Services
                 throw new Exception(ex.Message);
             }
             return result;
+        }
+
+        private SlotStatus GetCourtSlotStatus(TimeOnly openTime, TimeOnly closeTime, TimeOnly time)
+        {
+            if (openTime == closeTime)
+                return SlotStatus.Available;
+            if (closeTime == new TimeOnly(0, 0))
+            {
+                closeTime = new TimeOnly(23, 59);
+            }
+            if (time >= openTime && time < closeTime)
+            {
+                return SlotStatus.Available;
+            }
+            return SlotStatus.Closed;
         }
     }
 }

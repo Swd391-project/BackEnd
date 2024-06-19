@@ -23,6 +23,8 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public string ModifiedBy { get; set; }
 
+        public int CourtGroupId { get; set; }
+
         public CourtGroupModel CourtGroup { get; set; }
 
         public List<BookingDetailModel>? BookingDetails { get; set; }

@@ -22,8 +22,8 @@ namespace SWD.BBMS.Services.Mappers
                 //.ForMember(dest => dest.FlexibleBooking, opt => opt.MapFrom(src => src.FlexibleBooking))
                 ;
             CreateMap<User, UserModel>()
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToUserModelStatus(src.Status)));
-            CreateMap<UserModel, User>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToUserModelStatus(src.Status)))
+                .ReverseMap()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToUserStatus(src.Status)));
             //CreateMap<CourtGroupModel, CourtGroup>();
             CreateMap<CourtGroup, CourtGroupModel>().ReverseMap();
@@ -47,6 +47,26 @@ namespace SWD.BBMS.Services.Mappers
                 .ForMember(dest => dest.Weekday, opt => opt.MapFrom(src => MapToWeekdayModel(src.Weekday)))
                 .ReverseMap()
                 .ForMember(dest => dest.Weekday, opt => opt.MapFrom(src => MapToWeekday(src.Weekday)));
+
+            CreateMap<Booking, BookingModel>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToBookingModelStatus(src.Status)))
+                .ReverseMap()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToBookingStatus(src.Status)));
+
+            CreateMap<Customer, CustomerModel>()
+                .ReverseMap();
+
+            CreateMap<BookingDetail, BookingDetailModel>()
+                .ReverseMap();
+
+            CreateMap<BookingType, BookingTypeModel>()
+                .ReverseMap();
+
+            CreateMap<Payment, PaymentModel>()
+                .ReverseMap();
+
+            CreateMap<FlexibleBooking, FlexibleBookingModel>()
+                .ReverseMap();
         }
 
         private UserModelStatus MapToUserModelStatus(UserStatus status)
@@ -204,6 +224,40 @@ namespace SWD.BBMS.Services.Mappers
                     return SlotStatus.Closed;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled court slot status.");
+            }
+        }
+
+        private BookingStatus MapToBookingStatus(BookingModelStatus status)
+        {
+            switch (status)
+            {
+                case BookingModelStatus.Confirmed:
+                    return BookingStatus.Confirmed;
+                case BookingModelStatus.Cancelled:
+                    return BookingStatus.Cancelled;
+                case BookingModelStatus.InProgress:
+                    return BookingStatus.InProgress;
+                case BookingModelStatus.Completed:
+                    return BookingStatus.Completed;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled booking status.");
+            }
+        }
+
+        private BookingModelStatus MapToBookingModelStatus(BookingStatus status)
+        {
+            switch (status)
+            {
+                case BookingStatus.Confirmed:
+                    return BookingModelStatus.Confirmed;
+                case BookingStatus.Cancelled:
+                    return BookingModelStatus.Cancelled;
+                case BookingStatus.InProgress:
+                    return BookingModelStatus.InProgress;
+                case BookingStatus.Completed:
+                    return BookingModelStatus.Completed;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled booking status.");
             }
         }
     }

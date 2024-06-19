@@ -341,6 +341,7 @@ namespace SWD.BBMS.Repositories.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Contact = table.Column<string>(type: "text", nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
                     CourtGroupId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -438,12 +439,11 @@ namespace SWD.BBMS.Repositories.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Content = table.Column<string>(type: "text", nullable: true),
                     Rate = table.Column<float>(type: "real", nullable: false),
-                    CreatedBy = table.Column<string>(type: "text", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ModifiedBy = table.Column<string>(type: "text", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CourtGroupId = table.Column<int>(type: "integer", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: true)
+                    UserId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -452,7 +452,8 @@ namespace SWD.BBMS.Repositories.Migrations
                         name: "FK_Feedback_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Feedback_CourtGroup_CourtGroupId",
                         column: x => x.CourtGroupId,
@@ -493,11 +494,10 @@ namespace SWD.BBMS.Repositories.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Code = table.Column<string>(type: "text", nullable: false),
+                    Code = table.Column<string>(type: "text", nullable: true),
                     Date = table.Column<DateOnly>(type: "date", nullable: false),
                     Note = table.Column<string>(type: "text", nullable: true),
-                    Status = table.Column<string>(type: "text", nullable: false),
-                    Type = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     FromTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     ToTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     CheckinTime = table.Column<TimeOnly>(type: "time without time zone", nullable: true),
@@ -509,9 +509,9 @@ namespace SWD.BBMS.Repositories.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
                     ModifiedBy = table.Column<string>(type: "text", nullable: false),
                     CustomerId = table.Column<int>(type: "integer", nullable: false),
+                    BookingTypeId = table.Column<int>(type: "integer", nullable: false),
                     CourtId = table.Column<int>(type: "integer", nullable: false),
-                    FlexibleBookingId = table.Column<int>(type: "integer", nullable: true),
-                    BookingTypeId = table.Column<int>(type: "integer", nullable: true)
+                    FlexibleBookingId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -520,7 +520,8 @@ namespace SWD.BBMS.Repositories.Migrations
                         name: "FK_Booking_BookingType_BookingTypeId",
                         column: x => x.BookingTypeId,
                         principalTable: "BookingType",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Booking_Court_CourtId",
                         column: x => x.CourtId,
@@ -544,15 +545,13 @@ namespace SWD.BBMS.Repositories.Migrations
                 name: "Price",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Cost = table.Column<long>(type: "bigint", nullable: false),
                     CourtSlotId = table.Column<int>(type: "integer", nullable: false),
-                    BookingTypeId = table.Column<int>(type: "integer", nullable: false)
+                    BookingTypeId = table.Column<int>(type: "integer", nullable: false),
+                    Cost = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Price", x => x.Id);
+                    table.PrimaryKey("PK_Price", x => new { x.CourtSlotId, x.BookingTypeId });
                     table.ForeignKey(
                         name: "FK_Price_BookingType_BookingTypeId",
                         column: x => x.BookingTypeId,
@@ -571,14 +570,12 @@ namespace SWD.BBMS.Repositories.Migrations
                 name: "BookingDetail",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     BookingId = table.Column<int>(type: "integer", nullable: false),
                     CourtSlotId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookingDetail", x => x.Id);
+                    table.PrimaryKey("PK_BookingDetail", x => new { x.CourtSlotId, x.BookingId });
                     table.ForeignKey(
                         name: "FK_BookingDetail_Booking_BookingId",
                         column: x => x.BookingId,
@@ -633,16 +630,16 @@ namespace SWD.BBMS.Repositories.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "4dbe0ec6-78db-41fe-ad71-7be25cc7c33f", null, "Admin", "ADMIN" },
-                    { "a39824fd-74cd-4197-99dd-5f52a94dced5", null, "Manager", "MANAGER" },
-                    { "ad78a9cf-2651-4c39-91f8-d002fb0f695c", null, "Customer", "CUSTOMER" },
-                    { "da12a4f9-8727-4c24-b455-3430a71f3b48", null, "Staff", "STAFF" }
+                    { "c36a8f36-ad83-437b-8a53-242691ce8c4d", null, "Admin", "ADMIN" },
+                    { "cb305145-20ed-4132-bc4b-94861badc5f7", null, "Staff", "STAFF" },
+                    { "dbdb6d51-2d25-4bed-aef0-573b6e236936", null, "Customer", "CUSTOMER" },
+                    { "f647500a-7d6e-4dec-8717-de9b6f8844a5", null, "Manager", "MANAGER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "CompanyId", "ConcurrencyStamp", "CreatedBy", "CreatedDate", "Email", "EmailConfirmed", "FullName", "Image", "LockoutEnabled", "LockoutEnd", "ModifiedBy", "ModifiedDate", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Role", "SecurityStamp", "Status", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, null, "ffa312a8-0112-441a-aaee-a4bbc63c8ca3", null, new DateTime(2024, 6, 19, 10, 40, 53, 230, DateTimeKind.Utc).AddTicks(8765), "admin@bbms.com", false, "System Admin", null, false, null, null, new DateTime(2024, 6, 19, 10, 40, 53, 230, DateTimeKind.Utc).AddTicks(8772), null, "ADMIN@BBMS.COM", "AQAAAAIAAYagAAAAEKZMXET0ScuVYuileDYcOBsBLfL0RqzzA7WtgPDCoWegmaM7o/ZRkK2HI6ncBXMmEQ==", "1234567890", false, "Admin", "3665fa55-4864-4171-badf-d48a5914a2e0", 0, false, "admin@bbms.com" });
+                values: new object[] { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, null, "2a77681f-4ee6-4b57-9085-0454fdd75315", null, new DateTime(2024, 6, 19, 19, 37, 49, 717, DateTimeKind.Utc).AddTicks(219), "admin@bbms.com", false, "System Admin", null, false, null, null, new DateTime(2024, 6, 19, 19, 37, 49, 717, DateTimeKind.Utc).AddTicks(232), null, "ADMIN@BBMS.COM", "AQAAAAIAAYagAAAAEEKZyIYK9hfdbiCxgTLp54TWgPX8DLJf9iWBTZCeDyHuFnBWUC5whQLsSNJ5Wau5Ww==", "1234567890", false, "Admin", "8df2c98c-b66a-4ea5-a51e-b101ad784bcd", 0, false, "admin@bbms.com" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -712,11 +709,6 @@ namespace SWD.BBMS.Repositories.Migrations
                 column: "BookingId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookingDetail_CourtSlotId",
-                table: "BookingDetail",
-                column: "CourtSlotId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ContactPoint_CourtGroupId",
                 table: "ContactPoint",
                 column: "CourtGroupId");
@@ -776,11 +768,6 @@ namespace SWD.BBMS.Repositories.Migrations
                 name: "IX_Price_BookingTypeId",
                 table: "Price",
                 column: "BookingTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Price_CourtSlotId",
-                table: "Price",
-                column: "CourtSlotId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Service_CourtGroupId",

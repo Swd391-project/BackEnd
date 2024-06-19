@@ -22,6 +22,8 @@ namespace SWD.BBMS.Repositories.Entities
 
         public string ModifiedBy { get; set; }
 
+        public int CompanyId { get; set; }
+
         public Company Company { get; set; }
     }
 }
