@@ -117,8 +117,8 @@ namespace SWD.BBMS.API.Controllers
             }
         }
 
-        [HttpGet("booking-page/{id}")]
-        public async Task<IActionResult> LoadBookingPageByCourtGroup(int id)
+        [HttpPost("booking-page/{id}")]
+        public async Task<IActionResult> LoadBookingPageByCourtGroup(int id, [FromBody]LoadBookingPageRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -142,11 +142,13 @@ namespace SWD.BBMS.API.Controllers
                     Id = c.Id,
                     Status = c.Status.GetDisplayName()
                 }).ToList();
+                var availableCourtSlots = await courtGroupService.GetAvailableCourtSlotInDate(id, request.Date);
                 var response = new BookingPageResponse
                 {
                     Id = courtGroupModel.Id,
                     CourtSlots = courtSlotResponse,
-                    Courts = courtResponse
+                    Courts = courtResponse,
+                    AvailableCourtSLots = availableCourtSlots
                 };
                 return Ok(response);
             }

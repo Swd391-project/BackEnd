@@ -14,5 +14,7 @@ namespace SWD.BBMS.Repositories.Interfaces
         Task<Court?> FindCourt(int id);
 
         Task<bool> SaveCourt(Court court);  
+
+        Task<List<Court>> GetCourtsByCourtGroupId(int courtGroupId);
     }
 }

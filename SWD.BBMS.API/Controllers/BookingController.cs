@@ -71,19 +71,14 @@ namespace SWD.BBMS.API.Controllers
         [HttpPost("test")]
         public IActionResult Test([FromBody]TimeOnlyTest test)
         {
-            if (test.TimeOne.CompareTo(test.TimeTwo) < 0)
+            var toDay = test.Date.AddDays(7);
+            var weekday = toDay.DayOfWeek.ToString();
+            return Ok(new
             {
-                return Ok($"{test.TimeOne} is earlier than {test.TimeTwo}");
-            }
-            if (test.TimeOne.CompareTo(test.TimeTwo) == 0)
-            {
-                return Ok($"{test.TimeOne} is the same as {test.TimeTwo}");
-            }
-            if (test.TimeOne.CompareTo(test.TimeTwo) > 0)
-            {
-                return Ok($"{test.TimeOne} is later than {test.TimeTwo}");
-            }
-            return Ok("Cannot compare");
+                Date = toDay,
+                Weekday = weekday
+            });
         }
+
     }
 }

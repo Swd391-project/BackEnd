@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 using SWD.BBMS.Repositories;
 using SWD.BBMS.Repositories.Entities;
 using SWD.BBMS.Repositories.Interfaces;
@@ -20,14 +21,114 @@ namespace SWD.BBMS.Services
 
         private readonly ICompanyRepository companyRepository;
 
+        private readonly ICourtSlotRepository courtSlotRepository;
+
+        private readonly ICourtRepository courtRepository;
+
         private readonly IMapper mapper;
 
-        public CourtGroupService(ICourtGroupRepository courtGroupRepository, IMapper mapper, IWeekdayActivityRepository weekdayActivityRepository, ICompanyRepository companyRepository)
+        public CourtGroupService(ICourtGroupRepository courtGroupRepository, IMapper mapper, IWeekdayActivityRepository weekdayActivityRepository, ICompanyRepository companyRepository, ICourtSlotRepository courtSlotRepository, ICourtRepository courtRepository)
         {
             this.courtGroupRepository = courtGroupRepository;
             this.mapper = mapper;
             this.weekdayActivityRepository = weekdayActivityRepository;
             this.companyRepository = companyRepository;
+            this.courtSlotRepository = courtSlotRepository;
+            this.courtRepository = courtRepository;
+        }
+
+        public async Task<List<AvailableCourtSLotModel>> GetAvailableCourtSlotInDate(int id, DateOnly date)
+        {
+            try
+            {
+                var courtSlots = await courtSlotRepository.GetAvailableCourtSlotsByCourtGroupId(id);
+                var courtSlotModels = mapper.Map<List<CourtSlotModel>>(courtSlots);
+                var courts = await  courtRepository.GetCourtsByCourtGroupId(id);
+                var courtModels = mapper.Map<List<CourtModel>>(courts);
+                var availableCourtSlots = new List<AvailableCourtSLotModel>();
+                foreach (var courtModel in courtModels)
+                {
+                    if (!courtModel.Bookings.IsNullOrEmpty())
+                    {
+                        var bookingDates = courtModel?.Bookings?.Select(b => b.Date).ToList();
+                        if (!bookingDates.Contains(date))
+                        {
+                            foreach (var courtSlotModel in courtSlotModels)
+                            {
+                                var availableCourtSlot = new AvailableCourtSLotModel
+                                {
+                                    CourtId = courtModel.Id,
+                                    CourtSlotId = courtSlotModel.Id,
+                                    CourtSlot = mapper.Map<SlotModel>(courtSlotModel),
+                                    Status = CourtModelStatus.Available
+                                };
+                                availableCourtSlots.Add(availableCourtSlot);
+                            }
+                            continue;
+                        }
+                        foreach (var bookingModel in courtModel.Bookings)
+                        {
+
+                            if (bookingModel.Date != date)
+                            {
+                                continue;
+                            }
+                            if (bookingModel.Status == BookingModelStatus.Cancelled
+                                || bookingModel.Status == BookingModelStatus.Completed)
+                            {
+                                continue;
+                            }
+                            var slotIds = new List<int>();
+                            foreach (var bookingDetailModel in bookingModel.BookingDetails)
+                            {
+                                var availableCourtSlot = new AvailableCourtSLotModel
+                                {
+                                    CourtId = courtModel.Id,
+                                    CourtSlotId = bookingDetailModel.CourtSlotId,
+                                    CourtSlot = mapper.Map<SlotModel>(bookingDetailModel.CourtSlot),
+                                    Status = CourtModelStatus.Occupied
+                                };
+                                availableCourtSlots.Add(availableCourtSlot);
+                                slotIds.Add(bookingDetailModel.CourtSlotId);
+                            }
+                            foreach(var courtSlotModel in courtSlotModels)
+                            {
+                                if (slotIds.Contains(courtSlotModel.Id))
+                                {
+                                    continue;
+                                }
+                                var availableCourtSlot = new AvailableCourtSLotModel
+                                {
+                                    CourtId = courtModel.Id,
+                                    CourtSlotId = courtSlotModel.Id,
+                                    CourtSlot = mapper.Map<SlotModel>(courtSlotModel),
+                                    Status = CourtModelStatus.Available
+                                };
+                                availableCourtSlots.Add(availableCourtSlot);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var courtSlotModel in courtSlotModels)
+                        {
+                            var availableCourtSlot = new AvailableCourtSLotModel
+                            {
+                                CourtId = courtModel.Id,
+                                CourtSlotId = courtSlotModel.Id,
+                                CourtSlot = mapper.Map<SlotModel>(courtSlotModel),
+                                Status = CourtModelStatus.Available
+                            };
+                            availableCourtSlots.Add(availableCourtSlot);
+                        }
+                    }
+                }
+                return availableCourtSlots;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public async Task<CourtGroupModel> GetCourtGroupById(int id)

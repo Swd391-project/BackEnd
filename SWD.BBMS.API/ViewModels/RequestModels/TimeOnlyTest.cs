@@ -5,5 +5,7 @@
         public TimeOnly TimeOne {  get; set; }
 
         public TimeOnly TimeTwo { get; set;}
+
+        public DateOnly Date {  get; set; }
     }
 }

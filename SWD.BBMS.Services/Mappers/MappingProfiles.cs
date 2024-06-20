@@ -38,6 +38,9 @@ namespace SWD.BBMS.Services.Mappers
                 .ReverseMap()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToSlotStatus(src.Status)));
 
+            CreateMap<CourtSlotModel, SlotModel>()
+                .ReverseMap();
+
             CreateMap<CourtGroupActivity, CourtGroupActivityModel>()
                 .ForMember(dest => dest.ActivityStatus, opt => opt.MapFrom(src => MapToActivityModelStatus(src.ActivityStatus)))
                 .ReverseMap()

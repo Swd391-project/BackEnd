@@ -1,4 +1,5 @@
-﻿using SWD.BBMS.Repositories.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SWD.BBMS.Repositories.Data;
 using SWD.BBMS.Repositories.Entities;
 using SWD.BBMS.Repositories.Interfaces;
 using System;
@@ -24,6 +25,23 @@ namespace SWD.BBMS.Repositories
             {
                 using var dbContext = new BBMSDbContext();
                 courts = await PagedList<Court>.ToPagedList(dbContext.Courts.OrderBy(c => c.Id), pageNumber, pageSize);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return courts;
+        }
+
+        public async Task<List<Court>> GetCourtsByCourtGroupId(int courtGroupId)
+        {
+            var courts = new List<Court>();
+            try
+            {
+                using var dbContext = new BBMSDbContext();
+                courts = await dbContext.Courts
+                    .Include(c => c.Bookings).ThenInclude(b => b.BookingDetails).ThenInclude(bd => bd.CourtSlot)
+                    .Where(c => c.CourtGroupId == courtGroupId).ToListAsync();
             }
             catch (Exception ex)
             {
