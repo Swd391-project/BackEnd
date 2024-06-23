@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using AutoMapper.Configuration.Conventions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using SWD.BBMS.Repositories;
 using SWD.BBMS.Repositories.Entities;
 using SWD.BBMS.Repositories.Interfaces;
 using SWD.BBMS.Services.BusinessModels;
@@ -36,7 +39,51 @@ namespace SWD.BBMS.Services
             this.courtSlotRepository = courtSlotRepository;
         }
 
-        public async Task<bool> SaveBooking(BookingModel bookingModel)
+        public async Task<bool> DeleteBooking(int id)
+        {
+            var result = false;
+            try
+            {
+                var booking = await bookingRepository.GetBookingById(id);
+                booking.Status = BookingStatus.Deleted;
+                result = await bookingRepository.UpdateBooking(booking);
+            }
+            catch
+            {
+                throw;
+            }
+            return result;
+        }
+
+        public async Task<BookingModel> GetBookingById(int id)
+        {
+            try
+            {
+                var booking = await bookingRepository.GetBookingById(id);
+                var bookingModel = mapper.Map<BookingModel>(booking);
+                return bookingModel;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<PagedList<BookingModel>> GetBookings(int pageNumber, int pageSize)
+        {
+            try
+            {
+                var bookings = await bookingRepository.GetBookings(pageNumber, pageSize);
+                var bookingModels = mapper.Map<PagedList<BookingModel>>(bookings);
+                return new PagedList<BookingModel>(bookingModels, bookings.TotalCount, bookings.CurrentPage, bookings.PageSize);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> SaveBooking(int id, BookingModel bookingModel)
         {
             var result = false;
             try
@@ -73,14 +120,12 @@ namespace SWD.BBMS.Services
                     }
                 }
                 //Court
-                var court = await courtRepository.FindCourt(bookingModel.CourtId);
-                if (court == null)
-                {
-                    throw new Exception($"Court with id {bookingModel.CourtId} not found in create booking.");
-                }
+                var courtId = await GetCourtIdAvailableForBookingOfCourtGroup(id, bookingModel.Date, bookingModel.FromTime, bookingModel.ToTime);
+                if (courtId == 0)
+                    throw new Exception($"There is no court available for booking in {bookingModel.Date} from {bookingModel.FromTime} to {bookingModel.ToTime}");
+                bookingModel.CourtId = courtId;
                 //Court slots
-                var courtGroupId = court.CourtGroupId;
-                var courtSlots = await courtSlotRepository.GetAvailableCourtSlotsByCourtGroupId(courtGroupId);
+                var courtSlots = await courtSlotRepository.GetAvailableCourtSlotsByCourtGroupId(id);
                 //Booking details
                 var startTime = bookingModel.FromTime;
                 var endTime = bookingModel.ToTime;
@@ -104,6 +149,53 @@ namespace SWD.BBMS.Services
                 throw;
             }
             return result;
+        }
+
+        private async Task<int> GetCourtIdAvailableForBookingOfCourtGroup(int courtGroupId, DateOnly date, TimeOnly fromTime, TimeOnly toTime)
+        {
+            try
+            {
+                var courts = await courtRepository.GetCourtsByCourtGroupId(courtGroupId);
+                var courtModels = mapper.Map<List<CourtModel>>(courts);
+                foreach(var courtModel in courtModels)
+                {
+                    if (courtModel.Bookings.IsNullOrEmpty())
+                    {
+                        return courtModel.Id;
+                    }
+                    var isOccupied = false;
+                    foreach(var bookingModel in courtModel.Bookings)
+                    {
+                        if(bookingModel.Date != date 
+                            || bookingModel.Status == BookingModelStatus.Cancelled 
+                            || bookingModel.Status == BookingModelStatus.Completed)
+                        {
+                            continue;
+                        }
+                        foreach(var bookingDetailModel in bookingModel.BookingDetails)
+                        {
+                            if(bookingDetailModel.CourtSlot.FromTime ==  fromTime 
+                                || bookingDetailModel.CourtSlot.ToTime == toTime 
+                                || (bookingDetailModel.CourtSlot.FromTime > fromTime && bookingDetailModel.CourtSlot.FromTime < toTime))
+                            {
+                                isOccupied = true;
+                                break;
+                            }
+                        }
+                        if (isOccupied)
+                            break;
+                    }
+                    if (!isOccupied)
+                    {
+                        return courtModel.Id;
+                    }
+                }
+                return 0;
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

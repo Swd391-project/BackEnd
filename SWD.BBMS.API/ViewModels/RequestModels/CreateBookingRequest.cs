@@ -13,9 +13,6 @@ namespace SWD.BBMS.API.ViewModels.RequestModels
         [Required]
         public TimeOnly ToTime { get; set;}
 
-        [Required]
-        public int CourtId { get; set; }
-
         public int BookingTypeId { get; set; } = 1;
 
         public string? PhoneNumber { get; set; }

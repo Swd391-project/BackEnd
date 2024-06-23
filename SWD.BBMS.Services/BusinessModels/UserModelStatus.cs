@@ -14,6 +14,8 @@ namespace SWD.BBMS.Services.BusinessModels
         [Display(Name = "Inactive")]
         Inactive,
         [Display(Name = "Closed")]
-        Closed
+        Closed,
+        [Display(Name = "Deleted")]
+        Deleted
     }
 }

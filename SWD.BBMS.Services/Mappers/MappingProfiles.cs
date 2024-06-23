@@ -25,9 +25,12 @@ namespace SWD.BBMS.Services.Mappers
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToUserModelStatus(src.Status)))
                 .ReverseMap()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToUserStatus(src.Status)));
-            //CreateMap<CourtGroupModel, CourtGroup>();
-            CreateMap<CourtGroup, CourtGroupModel>().ReverseMap();
-            //CreateMap<CourtModel, Court>();
+
+            CreateMap<CourtGroup, CourtGroupModel>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToCourtGroupModelStatus(src.Status)))
+                .ReverseMap()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToCourtGroupStatus(src.Status)));
+
             CreateMap<Court, CourtModel>()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToCourtModelStatus(src.Status)))
                 .ReverseMap()
@@ -39,6 +42,9 @@ namespace SWD.BBMS.Services.Mappers
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToSlotStatus(src.Status)));
 
             CreateMap<CourtSlotModel, SlotModel>()
+                .ReverseMap();
+
+            CreateMap<CourtSlotModel, AvailableSlotModel>()
                 .ReverseMap();
 
             CreateMap<CourtGroupActivity, CourtGroupActivityModel>()
@@ -70,6 +76,15 @@ namespace SWD.BBMS.Services.Mappers
 
             CreateMap<FlexibleBooking, FlexibleBookingModel>()
                 .ReverseMap();
+
+            CreateMap<Company, CompanyModel>()
+                .ReverseMap();
+
+            CreateMap<Service, ServiceModel>()
+                .ReverseMap();
+
+            CreateMap<Feedback, FeedbackModel>()
+                .ReverseMap();
         }
 
         private UserModelStatus MapToUserModelStatus(UserStatus status)
@@ -82,6 +97,8 @@ namespace SWD.BBMS.Services.Mappers
                     return UserModelStatus.Inactive;
                 case UserStatus.Closed:
                     return UserModelStatus.Closed;
+                case UserStatus.Deleted:
+                    return UserModelStatus.Deleted;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled user status.");
             }
@@ -97,6 +114,8 @@ namespace SWD.BBMS.Services.Mappers
                     return UserStatus.Inactive;
                 case UserModelStatus.Closed:
                     return UserStatus.Closed;
+                case UserModelStatus.Deleted:
+                    return UserStatus.Deleted;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled user status.");
             }
@@ -184,6 +203,8 @@ namespace SWD.BBMS.Services.Mappers
                     return CourtModelStatus.Occupied;
                 case CourtStatus.Closed:
                     return CourtModelStatus.Closed;
+                case CourtStatus.Deleted:
+                    return CourtModelStatus.Deleted;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled court status.");
             }
@@ -199,6 +220,8 @@ namespace SWD.BBMS.Services.Mappers
                     return CourtStatus.Occupied;
                 case CourtModelStatus.Closed:
                     return CourtStatus.Closed;
+                case CourtModelStatus.Deleted:
+                    return CourtStatus.Deleted;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled court status.");
             }
@@ -212,6 +235,8 @@ namespace SWD.BBMS.Services.Mappers
                     return SlotModelStatus.Available;
                 case SlotStatus.Closed:
                     return SlotModelStatus.Closed;
+                case SlotStatus.Occupied:
+                    return SlotModelStatus.Occupied;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled court slot status.");
             }
@@ -225,6 +250,8 @@ namespace SWD.BBMS.Services.Mappers
                     return SlotStatus.Available;
                 case SlotModelStatus.Closed:
                     return SlotStatus.Closed;
+                case SlotModelStatus.Occupied:
+                    return SlotStatus.Occupied;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled court slot status.");
             }
@@ -242,6 +269,8 @@ namespace SWD.BBMS.Services.Mappers
                     return BookingStatus.InProgress;
                 case BookingModelStatus.Completed:
                     return BookingStatus.Completed;
+                case BookingModelStatus.Deleted:
+                    return BookingStatus.Deleted;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled booking status.");
             }
@@ -259,8 +288,40 @@ namespace SWD.BBMS.Services.Mappers
                     return BookingModelStatus.InProgress;
                 case BookingStatus.Completed:
                     return BookingModelStatus.Completed;
+                case BookingStatus.Deleted:
+                    return BookingModelStatus.Deleted;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled booking status.");
+            }
+        }
+
+        private CourtGroupModelStatus MapToCourtGroupModelStatus(CourtGroupStatus status)
+        {
+            switch (status)
+            {
+                case CourtGroupStatus.Open:
+                    return CourtGroupModelStatus.Open;
+                case CourtGroupStatus.Closed:
+                    return CourtGroupModelStatus.Closed;
+                case CourtGroupStatus.Deleted:
+                    return CourtGroupModelStatus.Deleted;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled court group status.");
+            }
+        }
+
+        private CourtGroupStatus MapToCourtGroupStatus(CourtGroupModelStatus status)
+        {
+            switch (status)
+            {
+                case CourtGroupModelStatus.Open:
+                    return CourtGroupStatus.Open;
+                case CourtGroupModelStatus.Closed:
+                    return CourtGroupStatus.Closed;
+                case CourtGroupModelStatus.Deleted:
+                    return CourtGroupStatus.Deleted;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled court group status.");
             }
         }
     }

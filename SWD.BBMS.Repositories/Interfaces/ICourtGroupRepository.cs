@@ -16,5 +16,7 @@ namespace SWD.BBMS.Repositories.Interfaces
         Task<CourtGroup?> FindCourtGroup(int id);
 
         Task<CourtGroup?> GetCourtGroupById(int id);
+
+        Task<bool> UpdateCourtGroup(CourtGroup courtGroup);
     }
 }

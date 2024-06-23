@@ -18,6 +18,12 @@ namespace SWD.BBMS.Repositories
             return await dbContext.Courts.FindAsync(id);
         }
 
+        public async Task<Court?> GetCourtById(int id)
+        {
+            using var dbContext = new BBMSDbContext();
+            return await dbContext.Courts.Include(c => c.CourtGroup).FirstOrDefaultAsync(x => x.Id == id); 
+        }
+
         public async Task<PagedList<Court>> GetCourts(int pageNumber, int pageSize)
         {
             var courts = new PagedList<Court>();
@@ -57,6 +63,23 @@ namespace SWD.BBMS.Repositories
             {
                 using var dbContext = new BBMSDbContext();
                 await dbContext.Courts.AddAsync(court);
+                await dbContext.SaveChangesAsync();
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return result;
+        }
+
+        public async Task<bool> UpdateCourt(Court court)
+        {
+            var result = false;
+            try
+            {
+                using var dbContext = new BBMSDbContext();
+                dbContext.Attach(court).State = EntityState.Modified;
                 await dbContext.SaveChangesAsync();
                 result = true;
             }

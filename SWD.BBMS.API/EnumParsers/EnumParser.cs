@@ -14,6 +14,15 @@ namespace SWD.BBMS.API.EnumParsers
             throw new ArgumentException($"{statusStr} is not a valid CourtStatus");
         }
 
+        public static CourtStatus ParseCourtStatus(string statusStr)
+        {
+            if (Enum.TryParse(statusStr, true, out CourtStatus status))
+            {
+                return status;
+            }
+            throw new ArgumentException($"{statusStr} is not a valid CourtStatus");
+        }
+
         public static BookingModelStatus ParseBookingModelStatus(string statusStr)
         {
             if (Enum.TryParse(statusStr, true, out BookingModelStatus status))

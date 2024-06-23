@@ -16,6 +16,8 @@ namespace SWD.BBMS.Repositories.Entities
         [Display(Name = "Completed")]
         Completed,
         [Display(Name = "In Progress")]
-        InProgress
+        InProgress,
+        [Display(Name = "Deleted")]
+        Deleted
     }
 }

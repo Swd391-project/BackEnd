@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Extensions;
 using SWD.BBMS.API.ViewModels.RequestModels;
 using SWD.BBMS.API.ViewModels.ResponseModels;
 using SWD.BBMS.Repositories.Entities;
+using SWD.BBMS.Services;
 using SWD.BBMS.Services.BusinessModels;
 using SWD.BBMS.Services.Interfaces;
 using System.Text.Json;
@@ -18,12 +19,15 @@ namespace SWD.BBMS.API.Controllers
     {
         private readonly ICourtGroupService courtGroupService;
 
+        private readonly ICourtSlotService courtSlotService;
+
         private readonly IJwtService jwtService;
 
-        public CourtGroupController(ICourtGroupService courtGroupService, IJwtService jwtService)
+        public CourtGroupController(ICourtGroupService courtGroupService, IJwtService jwtService, ICourtSlotService courtSlotService)
         {
             this.courtGroupService = courtGroupService;
             this.jwtService = jwtService;
+            this.courtSlotService = courtSlotService;
         }
 
         [HttpGet]
@@ -124,6 +128,7 @@ namespace SWD.BBMS.API.Controllers
                 return BadRequest(ModelState);
             try
             {
+                /*
                 var courtGroupModel = await courtGroupService.GetCourtGroupById(id);
                 if (courtGroupModel == null)
                 {
@@ -150,12 +155,77 @@ namespace SWD.BBMS.API.Controllers
                     Courts = courtResponse,
                     AvailableCourtSLots = availableCourtSlots
                 };
+                */
+                var availableCourtSlots = await courtSlotService.GetAvailableCourtSlotsOfCourtGroupInDate(id, request.Date);
+                var response = availableCourtSlots.Select(cs => new CourtSlotBookingPage
+                {
+                    Id = cs.Id,
+                    FromTime = cs.FromTime,
+                    ToTime = cs.ToTime,
+                    Price = cs.Price,
+                    Status = cs.Status.GetDisplayName()
+                }).ToList();
                 return Ok(response);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCourtGroup(int id, [FromBody]UpdateCourtGroupRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var json = JsonSerializer.Serialize(request);
+                if (json == null)
+                {
+                    return BadRequest(ModelState);
+                }
+                var courtGroupDictModel = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+                if (courtGroupDictModel == null)
+                {
+                    return BadRequest(ModelState);
+                }
+                var success = await courtGroupService.UpdateCourtGroup(id, courtGroupDictModel);
+                if (success)
+                {
+                    return Ok("Court group is updated.");
+                }
+                return Ok("Court group is not updated.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCourtGroup(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = false;
+            try
+            {
+                result = await courtGroupService.DeleteCourtGroup(id);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            if (result)
+            {
+                return Ok("Court group is deleted.");
+            }
+            return Ok("Court group is not deleted.");
         }
         
     }

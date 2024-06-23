@@ -14,6 +14,8 @@ namespace SWD.BBMS.Repositories.Entities
 
         public float Rate { get; set; }
 
+        public bool IsDeleted { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public string ModifiedBy { get; set; }

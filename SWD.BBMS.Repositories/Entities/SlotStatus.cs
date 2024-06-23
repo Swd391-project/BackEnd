@@ -12,6 +12,8 @@ namespace SWD.BBMS.Repositories.Entities
         [Display(Name = "Available")]
         Available,
         [Display(Name = "Closed")]
-        Closed
+        Closed,
+        [Display(Name = "Occupied")]
+        Occupied
     }
 }

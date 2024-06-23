@@ -25,6 +25,8 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public string? CoverImage { get; set; }
 
+        public CourtGroupModelStatus Status { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public string CreatedBy { get; set; }

@@ -18,13 +18,55 @@ namespace SWD.BBMS.Services
 
         private readonly ICourtGroupRepository courtGroupRepository;
 
+        private readonly IJwtService jwtService;
+
         private readonly IMapper mapper;
 
-        public CourtService(ICourtRepository courtRepository, IMapper mapper, ICourtGroupRepository courtGroupRepository)
+        public CourtService(ICourtRepository courtRepository, IMapper mapper, ICourtGroupRepository courtGroupRepository, IJwtService jwtService)
         {
             this.courtRepository = courtRepository;
             this.mapper = mapper;
             this.courtGroupRepository = courtGroupRepository;
+            this.jwtService = jwtService;
+        }
+
+        public async Task<bool> DeleteCourt(int id)
+        {
+            var result = false;
+            try
+            {
+                var court = await courtRepository.FindCourt(id);
+                if (court == null)
+                {
+                    throw new Exception($"Court with id {id} not found in delete court.");
+                }
+                var courtModel = mapper.Map<CourtModel>(court);
+                courtModel.Status = CourtModelStatus.Closed;
+                var userId = await jwtService.GetUserId();
+                courtModel.ModifiedBy = userId;
+                courtModel.ModifiedDate = DateTime.UtcNow;
+                court = mapper.Map<Court>(courtModel);
+                result = await courtRepository.UpdateCourt(court);
+            }
+            catch
+            {
+                throw;
+            }
+            return result;
+        }
+
+        public async Task<CourtModel> GetCourtById(int id)
+        {
+            try
+            {
+                var court = await courtRepository.GetCourtById(id);
+                var courtModel = mapper.Map<CourtModel>(court);
+                return courtModel;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public async Task<PagedList<CourtModel>> GetCourts(int pageNumber, int pageSize)
@@ -47,6 +89,31 @@ namespace SWD.BBMS.Services
                 }
                 var court = mapper.Map<Court>(model);
                 result = await courtRepository.SaveCourt(court);
+            }
+            catch
+            {
+                throw;
+            }
+            return result;
+        }
+
+        public async Task<bool> UpdateCourtStatus(int id, CourtModelStatus status)
+        {
+            var result = false;
+            try
+            {
+                var court = await courtRepository.FindCourt(id);
+                if( court == null )
+                {
+                    throw new Exception($"Court with id {id} not found in update court.");
+                }
+                var courtModel = mapper.Map<CourtModel>(court);
+                courtModel.Status = status;
+                var userId = await jwtService.GetUserId();
+                courtModel.ModifiedBy = userId;
+                courtModel.ModifiedDate = DateTime.UtcNow;
+                court = mapper.Map<Court>(courtModel);
+                result = await courtRepository.UpdateCourt(court);
             }
             catch
             {

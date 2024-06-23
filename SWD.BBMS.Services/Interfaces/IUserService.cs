@@ -14,6 +14,8 @@ namespace SWD.BBMS.Services.Interfaces
 
         Task<bool> UpdateUser(string id, Dictionary<string, object> userModel);
 
-        User GetUserByUsername(string username);   
+        User GetUserByUsername(string username);
+
+        Task<bool> DeleteUser(string id);
     }
 }

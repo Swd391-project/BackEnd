@@ -50,25 +50,25 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c36a8f36-ad83-437b-8a53-242691ce8c4d",
+                            Id = "856b0a1f-f905-4b72-bb5c-bbbb3f3131ff",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "cb305145-20ed-4132-bc4b-94861badc5f7",
+                            Id = "61a774d5-89aa-4ffc-96f9-67d1ae238a94",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "f647500a-7d6e-4dec-8717-de9b6f8844a5",
+                            Id = "182787fa-31d6-4cbd-b00d-24549da5e155",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "dbdb6d51-2d25-4bed-aef0-573b6e236936",
+                            Id = "d25752eb-8108-4cd1-a18c-3c1c387f41ab",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -457,6 +457,9 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<TimeOnly>("StartTime")
                         .HasColumnType("time without time zone");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
@@ -567,6 +570,9 @@ namespace SWD.BBMS.Repositories.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("ModifiedBy")
                         .IsRequired()
@@ -740,6 +746,9 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("ModifiedBy")
                         .IsRequired()
                         .HasColumnType("text");
@@ -868,19 +877,19 @@ namespace SWD.BBMS.Repositories.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2a77681f-4ee6-4b57-9085-0454fdd75315",
-                            CreatedDate = new DateTime(2024, 6, 19, 19, 37, 49, 717, DateTimeKind.Utc).AddTicks(219),
+                            ConcurrencyStamp = "f4c09d51-dd3e-4b32-b5f4-96fb16c6ff37",
+                            CreatedDate = new DateTime(2024, 6, 21, 20, 25, 39, 921, DateTimeKind.Utc).AddTicks(9457),
                             Email = "admin@bbms.com",
                             EmailConfirmed = false,
                             FullName = "System Admin",
                             LockoutEnabled = false,
-                            ModifiedDate = new DateTime(2024, 6, 19, 19, 37, 49, 717, DateTimeKind.Utc).AddTicks(232),
+                            ModifiedDate = new DateTime(2024, 6, 21, 20, 25, 39, 921, DateTimeKind.Utc).AddTicks(9463),
                             NormalizedUserName = "ADMIN@BBMS.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEKZyIYK9hfdbiCxgTLp54TWgPX8DLJf9iWBTZCeDyHuFnBWUC5whQLsSNJ5Wau5Ww==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEH9tQA0ebLONqBGBE4TbCgNT8Lo05qSJZ8qagHeohGTLvN8WD/jhg1KYdqxpu4awGg==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
                             Role = "Admin",
-                            SecurityStamp = "8df2c98c-b66a-4ea5-a51e-b101ad784bcd",
+                            SecurityStamp = "f0b9a4be-56ae-421e-ba05-1b790c00d2b9",
                             Status = 0,
                             TwoFactorEnabled = false,
                             UserName = "admin@bbms.com"

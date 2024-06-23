@@ -65,6 +65,7 @@ namespace SWD.BBMS.API.Controllers
                             FullName = user.FullName,
                             Role = user.Role,
                             Image = user.Image,
+                            PhoneNumber = user.PhoneNumber
                         };
                         return Ok(tokenResponse);
                     }
@@ -109,7 +110,8 @@ namespace SWD.BBMS.API.Controllers
                     Token = jwtToken,
                     FullName = user.FullName,
                     Role = user.Role,
-                    Image = user.Image
+                    Image = user.Image,
+                    PhoneNumber = user.PhoneNumber
                 };
                 return Ok(tokenResponse);
             }

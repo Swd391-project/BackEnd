@@ -18,10 +18,30 @@ namespace SWD.BBMS.Repositories
             return await dbContext.Customers.FindAsync(customerId);
         }
 
+        public async Task<Customer?> GetCustomerById(int id)
+        {
+            using var dbContext = new BBMSDbContext();
+            return await dbContext.Customers.Include(c => c.Bookings).Include(c => c.FlexibleBookings).FirstOrDefaultAsync(c => c.Id == id);
+        }
+
         public async Task<Customer?> GetCustomerByPhoneNumber(string phoneNumber)
         {
             using var dbContext = new BBMSDbContext();
             return await dbContext.Customers.FirstOrDefaultAsync(c => c.PhoneNumber.Equals(phoneNumber));
+        }
+
+        public async Task<PagedList<Customer>> GetCustomers(int pageNumber, int pageSize)
+        {
+            try
+            {
+                using var dbContext = new BBMSDbContext();
+                var customers = await PagedList<Customer>.ToPagedList(dbContext.Customers, pageNumber, pageSize);
+                return customers;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

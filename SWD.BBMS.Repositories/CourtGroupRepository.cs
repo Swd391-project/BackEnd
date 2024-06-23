@@ -84,18 +84,35 @@ namespace SWD.BBMS.Repositories
             }
             return result;
         }
-        /*
-        private async Task<bool> SaveCourtGroupActivitiesOfCourtGroup(CourtGroup courtGroup, BBMSDbContext dbContext)
+
+        public async Task<bool> UpdateCourtGroup(CourtGroup courtGroup)
         {
+            var result = false;
             try
             {
-
+                using var dbContext = new BBMSDbContext();
+                dbContext.Attach(courtGroup).State = EntityState.Modified;
+                await dbContext.SaveChangesAsync();
+                result = true;
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
+            return result;
         }
-        */
+        /*
+private async Task<bool> SaveCourtGroupActivitiesOfCourtGroup(CourtGroup courtGroup, BBMSDbContext dbContext)
+{
+   try
+   {
+
+   }
+   catch (Exception ex)
+   {
+       throw new Exception(ex.Message);
+   }
+}
+*/
     }
 }

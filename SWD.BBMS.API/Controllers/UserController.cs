@@ -58,27 +58,15 @@ namespace BadmintonRentalSWD.Controllers
                 FullName = u.FullName,
                 Username = u.UserName,
                 Role = u.Role,
-                Status = u.Status.GetDisplayName()
+                Status = u.Status.GetDisplayName(),
+                Image = u.Image,
+                PhoneNumber = u.PhoneNumber
             }).ToList();
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
             return Ok(userResponses);
         }
 
         /*
-        [HttpGet("role")]
-        [Authorize]
-        public async Task<IActionResult> GetRoles()
-        {
-
-            var user = GetCurrentUser();
-            if (user == null)
-            {
-                return Ok("No identity user.");
-            }
-            return Ok("Hello " + user.FullName + ", you are a/an " + user.Role);
-        }
-        */
-
         [HttpPost]
         [ProducesResponseType(201)]
         [Authorize(Roles = "Admin")]
@@ -102,6 +90,7 @@ namespace BadmintonRentalSWD.Controllers
             }
             return Ok("New user is created.");
         }
+        */
 
         [HttpGet("{id}")]
         [Authorize]
@@ -172,25 +161,28 @@ namespace BadmintonRentalSWD.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        
 
-        /*
-        private User GetCurrentUser()
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(string id)
         {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            if (identity == null)
+            if (!ModelState.IsValid)
             {
-                return null;
+                return BadRequest(ModelState);
             }
-            var userClaims = identity.Claims;
-            var username = userClaims.FirstOrDefault(u => u.Type == ClaimTypes.NameIdentifier)?.Value;
-            if (username.IsNullOrEmpty())
+            var result = false;
+            try
             {
-                return null;
+                result = await userService.DeleteUser(id);
             }
-            var user = userService.GetUserByUsername(username);
-            return user;
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            if(result)
+            {
+                return Ok("User is deleted.");
+            }
+            return Ok("User is not deleted.");
         }
-        */
     }
 }

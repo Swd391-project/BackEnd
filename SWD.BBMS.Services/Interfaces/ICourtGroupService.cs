@@ -18,5 +18,9 @@ namespace SWD.BBMS.Services.Interfaces
         Task<CourtGroupModel> GetCourtGroupById(int id);
 
         Task<List<AvailableCourtSLotModel>> GetAvailableCourtSlotInDate(int id, DateOnly date);
+
+        Task<bool> UpdateCourtGroup(int id, Dictionary<string, object> courtGroupDictModel);
+
+        Task<bool> DeleteCourtGroup(int id);
     }
 }

@@ -30,6 +30,28 @@ namespace SWD.BBMS.Services
             userRepository.CreateUser(user);
         }
 
+        public async Task<bool> DeleteUser(string id)
+        {
+            var result = false;
+            try
+            {
+                var user = await userManager.FindByIdAsync(id);
+                if (user == null)
+                {
+                    throw new Exception("There is no user with id: " + id);
+                }
+                var userModel = mapper.Map<UserModel>(user);
+                userModel.Status = UserModelStatus.Deleted;
+                user = mapper.Map<User>(userModel);
+                result = await userRepository.UpdateUser(user);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return result;
+        }
+
         public async Task<UserModel>? GetUserById(string id)
         {
             try

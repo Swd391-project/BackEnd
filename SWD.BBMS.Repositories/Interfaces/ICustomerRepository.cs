@@ -12,5 +12,9 @@ namespace SWD.BBMS.Repositories.Interfaces
         Task<Customer?> FindCustomer(int customerId);
 
         Task<Customer?> GetCustomerByPhoneNumber(string phoneNumber);
+
+        Task<PagedList<Customer>> GetCustomers(int pageNumber, int pageSize);
+
+        Task<Customer?> GetCustomerById(int id);
     }
 }

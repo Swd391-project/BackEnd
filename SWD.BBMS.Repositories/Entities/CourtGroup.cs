@@ -24,6 +24,8 @@ namespace SWD.BBMS.Repositories.Entities
 
         public string? CoverImage { get; set; }
 
+        public CourtGroupStatus Status { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public string CreatedBy { get; set; }

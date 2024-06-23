@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using SWD.BBMS.Repositories;
 using SWD.BBMS.Repositories.Entities;
@@ -9,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SWD.BBMS.Services
@@ -35,6 +37,24 @@ namespace SWD.BBMS.Services
             this.companyRepository = companyRepository;
             this.courtSlotRepository = courtSlotRepository;
             this.courtRepository = courtRepository;
+        }
+
+        public async Task<bool> DeleteCourtGroup(int id)
+        {
+            var result = false;
+            try
+            {
+                var courtGroup = await courtGroupRepository.FindCourtGroup(id);
+                var courtGroupModel = mapper.Map<CourtGroupModel>(courtGroup);
+                courtGroupModel.Status = CourtGroupModelStatus.Deleted;
+                courtGroup = mapper.Map<CourtGroup>(courtGroupModel);
+                result = await courtGroupRepository.UpdateCourtGroup(courtGroup);
+            }
+            catch
+            {
+                throw;
+            }
+            return result;
         }
 
         public async Task<List<AvailableCourtSLotModel>> GetAvailableCourtSlotInDate(int id, DateOnly date)
@@ -201,6 +221,33 @@ namespace SWD.BBMS.Services
             return result;
         }
 
+        public async Task<bool> UpdateCourtGroup(int id, Dictionary<string, object> courtGroupDictModel)
+        {
+            var result = false;
+            try
+            {
+                var courtGroup = await courtGroupRepository.FindCourtGroup(id);
+                if (courtGroup == null)
+                {
+                    throw new Exception("There is no user with id: " + id);
+                }
+                var courtGroupModel = mapper.Map<CourtGroupModel>(courtGroup);
+                foreach (var dict in courtGroupDictModel)
+                {
+                    SetPropertyValueFromDictionary(courtGroupModel, dict);
+                }
+                courtGroup = mapper.Map<CourtGroup>(courtGroupModel);
+                result = await courtGroupRepository.UpdateCourtGroup(courtGroup);
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+                throw new Exception(ex.Message);
+            }
+            return result;  
+        }
+
         private SlotStatus GetCourtSlotStatus(TimeOnly openTime, TimeOnly closeTime, TimeOnly time)
         {
             if (openTime == closeTime)
@@ -214,6 +261,49 @@ namespace SWD.BBMS.Services
                 return SlotStatus.Available;
             }
             return SlotStatus.Closed;
+        }
+
+        private void SetPropertyValueFromDictionary(CourtGroupModel model, KeyValuePair<string, object> dict)
+        {
+            var property = model.GetType().GetProperty(dict.Key);
+            if (property != null && property.CanWrite)
+            {
+                var propertyType = property.PropertyType;
+
+                object value;
+
+                if (dict.Value == null || dict.Value.Equals(""))
+                {
+                    return;
+                }
+                else if (propertyType.IsAssignableFrom(dict.Value.GetType()))
+                {
+                    value = dict.Value; // No conversion needed
+                }
+                else if (propertyType.IsEnum)
+                {
+                    // Handle enum conversion
+                    value = Enum.Parse(propertyType, dict.Value.ToString());
+                }
+                else if (propertyType == typeof(Guid))
+                {
+                    // Handle Guid conversion
+                    value = Guid.Parse(dict.Value.ToString());
+                }
+                else
+                {
+                    // Use JSON serialization/deserialization for complex types
+                    var json = JsonSerializer.Serialize(dict.Value);
+                    value = JsonSerializer.Deserialize(json, propertyType);
+                    if (value == null || value.Equals(""))
+                    {
+                        return;
+                    }
+                }
+
+                // Set the property value
+                property.SetValue(model, value);
+            }
         }
     }
 }

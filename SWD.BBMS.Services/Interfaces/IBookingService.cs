@@ -1,4 +1,5 @@
-﻿using SWD.BBMS.Services.BusinessModels;
+﻿using SWD.BBMS.Repositories;
+using SWD.BBMS.Services.BusinessModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,12 @@ namespace SWD.BBMS.Services.Interfaces
 {
     public interface IBookingService
     {
-        Task<bool> SaveBooking(BookingModel bookingModel);
+        Task<bool> SaveBooking(int id, BookingModel bookingModel);
+
+        Task<PagedList<BookingModel>> GetBookings(int pageNumber, int pageSize);
+
+        Task<BookingModel> GetBookingById(int id);
+
+        Task<bool> DeleteBooking(int id);
     }
 }
