@@ -22,5 +22,7 @@ namespace SWD.BBMS.Services.Interfaces
         Task<bool> UpdateCourtGroup(int id, Dictionary<string, object> courtGroupDictModel);
 
         Task<bool> DeleteCourtGroup(int id);
+
+        Task<List<CourtGroupActivityModel>> GetAvailableDaysOfWeekForFixedBooking(int id, TimeOnly fromTime, TimeOnly toTime, int month, int year);
     }
 }

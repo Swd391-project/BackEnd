@@ -128,34 +128,6 @@ namespace SWD.BBMS.API.Controllers
                 return BadRequest(ModelState);
             try
             {
-                /*
-                var courtGroupModel = await courtGroupService.GetCourtGroupById(id);
-                if (courtGroupModel == null)
-                {
-                    return Ok("Court group with id " + id + " is not existed.");
-                }
-                var courtSlotResponse = courtGroupModel?.CourtSlots?.Select(cs => new CourtSlotBookingPage
-                {
-                    Id = cs.Id,
-                    FromTime = cs.FromTime,
-                    ToTime = cs.ToTime,
-                    Price = cs.Price,
-                    Status = cs.Status.GetDisplayName()
-                }).ToList();
-                var courtResponse = courtGroupModel?.Courts?.Select(c => new CourtBookingPage
-                {
-                    Id = c.Id,
-                    Status = c.Status.GetDisplayName()
-                }).ToList();
-                var availableCourtSlots = await courtGroupService.GetAvailableCourtSlotInDate(id, request.Date);
-                var response = new BookingPageResponse
-                {
-                    Id = courtGroupModel.Id,
-                    CourtSlots = courtSlotResponse,
-                    Courts = courtResponse,
-                    AvailableCourtSLots = availableCourtSlots
-                };
-                */
                 var availableCourtSlots = await courtSlotService.GetAvailableCourtSlotsOfCourtGroupInDate(id, request.Date);
                 var response = availableCourtSlots.Select(cs => new CourtSlotBookingPage
                 {
@@ -165,6 +137,28 @@ namespace SWD.BBMS.API.Controllers
                     Price = cs.Price,
                     Status = cs.Status.GetDisplayName()
                 }).ToList();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("fixed-booking-page/check-days-of-week/{id}")]
+        public async Task<IActionResult> CheckDaysOfWeekForFixedBooking(int id, [FromQuery] CheckDaysOfWeekForFixedBookingRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                var courtGroupActivityModels = await courtGroupService.GetAvailableDaysOfWeekForFixedBooking(id, request.FromTime, request.ToTime, request.Month, (int)request.Year);
+                var response = courtGroupActivityModels.Select(cga => new WeekdayActivityCourtGroupDetails
+                {
+                    Id = cga.WeekdayActivityId,
+                    Weekday = cga.WeekdayActivity.Weekday.GetDisplayName(),
+                    ActivityStatus = cga.ActivityStatus.GetDisplayName()
+                });
                 return Ok(response);
             }
             catch (Exception ex)

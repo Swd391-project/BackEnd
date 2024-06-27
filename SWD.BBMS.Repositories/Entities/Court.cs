@@ -10,6 +10,8 @@ namespace SWD.BBMS.Repositories.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        public string? Name { get; set; }
+
         public CourtStatus Status { get; set; }
 
         public DateTime CreatedDate { get; set; }

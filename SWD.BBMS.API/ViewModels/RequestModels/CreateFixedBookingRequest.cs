@@ -16,17 +16,17 @@ namespace SWD.BBMS.API.ViewModels.RequestModels
         [Required]
         public TimeOnly ToTime { get; set; }
 
-        [Required]
-        public int CourtId { get; set; }
+        //[Required]
+        //public int CourtGroupId { get; set; }
 
-        public int BookingTypeId { get; set; } = 2;
+        public int? BookingTypeId { get; set; } = 2;
+
+        public List<string> Weekdays { get; set; }
 
         public string? PhoneNumber { get; set; }
 
         public string? FullName { get; set; }
 
         public string? Note { get; set; }
-
-        public List<string> Weekdays { get; set; }
     }
 }

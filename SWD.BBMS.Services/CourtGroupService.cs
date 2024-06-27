@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Extensions;
 using SWD.BBMS.Repositories;
 using SWD.BBMS.Repositories.Entities;
 using SWD.BBMS.Repositories.Interfaces;
@@ -27,9 +28,19 @@ namespace SWD.BBMS.Services
 
         private readonly ICourtRepository courtRepository;
 
+        private readonly ICourtGroupActivityRepository courtGroupActivityRepository;
+
         private readonly IMapper mapper;
 
-        public CourtGroupService(ICourtGroupRepository courtGroupRepository, IMapper mapper, IWeekdayActivityRepository weekdayActivityRepository, ICompanyRepository companyRepository, ICourtSlotRepository courtSlotRepository, ICourtRepository courtRepository)
+        public CourtGroupService(
+            ICourtGroupRepository courtGroupRepository, 
+            IMapper mapper, 
+            IWeekdayActivityRepository weekdayActivityRepository, 
+            ICompanyRepository companyRepository, 
+            ICourtSlotRepository courtSlotRepository, 
+            ICourtRepository courtRepository, 
+            ICourtGroupActivityRepository courtGroupActivityRepository
+            )
         {
             this.courtGroupRepository = courtGroupRepository;
             this.mapper = mapper;
@@ -37,6 +48,7 @@ namespace SWD.BBMS.Services
             this.companyRepository = companyRepository;
             this.courtSlotRepository = courtSlotRepository;
             this.courtRepository = courtRepository;
+            this.courtGroupActivityRepository = courtGroupActivityRepository;
         }
 
         public async Task<bool> DeleteCourtGroup(int id)
@@ -144,6 +156,44 @@ namespace SWD.BBMS.Services
                     }
                 }
                 return availableCourtSlots;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<CourtGroupActivityModel>> GetAvailableDaysOfWeekForFixedBooking(int id, TimeOnly fromTime, TimeOnly toTime, int month, int year)
+        {
+            try
+            {
+                //var firstDayOfMonth = new DateOnly(year, month, 1);
+                var courtSlots = await courtSlotRepository.GetAvailableCourtSlotsByCourtGroupId(id);
+                var courtSlotModels = mapper.Map<List<CourtSlotModel>>(courtSlots);
+                var courts = await courtRepository.GetCourtsByCourtGroupId(id);
+                var courtModels = mapper.Map<List<CourtModel>>(courts);
+                var occupiedDaysOfWeek = new List<string>();
+                for(int i = 1; i <= 7; i++)
+                {
+                    var date = new DateOnly(year, month, i);
+                    if(GetCourtIdAvailableForBookingOfCourtGroup(courtModels, date, fromTime, toTime) == 0)
+                    {
+                        occupiedDaysOfWeek.Add(date.DayOfWeek.GetDisplayName());
+                    }
+                }
+                
+                var courtGroupActivities = await courtGroupActivityRepository.GetCourtGroupActivitiesByCourtGroupId(id);
+                var courtGroupAcivityModels = mapper.Map<List<CourtGroupActivityModel>>(courtGroupActivities);
+                foreach(var activity in courtGroupAcivityModels)
+                {
+                    if (activity.ActivityStatus == ActivityModelStatus.Close)
+                        continue;
+                    if (occupiedDaysOfWeek.Contains(activity.WeekdayActivity.Weekday.GetDisplayName()))
+                    {
+                        activity.ActivityStatus = ActivityModelStatus.Close;
+                    }
+                }
+                return courtGroupAcivityModels;
             }
             catch
             {
@@ -303,6 +353,51 @@ namespace SWD.BBMS.Services
 
                 // Set the property value
                 property.SetValue(model, value);
+            }
+        }
+
+        private int GetCourtIdAvailableForBookingOfCourtGroup(List<CourtModel> courtModels, DateOnly date, TimeOnly fromTime, TimeOnly toTime)
+        {
+            try
+            {
+                foreach (var courtModel in courtModels)
+                {
+                    if (courtModel.Bookings.IsNullOrEmpty())
+                    {
+                        return courtModel.Id;
+                    }
+                    var isOccupied = false;
+                    foreach (var bookingModel in courtModel.Bookings)
+                    {
+                        if (bookingModel.Date != date
+                            || bookingModel.Status == BookingModelStatus.Cancelled
+                            || bookingModel.Status == BookingModelStatus.Completed)
+                        {
+                            continue;
+                        }
+                        foreach (var bookingDetailModel in bookingModel.BookingDetails)
+                        {
+                            if (bookingDetailModel.CourtSlot.FromTime == fromTime
+                                || bookingDetailModel.CourtSlot.ToTime == toTime
+                                || (bookingDetailModel.CourtSlot.FromTime > fromTime && bookingDetailModel.CourtSlot.FromTime < toTime))
+                            {
+                                isOccupied = true;
+                                break;
+                            }
+                        }
+                        if (isOccupied)
+                            break;
+                    }
+                    if (!isOccupied)
+                    {
+                        return courtModel.Id;
+                    }
+                }
+                return 0;
+            }
+            catch
+            {
+                throw;
             }
         }
     }

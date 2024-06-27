@@ -20,5 +20,7 @@ namespace SWD.BBMS.Services.Interfaces
         Task<bool> DeleteCourt(int id);
 
         Task<CourtModel> GetCourtById(int id);
+
+        Task<List<CourtModel>> GetCourtsByCourtGroupId(int courtGroupId);
     }
 }

@@ -44,6 +44,23 @@ namespace SWD.BBMS.API.Controllers
             return Ok(courts);
         }
 
+        [HttpGet("court-group/{id}")]
+        public async Task<IActionResult> GetCourtsByCourtGroupId(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var courts = await courtService.GetCourtsByCourtGroupId(id);
+            var response = courts.Select(c => new CourtListResponse
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Status = c.Status.GetDisplayName()
+            });
+            return Ok(response);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateCourt([FromBody]CreateCourtRequest request)
         {
@@ -113,8 +130,8 @@ namespace SWD.BBMS.API.Controllers
             return Ok($"Court status is not deleted.");
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetCourtStatus(int id)
+        [HttpGet("details/{id}")]
+        public async Task<IActionResult> GetCourtDetails(int id)
         {
             if (!ModelState.IsValid) { return BadRequest(ModelState); }
             try

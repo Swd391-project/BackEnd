@@ -16,5 +16,7 @@ namespace SWD.BBMS.Repositories.Interfaces
         Task<PagedList<Booking>> GetBookings(int pageNumber, int pageSize);
 
         Task<Booking?> GetBookingById(int id);
+
+        Task<List<Booking>> GetBookingsByCourtGroupIdAndDate(int id, DateOnly date);
     }
 }

@@ -78,6 +78,20 @@ namespace SWD.BBMS.Services
             return new PagedList<CourtModel>(courtModels, courts.TotalCount, courts.CurrentPage, courts.PageSize);
         }
 
+        public async Task<List<CourtModel>> GetCourtsByCourtGroupId(int courtGroupId)
+        {
+            try
+            {
+                var courts = await courtRepository.GetCourtsByCourtGroupId(courtGroupId);
+                var courtModels = mapper.Map<List<CourtModel>>(courts);
+                return courtModels;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         public async Task<bool> SaveCourt(CourtModel model)
         {
             var result = false;

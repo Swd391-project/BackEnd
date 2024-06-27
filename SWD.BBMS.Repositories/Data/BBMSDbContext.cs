@@ -118,9 +118,9 @@ namespace SWD.BBMS.Repositories.Data
             modelBuilder.Entity<User>().HasData(user);
             
             modelBuilder.Entity<Booking>()
-            .HasOne(b => b.Payment)
-            .WithOne(p => p.Booking)
-            .HasForeignKey<Payment>(p => p.BookingId);
+                .HasOne(b => b.Payment)
+                .WithOne(p => p.Booking)
+                .HasForeignKey<Payment>(p => p.BookingId);
             modelBuilder.Entity<Payment>()
                 .HasIndex(p => p.BookingId)
                 .IsUnique();

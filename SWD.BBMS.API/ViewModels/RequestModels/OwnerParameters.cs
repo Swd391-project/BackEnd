@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace SWD.BBMS.API.ViewModels.RequestModels
 {
-    public class OwnerParameters : IQueryModel
+    public class OwnerParameters 
     {
         const int maxPageSize = 50;
 

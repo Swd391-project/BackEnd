@@ -16,10 +16,6 @@ namespace SWD.BBMS.Services.Mappers
         {
             CreateMap<Booking, BookingModel>()
                 //.ForMember(dest => dest.Customer, opt => opt.MapFrom(src => src.Customer))
-                //.ForMember(dest => dest.BookingDetails, opt => opt.MapFrom(src => src.BookingDetails))
-                //.ForMember(dest => dest.Payment, opt => opt.MapFrom(src => src.Payment))
-                //.ForMember(dest => dest.Court, opt => opt.MapFrom(src => src.Court))
-                //.ForMember(dest => dest.FlexibleBooking, opt => opt.MapFrom(src => src.FlexibleBooking))
                 ;
             CreateMap<User, UserModel>()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToUserModelStatus(src.Status)))
@@ -85,6 +81,7 @@ namespace SWD.BBMS.Services.Mappers
 
             CreateMap<Feedback, FeedbackModel>()
                 .ReverseMap();
+
         }
 
         private UserModelStatus MapToUserModelStatus(UserStatus status)

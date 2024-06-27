@@ -35,6 +35,24 @@ namespace SWD.BBMS.Repositories
             }
         }
 
+        public async Task<List<Booking>> GetBookingsByCourtGroupIdAndDate(int id, DateOnly date)
+        {
+            try
+            {
+                using var dbContext = new BBMSDbContext();
+                var bookings = await dbContext.Bookings
+                    .Include(b => b.Court)
+                    .Where(b => b.Court.CourtGroupId == id)
+                    .Where(b => b.Date == date)
+                    .ToListAsync();
+                return bookings;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<bool> SaveBooking(Booking booking)
         {
             var result = false;

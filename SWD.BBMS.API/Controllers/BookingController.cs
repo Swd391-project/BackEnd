@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Extensions;
 using SWD.BBMS.API.EnumParsers;
 using SWD.BBMS.API.ViewModels.RequestModels;
+using SWD.BBMS.API.ViewModels.ResponseModels;
 using SWD.BBMS.Services;
 using SWD.BBMS.Services.BusinessModels;
 using SWD.BBMS.Services.Interfaces;
@@ -67,19 +69,53 @@ namespace SWD.BBMS.API.Controllers
             }
             return Ok("Booking is not created.");
         }
-        /*
-        [HttpPost("test")]
-        public IActionResult Test([FromBody]TimeOnlyTest test)
+
+        [HttpPost("fixed/{id}")]
+        public async Task<IActionResult> CreateFixedBooking(int id, [FromBody] CreateFixedBookingRequest request)
         {
-            var toDay = test.Date.AddDays(7);
-            var weekday = toDay.DayOfWeek.ToString();
-            return Ok(new
+            if (!ModelState.IsValid)
             {
-                Date = toDay,
-                Weekday = weekday
-            });
+                return BadRequest(ModelState);
+            }
+            var result = false;
+            try
+            {
+                if (request.BookingTypeId != 2)
+                {
+                    return BadRequest("Booking type is not suitable.");
+                }
+                var userId = await jwtService.GetUserId();
+                var customerModel = new CustomerModel
+                {
+                    FullName = request.FullName,
+                    PhoneNumber = request.PhoneNumber
+                };
+                var recurrenceBooking = new RecurrenceBookingModel
+                {
+                    Month = request.Month,
+                    Year = request.Year,
+                    CourtGroupId = id,
+                    BookingTypeId = request.BookingTypeId,
+                    FromTime = request.FromTime,
+                    ToTime = request.ToTime,
+                    CreatedBy = userId,
+                    Note = request.Note,
+                    Weekdays = request.Weekdays,
+                    Customer = (request.FullName.IsNullOrEmpty() || request.PhoneNumber.IsNullOrEmpty()) ? null : customerModel
+                };
+              
+                result = await bookingService.SaveFixedBooking(recurrenceBooking);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            if (result)
+            {
+                return Ok("Fixed Booking is created.");
+            }
+            return Ok("Fixed Booking is not created.");
         }
-        */
 
         [HttpGet]
         public async Task<IActionResult> GetBookings([FromQuery] OwnerParameters ownerParameters)
@@ -89,6 +125,15 @@ namespace SWD.BBMS.API.Controllers
                 return BadRequest(ModelState);
             }
             var bookingModels = await bookingService.GetBookings(ownerParameters.PageNumber, ownerParameters.PageSize);
+            var response = bookingModels.Select(b => new BookingListResponse
+            {
+                Id = b.Id,
+                Date = b.Date,
+                FromTime = b.FromTime,
+                ToTime = b.ToTime,
+                Status = b.Status.GetDisplayName(),
+                Note = b.Note
+            });
 
             var metadata = new
             {
@@ -100,7 +145,27 @@ namespace SWD.BBMS.API.Controllers
                 bookingModels.HasPrevious
             };
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
-            return Ok(bookingModels);
+            return Ok(response);
+        }
+
+        [HttpGet("court-group/{id}")]
+        public async Task<IActionResult> GetBookingsByCourtGroupId(int id, [FromQuery] DateOnly date)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var bookingModels = await bookingService.GetBookingsByCourtGroupIdAndDate(id, date);
+            var response = bookingModels.Select(b => new BookingListResponse
+            {
+                Id = b.Id,
+                Date = b.Date,
+                FromTime = b.FromTime,
+                ToTime = b.ToTime,
+                Status = b.Status.GetDisplayName(),
+                Note = b.Note
+            });
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
@@ -135,6 +200,43 @@ namespace SWD.BBMS.API.Controllers
                 return Ok("Booking is deleted.");
             }
             return Ok("Booking is not deleted.");
+        }
+
+        [HttpGet("test")]
+        public IActionResult Test()
+        {
+            // Step 1: Define the first day of the month
+            DateOnly firstDayOfMonth = new DateOnly(2024, 6, 1);
+
+            // Step 2: Define the list of days of the week you're interested in
+            List<DayOfWeek> daysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Wednesday };
+
+            // Step 3: Get the days in the month that match the specified days of the week
+            List<DateOnly> matchingDays = GetDaysOfWeekInMonth(firstDayOfMonth, daysOfWeek);
+
+            return Ok(matchingDays);
+        }
+
+        private static List<DateOnly> GetDaysOfWeekInMonth(DateOnly firstDayOfMonth, List<DayOfWeek> daysOfWeek)
+        {
+            // List to hold the matching days
+            List<DateOnly> result = new List<DateOnly>();
+
+            // Calculate the number of days in the month
+            int daysInMonth = DateTime.DaysInMonth(firstDayOfMonth.Year, firstDayOfMonth.Month);
+
+            // Iterate over each day of the month
+            for (int day = 1; day <= daysInMonth; day++)
+            {
+                DateOnly currentDay = new DateOnly(firstDayOfMonth.Year, firstDayOfMonth.Month, day);
+
+                // Check if the current day of the week matches any in the provided list
+                if (daysOfWeek.Contains(currentDay.DayOfWeek))
+                {
+                    result.Add(currentDay);
+                }
+            }
+            return result;
         }
 
     }
