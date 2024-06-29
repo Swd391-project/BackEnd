@@ -156,6 +156,7 @@ namespace SWD.BBMS.API.Controllers
                 return BadRequest(ModelState);
             }
             var bookingModels = await bookingService.GetBookingsByCourtGroupIdAndDate(id, date);
+            
             var response = bookingModels.Select(b => new BookingListResponse
             {
                 Id = b.Id,
@@ -163,7 +164,13 @@ namespace SWD.BBMS.API.Controllers
                 FromTime = b.FromTime,
                 ToTime = b.ToTime,
                 Status = b.Status.GetDisplayName(),
-                Note = b.Note
+                Note = b.Note,
+                CreatedDate = b.CreatedDate,
+                Customer = new Customer4BookingList
+                {
+                    Id = b.CustomerId,
+                    Name = b.Customer.FullName
+                }
             });
             return Ok(response);
         }

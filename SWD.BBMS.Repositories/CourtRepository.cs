@@ -18,6 +18,24 @@ namespace SWD.BBMS.Repositories
             return await dbContext.Courts.FindAsync(id);
         }
 
+        public async Task<List<string>> GetAvailableCourtNamesByCourtGroupId(int courtGroupId)
+        {
+            var courtNames = new List<string>();
+            try
+            {
+                using var dbContext = new BBMSDbContext();
+                courtNames = await dbContext.Courts
+                    .Where(c => c.CourtGroupId == courtGroupId)
+                    .Select(c => c.Name)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return courtNames;
+        }
+
         public async Task<Court?> GetCourtById(int id)
         {
             using var dbContext = new BBMSDbContext();

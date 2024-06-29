@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 using SWD.BBMS.Repositories;
 using SWD.BBMS.Repositories.Entities;
 using SWD.BBMS.Repositories.Interfaces;
@@ -101,6 +102,7 @@ namespace SWD.BBMS.Services
                 {
                     throw new Exception("Court group with id " + model.CourtGroupId + " is not existed.");
                 }
+                model.Name = await GetCourtNameForNewCourt(model.CourtGroupId);
                 var court = mapper.Map<Court>(model);
                 result = await courtRepository.SaveCourt(court);
             }
@@ -134,6 +136,22 @@ namespace SWD.BBMS.Services
                 throw;
             }
             return result;
+        }
+
+        private async Task<string> GetCourtNameForNewCourt(int courtGroupId)
+        {
+            var courtNames = await courtRepository.GetAvailableCourtNamesByCourtGroupId(courtGroupId);
+            if (courtNames.IsNullOrEmpty())
+                return "1";
+            var courtNameInts = courtNames.Select(x => Int32.Parse(x)).Order().ToList();
+            for(int i = 1; i <= courtNameInts.Count(); i++)
+            {
+                if ( i != courtNameInts[i - 1])
+                {
+                    return i.ToString();
+                }
+            }
+            return (courtNameInts.Count() + 1).ToString();
         }
     }
 }

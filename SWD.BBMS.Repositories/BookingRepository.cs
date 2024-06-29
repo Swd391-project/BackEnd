@@ -42,6 +42,7 @@ namespace SWD.BBMS.Repositories
                 using var dbContext = new BBMSDbContext();
                 var bookings = await dbContext.Bookings
                     .Include(b => b.Court)
+                    .Include(b => b.Customer)
                     .Where(b => b.Court.CourtGroupId == id)
                     .Where(b => b.Date == date)
                     .ToListAsync();

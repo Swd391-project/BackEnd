@@ -15,5 +15,9 @@ namespace SWD.BBMS.API.ViewModels.ResponseModels
         public TimeOnly FromTime { get; set; }
 
         public TimeOnly ToTime { get; set; }
+
+        public DateTime CreatedDate { get; set; }
+
+        public Customer4BookingList Customer {  get; set; }
     }
 }

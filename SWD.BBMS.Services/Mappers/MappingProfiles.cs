@@ -82,6 +82,9 @@ namespace SWD.BBMS.Services.Mappers
             CreateMap<Feedback, FeedbackModel>()
                 .ReverseMap();
 
+            CreateMap<FileRecord, FileRecordModel>()
+                .ReverseMap();
+
         }
 
         private UserModelStatus MapToUserModelStatus(UserStatus status)

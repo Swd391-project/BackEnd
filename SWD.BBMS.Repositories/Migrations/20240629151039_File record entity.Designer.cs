@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SWD.BBMS.Repositories.Data;
@@ -11,9 +12,11 @@ using SWD.BBMS.Repositories.Data;
 namespace SWD.BBMS.Repositories.Migrations
 {
     [DbContext(typeof(BBMSDbContext))]
-    partial class BBMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240629151039_File record entity")]
+    partial class Filerecordentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,25 +53,25 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "4ec5c75a-ca4c-4806-a414-0d1ef4bad491",
+                            Id = "5508a7cc-6070-436c-8200-e710498d96de",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "47e0dda7-f213-4f47-99b3-724e3c00fe86",
+                            Id = "ac6e95df-94b0-4fea-bd2a-6ee784f6baf2",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "c9959b6c-c1b2-4576-b27a-8a138c776005",
+                            Id = "a15735d0-de63-487f-ac0a-f5b135d60424",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "698c4b15-8904-4714-b694-9306ea1be70a",
+                            Id = "668262de-da9a-4793-8eff-57a014d4dd42",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -620,6 +623,9 @@ namespace SWD.BBMS.Repositories.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Url")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("FileRecord");
@@ -905,19 +911,19 @@ namespace SWD.BBMS.Repositories.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "987bf569-2e5a-4a02-a3cd-e77411260987",
-                            CreatedDate = new DateTime(2024, 6, 29, 16, 46, 47, 856, DateTimeKind.Utc).AddTicks(1381),
+                            ConcurrencyStamp = "f390d038-15ef-45ea-a14f-1c3a9f800952",
+                            CreatedDate = new DateTime(2024, 6, 29, 15, 10, 39, 246, DateTimeKind.Utc).AddTicks(5311),
                             Email = "admin@bbms.com",
                             EmailConfirmed = false,
                             FullName = "System Admin",
                             LockoutEnabled = false,
-                            ModifiedDate = new DateTime(2024, 6, 29, 16, 46, 47, 856, DateTimeKind.Utc).AddTicks(1391),
+                            ModifiedDate = new DateTime(2024, 6, 29, 15, 10, 39, 246, DateTimeKind.Utc).AddTicks(5318),
                             NormalizedUserName = "ADMIN@BBMS.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEg9bbH5AHeA+S5VF7BFCzzSPF9j1I6jViPdGRwB/rkFlnH4ulnsVKiR8aAa4LHXjA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMO84GzJm11uBr9iGj4IldZt5JhDwRN+vQr4vuBKKM03wBWlz6QzXqNS8qsaUB6Czg==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
                             Role = "Admin",
-                            SecurityStamp = "001b382d-7348-4d69-8d82-b47c14b031c2",
+                            SecurityStamp = "250083b0-34a9-403f-93b5-58957bfd56f8",
                             Status = 0,
                             TwoFactorEnabled = false,
                             UserName = "admin@bbms.com"

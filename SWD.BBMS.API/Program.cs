@@ -82,6 +82,8 @@ builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<ICourtGroupActivityRepository, CourtGroupActivityRepository>();
+builder.Services.AddScoped<IFileRecordRepository, FileRecordRepository>();
+builder.Services.AddScoped<IFileRecordService, FileRecordService>();
 
 
 

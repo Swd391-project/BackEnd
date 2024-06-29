@@ -67,6 +67,8 @@ namespace SWD.BBMS.Repositories.Data
 
         public DbSet<CourtGroupActivity> CourtGroupActivities { get; set; }
 
+        public DbSet<FileRecord> FileRecords { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
