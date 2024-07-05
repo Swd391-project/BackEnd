@@ -117,6 +117,55 @@ namespace SWD.BBMS.API.Controllers
             return Ok("Fixed Booking is not created.");
         }
 
+        [HttpPost("flexible/{id}")]
+        public async Task<IActionResult> CreateFlexibleBooking(int id, [FromBody]CreateFlexibleBookingRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = false;
+            try
+            {
+                if (request.BookingTypeId != 3)
+                {
+                    return BadRequest("Booking type is not suitable.");
+                }
+                var userId = await jwtService.GetUserId();
+                var customerModel = new CustomerModel
+                {
+                    FullName = request.FullName,
+                    PhoneNumber = request.PhoneNumber
+                };
+                var today = DateOnly.FromDateTime(DateTime.Now);
+                var firstDate = new DateOnly(request.Year, request.Month, 1);
+                var lastDate = new DateOnly(request.Year, request.Month, DateTime.DaysInMonth(request.Year, request.Month));
+                var flexibleBookingModel = new FlexibleBookingModel
+                {
+                    TotalHours = request.TotalHours,
+                    RemainingHours = request.TotalHours,
+                    IssuedDate = (today <  firstDate) ? firstDate : today,
+                    ExpiredDate = lastDate,
+                    Note = request.Note,
+                    CourtGroupId = id,
+                    CreatedBy = userId,
+                    ModifiedBy = userId,
+                    Customer = (request.FullName.IsNullOrEmpty() || request.PhoneNumber.IsNullOrEmpty()) ? null : customerModel
+                };
+                result = await bookingService.SaveFlexibleBooking(flexibleBookingModel);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            if (result)
+            {
+                return Ok("Flexible booking is created.");
+            }
+            return Ok("Flexible booking is not created.");
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetBookings([FromQuery] OwnerParameters ownerParameters)
         {
@@ -132,7 +181,14 @@ namespace SWD.BBMS.API.Controllers
                 FromTime = b.FromTime,
                 ToTime = b.ToTime,
                 Status = b.Status.GetDisplayName(),
-                Note = b.Note
+                Note = b.Note,
+                CourtId = b.CourtId,
+                CreatedDate = b.CreatedDate,
+                Customer = new Customer4BookingList
+                {
+                    Id = b.CustomerId,
+                    Name = b.Customer.FullName
+                }
             });
 
             var metadata = new
@@ -161,6 +217,7 @@ namespace SWD.BBMS.API.Controllers
             {
                 Id = b.Id,
                 Date = b.Date,
+                CourtId = b.CourtId,
                 FromTime = b.FromTime,
                 ToTime = b.ToTime,
                 Status = b.Status.GetDisplayName(),
@@ -207,43 +264,6 @@ namespace SWD.BBMS.API.Controllers
                 return Ok("Booking is deleted.");
             }
             return Ok("Booking is not deleted.");
-        }
-
-        [HttpGet("test")]
-        public IActionResult Test()
-        {
-            // Step 1: Define the first day of the month
-            DateOnly firstDayOfMonth = new DateOnly(2024, 6, 1);
-
-            // Step 2: Define the list of days of the week you're interested in
-            List<DayOfWeek> daysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Wednesday };
-
-            // Step 3: Get the days in the month that match the specified days of the week
-            List<DateOnly> matchingDays = GetDaysOfWeekInMonth(firstDayOfMonth, daysOfWeek);
-
-            return Ok(matchingDays);
-        }
-
-        private static List<DateOnly> GetDaysOfWeekInMonth(DateOnly firstDayOfMonth, List<DayOfWeek> daysOfWeek)
-        {
-            // List to hold the matching days
-            List<DateOnly> result = new List<DateOnly>();
-
-            // Calculate the number of days in the month
-            int daysInMonth = DateTime.DaysInMonth(firstDayOfMonth.Year, firstDayOfMonth.Month);
-
-            // Iterate over each day of the month
-            for (int day = 1; day <= daysInMonth; day++)
-            {
-                DateOnly currentDay = new DateOnly(firstDayOfMonth.Year, firstDayOfMonth.Month, day);
-
-                // Check if the current day of the week matches any in the provided list
-                if (daysOfWeek.Contains(currentDay.DayOfWeek))
-                {
-                    result.Add(currentDay);
-                }
-            }
-            return result;
         }
 
     }

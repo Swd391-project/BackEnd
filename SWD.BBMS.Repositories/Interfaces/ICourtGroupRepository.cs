@@ -1,4 +1,5 @@
 ﻿using SWD.BBMS.Repositories.Entities;
+using SWD.BBMS.Repositories.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace SWD.BBMS.Repositories.Interfaces
 {
     public interface ICourtGroupRepository
     {
-        Task<PagedList<CourtGroup>> GetCourtGroups(int pageNumber, int pageSize);
+        Task<PagedList<CourtGroup>> GetCourtGroups(CourtGroupParameters courtGroupParameters);
 
         Task<bool> SaveCourtGroup(CourtGroup courtGroup);
 

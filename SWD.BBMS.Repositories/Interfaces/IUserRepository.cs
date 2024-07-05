@@ -14,11 +14,11 @@ namespace SWD.BBMS.Repositories.Interfaces
 
         Task<bool> UpdateUser(User user);
 
-        User GetUserByUsername(string username);
+        Task<User?> GetUserByUsername(string username);
 
-        bool ExistsByEmail(string email);
+        Task<bool> ExistsByEmail(string email);
 
-        bool ExistsByPhoneNumber(string phoneNumber);
+        Task<bool> ExistsByPhoneNumber(string phoneNumber);
 
         Task<bool> ExistsByUserName(string userName);
 

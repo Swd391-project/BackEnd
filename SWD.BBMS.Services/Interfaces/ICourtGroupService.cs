@@ -6,12 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SWD.BBMS.Services.BusinessModels;
+using SWD.BBMS.Repositories.Parameters;
 
 namespace SWD.BBMS.Services.Interfaces
 {
     public interface ICourtGroupService
     {
-        Task<PagedList<CourtGroupModel>> GetCourtGroups(int pageNumber, int pageSize);
+        Task<PagedList<CourtGroupModel>> GetCourtGroups(CourtGroupParameters courtGroupParameters);
 
         Task<bool> SaveCourtGroup(CourtGroupModel courtGroupModel);
 

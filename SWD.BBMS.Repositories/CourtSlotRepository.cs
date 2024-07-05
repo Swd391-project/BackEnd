@@ -52,5 +52,22 @@ namespace SWD.BBMS.Repositories
             }
             return courtSlots;
         }
+
+        public async Task<List<CourtSlot>> GetCourtSlotsByCourtGroupId(int courtGroupId)
+        {
+            var courtSlots = new List<CourtSlot>();
+            try
+            {
+                using var dbContext = new BBMSDbContext();
+                courtSlots = await dbContext.CourtSlots
+                    .Where(cs => cs.CourtGroupId == courtGroupId)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return courtSlots;
+        }
     }
 }

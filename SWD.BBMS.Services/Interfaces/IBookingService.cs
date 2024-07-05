@@ -20,6 +20,8 @@ namespace SWD.BBMS.Services.Interfaces
 
         Task<bool> SaveFixedBooking(RecurrenceBookingModel bookingModel);
 
+        Task<bool> SaveFlexibleBooking(FlexibleBookingModel bookingModel);
+
         Task<List<BookingModel>> GetBookingsByCourtGroupIdAndDate(int id, DateOnly date);
 
     }

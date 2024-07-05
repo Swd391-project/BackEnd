@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SWD.BBMS.Repositories.Data;
@@ -11,9 +12,11 @@ using SWD.BBMS.Repositories.Data;
 namespace SWD.BBMS.Repositories.Migrations
 {
     [DbContext(typeof(BBMSDbContext))]
-    partial class BBMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240705132041_Booking total cost")]
+    partial class Bookingtotalcost
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,25 +53,25 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "bb9387b7-7df4-4ef6-9d76-097c76c1b2a4",
+                            Id = "b6bdda0d-003a-4e90-8867-99abf539216b",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "70b1b18a-fc30-4342-8ee5-cc56868369eb",
+                            Id = "5b4193b5-4bd7-4c43-9090-0eb7c5ace529",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "e2075539-1241-4a2a-8da1-4e2d6f61c704",
+                            Id = "7fb4e29a-1b14-4d80-99e2-e6e14ec210d8",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "3bb188ac-c79c-4844-9980-c199d1ac90f5",
+                            Id = "5ddc4a87-3eac-46a0-89f0-0b02c821fe22",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -636,17 +639,12 @@ namespace SWD.BBMS.Repositories.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CourtGroupId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("integer");
@@ -662,24 +660,16 @@ namespace SWD.BBMS.Repositories.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("ModifiedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Note")
-                        .HasColumnType("text");
-
-                    b.Property<float>("RemainingHours")
-                        .HasColumnType("real");
-
-                    b.Property<int>("Status")
+                    b.Property<int>("RemainingHours")
                         .HasColumnType("integer");
 
-                    b.Property<long?>("TotalCost")
+                    b.Property<long>("TotalCost")
                         .HasColumnType("bigint");
 
-                    b.Property<float>("TotalHours")
-                        .HasColumnType("real");
+                    b.Property<int>("TotalHours")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -924,19 +914,19 @@ namespace SWD.BBMS.Repositories.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "516c404f-06d9-4bf2-b85a-c666a57c7b1d",
-                            CreatedDate = new DateTime(2024, 7, 5, 16, 32, 2, 201, DateTimeKind.Utc).AddTicks(8551),
+                            ConcurrencyStamp = "b0faf401-3ca8-4e09-8ab9-4a161426d0f2",
+                            CreatedDate = new DateTime(2024, 7, 5, 13, 20, 41, 641, DateTimeKind.Utc).AddTicks(5474),
                             Email = "admin@bbms.com",
                             EmailConfirmed = false,
                             FullName = "System Admin",
                             LockoutEnabled = false,
-                            ModifiedDate = new DateTime(2024, 7, 5, 16, 32, 2, 201, DateTimeKind.Utc).AddTicks(8567),
+                            ModifiedDate = new DateTime(2024, 7, 5, 13, 20, 41, 641, DateTimeKind.Utc).AddTicks(5481),
                             NormalizedUserName = "ADMIN@BBMS.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKb1Ni8eVnxTyqgpt+BSmCGJgOP9kxP+il0ZjUl18F20ZS9Nj8yJkhcTQ2y6nebTAg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPUF8rrq7AXDH082Ft5wSKQsnMRLnPBiScDF8D8l12n6nx3iBRVcEJ/CxeA2KS05bw==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
                             Role = "Admin",
-                            SecurityStamp = "2b1b2e43-09ce-4a23-b9f6-8c98a987f5a9",
+                            SecurityStamp = "a10a5c64-fbcc-4528-9b13-8ad6f7602efe",
                             Status = 0,
                             TwoFactorEnabled = false,
                             UserName = "admin@bbms.com"

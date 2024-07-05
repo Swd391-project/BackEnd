@@ -7,13 +7,19 @@ namespace SWD.BBMS.Services.BusinessModels
     {
         public int Id { get; set; }
 
-        public int TotalHours { get; set; }
+        public float TotalHours { get; set; }
 
-        public int RemainingHours { get; set; }
+        public float RemainingHours { get; set; }
 
         public DateOnly IssuedDate { get; set; }
 
         public DateOnly ExpiredDate { get; set; }
+
+        public BookingModelStatus Status { get; set; }
+
+        public long? TotalCost { get; set; }
+
+        public string? Note { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
@@ -26,6 +32,8 @@ namespace SWD.BBMS.Services.BusinessModels
         public int CustomerId { get; set; }
 
         public CustomerModel Customer { get; set; }
+
+        public int CourtGroupId { get; set; }
 
         public List<BookingModel>? Bookings { get; set; }
     }

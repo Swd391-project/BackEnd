@@ -14,7 +14,7 @@ namespace SWD.BBMS.Repositories.Entities
 
         public string Address { get; set; }
 
-        public float? Rate { get; set; }
+        public float Rate { get; set; } = 0;
 
         public TimeOnly StartTime { get; set; }
 

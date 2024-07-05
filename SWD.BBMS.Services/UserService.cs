@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 using SWD.BBMS.Repositories;
 using SWD.BBMS.Repositories.Entities;
 using SWD.BBMS.Repositories.Interfaces;
@@ -18,16 +19,65 @@ namespace SWD.BBMS.Services
 
         private readonly UserManager<User> userManager;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, UserManager<User> userManager)
+        private readonly SignInManager<User> signInManager;
+
+        public UserService(IUserRepository userRepository, IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager)
         {
             this.userRepository = userRepository;
             this.mapper = mapper;
             this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
-        public void CreateUser(User user)
+        public async Task<dynamic> CreateUser(UserModel userModel, string password)
         {
-            userRepository.CreateUser(user);
+            var result = false;
+            try
+            {
+                if(userModel == null)
+                    throw new NullReferenceException("User is null in create user service.");
+
+                if(string.IsNullOrWhiteSpace(password) || string.IsNullOrEmpty(password))
+                    throw new Exception("Password is empty or white space in create user service.");
+
+                //Check username
+                if (await userRepository.ExistsByUserName(userModel.UserName))
+                    throw new Exception($"Email {userModel.Email} is existed.");
+
+                //Check email
+                if (await userRepository.ExistsByEmail(userModel.Email))
+                    throw new Exception($"Email {userModel.Email} is existed.");
+
+                //Check phone number
+                if (await userRepository.ExistsByPhoneNumber(userModel.PhoneNumber))
+                    throw new Exception($"Phone number {userModel.PhoneNumber} is existed.");
+
+                var user = mapper.Map<User>(userModel);
+                var createdUser = await userManager.CreateAsync(user, password);
+
+                if (createdUser.Succeeded)
+                {
+                    var roleResult = await userManager.AddToRoleAsync(user, userModel.Role);
+
+                    if (roleResult.Succeeded)
+                    {
+                        result = true;
+                    }
+                    else
+                    {
+                        return roleResult.Errors;
+                    }
+                }
+                else
+                {
+                    return createdUser.Errors;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return result;
         }
 
         public async Task<bool> DeleteUser(string id)
@@ -70,9 +120,11 @@ namespace SWD.BBMS.Services
             }
         }
 
-        public User GetUserByUsername(string username)
+        public async Task<UserModel> GetUserByUsername(string username)
         {
-            return userRepository.GetUserByUsername(username);
+            var user = await userRepository.GetUserByUsername(username);
+            var userModel = mapper.Map<UserModel>(user);
+            return userModel;
         }
 
         public async Task<PagedList<UserModel>> GetUsers(int pageNumber, int pageSize)
@@ -92,6 +144,25 @@ namespace SWD.BBMS.Services
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public async Task<bool> LoginUser(UserModel userModel, string password)
+        {
+            var result = false;
+            try
+            {
+                var user = mapper.Map<User>(userModel);
+                var checkPassResult = await signInManager.CheckPasswordSignInAsync(user, password, false);
+                if (checkPassResult.Succeeded)
+                {
+                    result = true;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return result;
         }
 
         public async Task<bool> UpdateUser(string id, Dictionary<string, object> userModel)

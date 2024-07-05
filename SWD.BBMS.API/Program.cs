@@ -13,6 +13,7 @@ using SWD.BBMS.Repositories;
 using BadmintonRentalSWD;
 using SWD.BBMS.API.NamingPolicy;
 using SWD.BBMS.API.JsonConverter;
+using SWD.BBMS.Repositories.Helpers;
 
 var MyAllowSpecificOrigins = "myAllowSpecificOrigins";
 
@@ -84,6 +85,9 @@ builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<ICourtGroupActivityRepository, CourtGroupActivityRepository>();
 builder.Services.AddScoped<IFileRecordRepository, FileRecordRepository>();
 builder.Services.AddScoped<IFileRecordService, FileRecordService>();
+builder.Services.AddScoped<ISortHelper<CourtGroup>, SortHelper<CourtGroup>>();
+builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+builder.Services.AddScoped<IFlexibleBookingRepository, FlexibleBookingRepository>();
 
 
 

@@ -22,6 +22,8 @@ namespace SWD.BBMS.Repositories.Entities
 
         public TimeOnly ToTime { get; set; }
 
+        public long TotalCost { get; set; }
+
         public TimeOnly? CheckinTime { get; set; }
 
         public TimeOnly? CheckoutTime { get; set; }

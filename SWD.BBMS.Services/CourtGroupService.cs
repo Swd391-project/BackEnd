@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Extensions;
 using SWD.BBMS.Repositories;
 using SWD.BBMS.Repositories.Entities;
 using SWD.BBMS.Repositories.Interfaces;
+using SWD.BBMS.Repositories.Parameters;
 using SWD.BBMS.Services.BusinessModels;
 using SWD.BBMS.Services.Interfaces;
 using System;
@@ -215,9 +216,9 @@ namespace SWD.BBMS.Services
             }
         }
 
-        public async Task<PagedList<CourtGroupModel>> GetCourtGroups(int pageNumber, int pageSize)
+        public async Task<PagedList<CourtGroupModel>> GetCourtGroups(CourtGroupParameters courtGroupParameters)
         {
-            var courtGroups = await courtGroupRepository.GetCourtGroups(pageNumber, pageSize);
+            var courtGroups = await courtGroupRepository.GetCourtGroups(courtGroupParameters);
             var courtGroupModels = mapper.Map<PagedList<CourtGroupModel>>(courtGroups);
             return new PagedList<CourtGroupModel>(courtGroupModels, courtGroups.TotalCount, courtGroups.CurrentPage, courtGroups.PageSize);
         }

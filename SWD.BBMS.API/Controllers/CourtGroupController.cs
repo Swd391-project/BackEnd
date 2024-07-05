@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Extensions;
 using SWD.BBMS.API.ViewModels.RequestModels;
 using SWD.BBMS.API.ViewModels.ResponseModels;
 using SWD.BBMS.Repositories.Entities;
+using SWD.BBMS.Repositories.Parameters;
 using SWD.BBMS.Services;
 using SWD.BBMS.Services.BusinessModels;
 using SWD.BBMS.Services.Interfaces;
@@ -31,13 +32,13 @@ namespace SWD.BBMS.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCourtGroups([FromQuery]OwnerParameters ownerParameters)
+        public async Task<IActionResult> GetCourtGroups([FromQuery]CourtGroupParameters courtGroupParameters)
         {
-            var courtGroupModels = await courtGroupService.GetCourtGroups(ownerParameters.PageNumber, ownerParameters.PageSize);
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            var courtGroupModels = await courtGroupService.GetCourtGroups(courtGroupParameters);
             var metadata = new
             {
                 courtGroupModels.TotalCount,
@@ -130,6 +131,30 @@ namespace SWD.BBMS.API.Controllers
             {
                 var availableCourtSlots = await courtSlotService.GetAvailableCourtSlotsOfCourtGroupInDate(id, request.Date);
                 var response = availableCourtSlots.Select(cs => new CourtSlotBookingPage
+                {
+                    Id = cs.Id,
+                    FromTime = cs.FromTime,
+                    ToTime = cs.ToTime,
+                    Price = cs.Price,
+                    Status = cs.Status.GetDisplayName()
+                }).ToList();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("fixed-booking-page/{id}")]
+        public async Task<IActionResult> LoadFixedBookingPageByCourtGroup(int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                var courtSlots = await courtSlotService.GetCourtSlotsOfCourtGroup(id);
+                var response = courtSlots.Select(cs => new CourtSlotBookingPage
                 {
                     Id = cs.Id,
                     FromTime = cs.FromTime,

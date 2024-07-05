@@ -71,7 +71,9 @@ namespace SWD.BBMS.Services.Mappers
                 .ReverseMap();
 
             CreateMap<FlexibleBooking, FlexibleBookingModel>()
-                .ReverseMap();
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToBookingModelStatus(src.Status)))
+                .ReverseMap()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToBookingStatus(src.Status)));
 
             CreateMap<Company, CompanyModel>()
                 .ReverseMap();
@@ -271,6 +273,8 @@ namespace SWD.BBMS.Services.Mappers
                     return BookingStatus.Completed;
                 case BookingModelStatus.Deleted:
                     return BookingStatus.Deleted;
+                case BookingModelStatus.Expired:
+                    return BookingStatus.Expired;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled booking status.");
             }
@@ -290,6 +294,8 @@ namespace SWD.BBMS.Services.Mappers
                     return BookingModelStatus.Completed;
                 case BookingStatus.Deleted:
                     return BookingModelStatus.Deleted;
+                case BookingStatus.Expired:
+                    return BookingModelStatus.Expired;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(status), status, "Unhandled booking status.");
             }

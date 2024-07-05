@@ -26,11 +26,23 @@ namespace SWD.BBMS.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCourts([FromQuery]OwnerParameters ownerParameters)
         {
-            var courts = await courtService.GetCourts(ownerParameters.PageNumber, ownerParameters.PageSize);
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            var courts = await courtService.GetCourts(ownerParameters.PageNumber, ownerParameters.PageSize);
+            var response = courts.Select(c => new CourtListResponse
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Status = c.Status.GetDisplayName(),
+                CreatedDate = c.CreatedDate,
+                CourtGroup = new CourtGroup4CourtList
+                {
+                    Id = c.CourtGroupId,
+                    Name = c.CourtGroup.Name
+                }
+            }).ToList();
             var metadata = new
             {
                 courts.TotalCount,
@@ -41,8 +53,9 @@ namespace SWD.BBMS.API.Controllers
                 courts.HasPrevious
             };
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
-            return Ok(courts);
+           return Ok(response);
         }
+
 
         [HttpGet("court-group/{id}")]
         public async Task<IActionResult> GetCourtsByCourtGroupId(int id)
@@ -56,8 +69,14 @@ namespace SWD.BBMS.API.Controllers
             {
                 Id = c.Id,
                 Name = c.Name,
-                Status = c.Status.GetDisplayName()
-            });
+                Status = c.Status.GetDisplayName(),
+                CreatedDate = c.CreatedDate,
+                CourtGroup = new CourtGroup4CourtList
+                {
+                    Id = c.CourtGroupId,
+                    Name = c.CourtGroup.Name
+                }
+            }).ToList();
             return Ok(response);
         }
 

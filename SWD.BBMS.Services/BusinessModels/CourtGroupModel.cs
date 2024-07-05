@@ -11,11 +11,7 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public string Address { get; set; }
 
-        public float? Rate { get; set; }
-
-        public string FromDay { get; set; }
-
-        public string ToDay { get; set; }
+        public float Rate { get; set; } = 0;
 
         public TimeOnly StartTime { get; set; }
 

@@ -48,7 +48,7 @@ namespace SWD.BBMS.Repositories
             try
             {
                 using var dbContext = new BBMSDbContext();
-                courts = await PagedList<Court>.ToPagedList(dbContext.Courts.OrderBy(c => c.Id), pageNumber, pageSize);
+                courts = await PagedList<Court>.ToPagedList(dbContext.Courts.Include(c => c.CourtGroup).OrderBy(c => c.Id), pageNumber, pageSize);
             }
             catch (Exception ex)
             {
@@ -64,7 +64,10 @@ namespace SWD.BBMS.Repositories
             {
                 using var dbContext = new BBMSDbContext();
                 courts = await dbContext.Courts
-                    .Include(c => c.Bookings).ThenInclude(b => b.BookingDetails).ThenInclude(bd => bd.CourtSlot)
+                    .Include(c => c.CourtGroup)
+                    .Include(c => c.Bookings)
+                    .ThenInclude(b => b.BookingDetails)
+                    .ThenInclude(bd => bd.CourtSlot)
                     .Where(c => c.CourtGroupId == courtGroupId).ToListAsync();
             }
             catch (Exception ex)

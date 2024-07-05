@@ -6,7 +6,9 @@ namespace SWD.BBMS.Services.Interfaces
 {
     public interface IUserService
     {
-        void CreateUser(User user);
+        Task<bool> LoginUser(UserModel user, string password);
+
+        Task<dynamic> CreateUser(UserModel userModel, string password);
 
         Task<UserModel>? GetUserById(string id);
 
@@ -14,7 +16,7 @@ namespace SWD.BBMS.Services.Interfaces
 
         Task<bool> UpdateUser(string id, Dictionary<string, object> userModel);
 
-        User GetUserByUsername(string username);
+        Task<UserModel> GetUserByUsername(string username);
 
         Task<bool> DeleteUser(string id);
     }

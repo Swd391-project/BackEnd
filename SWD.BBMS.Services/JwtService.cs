@@ -8,6 +8,7 @@ using System.Text;
 using SWD.BBMS.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using SWD.BBMS.Services.BusinessModels;
 
 namespace SWD.BBMS.Services
 {
@@ -30,7 +31,7 @@ namespace SWD.BBMS.Services
             //_symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SigningKey"]));
         }
 
-        public string GenerateJwtToken(User user)
+        public string GenerateJwtToken(UserModel user)
         {
             var claims = new List<Claim> { 
                 new Claim(ClaimTypes.NameIdentifier, user.UserName),

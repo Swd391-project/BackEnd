@@ -18,6 +18,9 @@ namespace SWD.BBMS.Services.BusinessModels
         public TimeOnly FromTime { get; set; }
 
         public TimeOnly ToTime { get; set; }
+
+        public long TotalCost { get; set; }
+
         public TimeOnly? CheckinTime { get; set; }
         public TimeOnly? CheckoutTime { get; set; }
 

@@ -10,13 +10,19 @@ namespace SWD.BBMS.Repositories.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public int TotalHours { get; set; }
+        public float TotalHours { get; set; }
 
-        public int RemainingHours { get; set; }
+        public float RemainingHours { get; set; }
 
         public DateOnly IssuedDate { get; set; }
 
         public DateOnly ExpiredDate { get; set; }
+
+        public BookingStatus Status { get; set; }
+
+        public long? TotalCost { get; set; }
+
+        public string? Note {  get; set; }
 
         public DateTime CreatedDate { get; set; }
 
@@ -29,6 +35,8 @@ namespace SWD.BBMS.Repositories.Entities
         public int CustomerId { get; set; }
 
         public Customer Customer { get; set; }
+
+        public int CourtGroupId { get; set; }
 
         public ICollection<Booking>? Bookings { get; set; }
     }

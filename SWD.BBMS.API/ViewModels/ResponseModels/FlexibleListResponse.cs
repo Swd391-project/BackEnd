@@ -4,9 +4,9 @@
     {
         public int Id { get; set; }
 
-        public int TotalHours { get; set; }
+        public float TotalHours { get; set; }
 
-        public int RemainingHours { get; set; }
+        public float RemainingHours { get; set; }
 
         public DateOnly IssuedDate { get; set; }
 

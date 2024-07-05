@@ -2,7 +2,9 @@
 using Microsoft.IdentityModel.Tokens;
 using SWD.BBMS.Repositories.Data;
 using SWD.BBMS.Repositories.Entities;
+using SWD.BBMS.Repositories.Helpers;
 using SWD.BBMS.Repositories.Interfaces;
+using SWD.BBMS.Repositories.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,14 @@ namespace SWD.BBMS.Repositories
 {
     public class CourtGroupRepository : ICourtGroupRepository
     {
+
+        private ISortHelper<CourtGroup> sortHelper;
+
+        public CourtGroupRepository(ISortHelper<CourtGroup> sortHelper)
+        {
+            this.sortHelper = sortHelper;
+        }
+
         public async Task<CourtGroup?> FindCourtGroup(int id)
         {
             using var dbContext = new BBMSDbContext();
@@ -29,19 +39,43 @@ namespace SWD.BBMS.Repositories
                 .FirstOrDefaultAsync(cg => cg.Id == id);
         }
 
-        public async Task<PagedList<CourtGroup>> GetCourtGroups(int pageNumber, int pageSize)
+        public async Task<PagedList<CourtGroup>> GetCourtGroups(CourtGroupParameters courtGroupParameters)
         {
-            var courtGroups = new PagedList<CourtGroup>();
             try
             {
                 using var dbContext = new BBMSDbContext();
-                courtGroups = await PagedList<CourtGroup>.ToPagedList(dbContext.CourtGroups, pageNumber, pageSize);
+                var courtGroups = dbContext.CourtGroups.AsQueryable();
+
+                // Filtering
+                if (!string.IsNullOrWhiteSpace(courtGroupParameters.Name))
+                {
+                    courtGroups = courtGroups.Where(cg => cg.Name.ToLower().Contains(courtGroupParameters.Name.Trim().ToLower()));
+                }
+                if (courtGroupParameters.Rate > 0)
+                {
+                    courtGroups = courtGroups.Where(cg => cg.Rate >=  courtGroupParameters.Rate);
+                }
+
+                // Searching by name
+                SearchByName(ref courtGroups, courtGroupParameters.SearchName);
+
+                //Sorting 
+                var sortedCourtGroups = sortHelper.ApplySort(courtGroups, courtGroupParameters.OrderBy);
+
+                return await PagedList<CourtGroup>
+                    .ToPagedList(sortedCourtGroups, courtGroupParameters.PageNumber, courtGroupParameters.PageSize);
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-            return courtGroups;
+        }
+
+        private void SearchByName(ref IQueryable<CourtGroup> courtGroups, string searchName)
+        {
+            if (!courtGroups.Any() || string.IsNullOrWhiteSpace(searchName))
+                return;
+            courtGroups = courtGroups.Where(cg => cg.Name.ToLower().Contains(searchName.Trim().ToLower()));
         }
 
         public async Task<bool> SaveCourtGroup(CourtGroup courtGroup)

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SWD.BBMS.API.ViewModels.ResponseModels;
 using SWD.BBMS.API.ViewModels.RequestModels;
+using SWD.BBMS.Services.BusinessModels;
 
 namespace SWD.BBMS.API.Controllers
 {
@@ -22,11 +23,16 @@ namespace SWD.BBMS.API.Controllers
 
         private readonly SignInManager<User> signInManager;
 
-        public AuthenticationController(UserManager<User> userManager, IJwtService jwtService, SignInManager<User> signInManager)
+        private readonly IUserService userService;
+
+        private List<string> Roles { get; set; } = new List<string> { "admin", "manager", "staff", "customer" };
+
+        public AuthenticationController(UserManager<User> userManager, IJwtService jwtService, SignInManager<User> signInManager, IUserService userService)
         {
             this.userManager = userManager;
             this.jwtService = jwtService;
             this.signInManager = signInManager;
+            this.userService = userService;
         }
 
         [HttpPost("register")]
@@ -38,8 +44,12 @@ namespace SWD.BBMS.API.Controllers
                 {
                     return BadRequest(ModelState);
                 }
+                if (!Roles.Contains(register.Role.Trim().ToLower()))
+                {
+                    return BadRequest($"Invalid role: {register.Role}.");
+                }
                 var createdBy = await jwtService.GetUserId();
-                var user = new User
+                var user = new UserModel
                 {
                     FullName = register.FullName,
                     UserName = register.Email.IsNullOrEmpty() ? register.PhoneNumber : register.Email,
@@ -50,34 +60,23 @@ namespace SWD.BBMS.API.Controllers
                     ModifiedBy = createdBy
                 };
 
-                var createdUser = await userManager.CreateAsync(user, register.Password);
-
-                if (createdUser.Succeeded)
+                var result = await userService.CreateUser(user, register.Password);
+                if(result != true)
                 {
-                    var roleResult = await userManager.AddToRoleAsync(user, register.Role);
-
-                    if (roleResult.Succeeded)
-                    {
-                        var jwtToken = jwtService.GenerateJwtToken(user);
-                        var tokenResponse = new TokenResponse
-                        {
-                            Token = jwtToken,
-                            FullName = user.FullName,
-                            Role = user.Role,
-                            Image = user.Image,
-                            PhoneNumber = user.PhoneNumber
-                        };
-                        return Ok(tokenResponse);
-                    }
-                    else
-                    {
-                        return BadRequest(roleResult.Errors);
-                    }
+                    return BadRequest(result);
                 }
-                else
+                var newUser = await userService.GetUserByUsername(user.UserName);
+                var jwtToken = jwtService.GenerateJwtToken(user);
+                var tokenResponse = new TokenResponse
                 {
-                    return BadRequest(createdUser.Errors);
-                }
+                    Token = jwtToken,
+                    Id = newUser.Id,
+                    FullName = user.FullName,
+                    Role = user.Role,
+                    Image = user.Image,
+                    PhoneNumber = user.PhoneNumber
+                };
+                return Ok(tokenResponse);
             }
             catch (Exception ex)
             {
@@ -94,13 +93,13 @@ namespace SWD.BBMS.API.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                var user = await userManager.Users.FirstOrDefaultAsync(u => u.UserName.Equals(loginRequest.Username.Trim()));
+                var user = await userService.GetUserByUsername(loginRequest.Username.Trim());
                 if (user == null)
                 {
                     return Unauthorized("Invalid username.");
                 }
-                var result = await signInManager.CheckPasswordSignInAsync(user, loginRequest.Password, false);
-                if (!result.Succeeded)
+                var result = await userService.LoginUser(user, loginRequest.Password);
+                if (!result)
                 {
                     return Unauthorized("Wrong password.");
                 }
@@ -108,6 +107,7 @@ namespace SWD.BBMS.API.Controllers
                 var tokenResponse = new TokenResponse
                 {
                     Token = jwtToken,
+                    Id = user.Id,
                     FullName = user.FullName,
                     Role = user.Role,
                     Image = user.Image,

@@ -16,37 +16,6 @@ namespace SWD.BBMS.API.Controllers
             this.fileRecordService = fileRecordService;
         }
 
-        [HttpGet("current-path")]
-        public async Task<IActionResult> GetCurrentPath()
-        {
-            var request = HttpContext.Request;
-            var fullUrl = $"{request.Scheme}://{request.Host}{request.Path}";
-            var response = new
-            {
-                Scheme = request.Scheme,
-                Host = request.Host,
-                PathBase = request.PathBase,
-                Path = request.Path,
-                QueryString = request.QueryString
-            };
-            // Example: Log the full URL
-            Console.WriteLine($"Full URL: {fullUrl}");
-            var urlSegments = request.Path.ToString().Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-            var newPath = "";
-            foreach ( var segment in urlSegments)
-            {
-                if(segment.Equals("file-record"))
-                {
-                    newPath += "/" + segment + "/" + "download";
-                    break;
-                }
-                newPath += "/" + segment;
-            }
-            var downloadUrl = $"{request.Scheme}://{request.Host}{request.PathBase}{newPath}";
-            // Your existing file handling logic
-            return Ok(new { downloadUrl });
-        }
-
         [HttpPost("upload")]
         public async Task<IActionResult> UploadFile (IFormFile file)
         {

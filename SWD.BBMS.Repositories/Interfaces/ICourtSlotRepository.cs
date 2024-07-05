@@ -12,5 +12,7 @@ namespace SWD.BBMS.Repositories.Interfaces
         Task<List<CourtSlot>> GetAvailableCourtSlotsByCourtGroupId(int courtGroupId);
 
         Task<List<CourtSlot>> GetAvailableCourtSlotsByCourtGroupIdWithTime(int courtGroupId, TimeOnly fromTime, TimeOnly toTime);
+
+        Task<List<CourtSlot>> GetCourtSlotsByCourtGroupId(int courtGroupId);
     }
 }

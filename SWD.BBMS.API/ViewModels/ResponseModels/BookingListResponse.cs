@@ -12,6 +12,8 @@ namespace SWD.BBMS.API.ViewModels.ResponseModels
 
         public string Status { get; set; }
 
+        public int CourtId { get; set; }
+
         public TimeOnly FromTime { get; set; }
 
         public TimeOnly ToTime { get; set; }

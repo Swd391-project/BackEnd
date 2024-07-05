@@ -9,5 +9,9 @@ namespace SWD.BBMS.API.ViewModels.ResponseModels
         public string? Name { get; set; }
 
         public string Status {  get; set; }
+
+        public DateTime CreatedDate { get; set; }
+
+        public CourtGroup4CourtList CourtGroup { get; set; }
     }
 }

@@ -20,6 +20,6 @@ namespace SWD.BBMS.API.ViewModels.RequestModels
         [Required]
         public string Password { get; set; }
 
-        public string? Role { get; set; }
+        public string? Role { get; set; } = "Customer";
     }
 }

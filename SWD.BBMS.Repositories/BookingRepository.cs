@@ -26,7 +26,7 @@ namespace SWD.BBMS.Repositories
             {
                 using var dbContext = new BBMSDbContext();
                 var bookings = await PagedList<Booking>
-                    .ToPagedList(dbContext.Bookings, pageNumber, pageSize);
+                    .ToPagedList(dbContext.Bookings.Include(b => b.Customer), pageNumber, pageSize);
                 return bookings;
             }
             catch (Exception ex)

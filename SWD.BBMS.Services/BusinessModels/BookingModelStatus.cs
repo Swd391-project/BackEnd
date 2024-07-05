@@ -18,6 +18,8 @@ namespace SWD.BBMS.Services.BusinessModels
         [Display(Name = "In Progress")]
         InProgress,
         [Display(Name = "Deleted")]
-        Deleted
+        Deleted,
+        [Display(Name = "Expired")]
+        Expired
     }
 }

@@ -24,12 +24,12 @@ namespace SWD.BBMS.Repositories
             }
         }
 
-        public bool ExistsByEmail(string email)
+        public async Task<bool> ExistsByEmail(string email)
         {
             try
             {
                 using var dbContext = new BBMSDbContext();
-                var result = dbContext.Users.Any(u => u.Email.Equals(email));
+                var result = await dbContext.Users.AnyAsync(u => u.Email.Equals(email));
                 return result;
             }
             catch (Exception ex)
@@ -52,12 +52,12 @@ namespace SWD.BBMS.Repositories
             }
         }
 
-        public bool ExistsByPhoneNumber(string phoneNumber)
+        public async Task<bool> ExistsByPhoneNumber(string phoneNumber)
         {
             try
             {
                 using var dbContext = new BBMSDbContext();
-                var result = dbContext.Users.Any(u => u.PhoneNumber.Equals(phoneNumber));
+                var result = await dbContext.Users.AnyAsync(u => u.PhoneNumber.Equals(phoneNumber));
                 return result;
             }
             catch (Exception ex)
@@ -93,10 +93,10 @@ namespace SWD.BBMS.Repositories
             }
         }
 
-        public User GetUserByUsername(string username)
+        public async Task<User?> GetUserByUsername(string username)
         {
             using var dbContext = new BBMSDbContext();
-            return dbContext.Users.FirstOrDefault(u => u.UserName.Equals(username));
+            return await dbContext.Users.FirstOrDefaultAsync(u => u.UserName.Equals(username));
         }
 
         public async Task<PagedList<User>> GetUsers(int pageNumber, int pageSize)

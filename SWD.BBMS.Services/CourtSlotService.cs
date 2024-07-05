@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SWD.BBMS.Services
 {
@@ -64,6 +65,21 @@ namespace SWD.BBMS.Services
                     continue;
                 }
                 return availableSlotModels;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<CourtSlotModel>> GetCourtSlotsOfCourtGroup(int courtGroupId)
+        {
+            try
+            {
+                var courtSlots = await courtSlotRepository
+                    .GetAvailableCourtSlotsByCourtGroupId(courtGroupId);
+                var courtSlotModels = mapper.Map<List<CourtSlotModel>>(courtSlots);
+                return courtSlotModels;
             }
             catch
             {

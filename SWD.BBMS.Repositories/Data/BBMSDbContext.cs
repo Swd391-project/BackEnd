@@ -181,6 +181,15 @@ namespace SWD.BBMS.Repositories.Data
                 //.HasColumnType("datetime")
                 .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
 
+            modelBuilder.Entity<FlexibleBooking>()
+                .Property(u => u.CreatedDate)
+                //.HasColumnType("datetime")
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+            modelBuilder.Entity<FlexibleBooking>()
+                .Property(u => u.ModifiedDate)
+                //.HasColumnType("datetime")
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+
             modelBuilder.Entity<CourtGroupActivity>()
                 .HasKey(cga => new {cga.CourtGroupId, cga.WeekdayActivityId});
             modelBuilder.Entity<CourtGroupActivity>()
