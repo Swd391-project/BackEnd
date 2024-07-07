@@ -75,7 +75,7 @@ namespace SWD.BBMS.API.Controllers
                     CreatedBy = userId,
                     ModifiedBy = userId
                 };
-                result = await courtGroupService.SaveCourtGroup(courtGroupModel);
+                result = await courtGroupService.SaveCourtGroup(courtGroupModel, (long)request.Price);
             }
             catch (Exception ex)
             {

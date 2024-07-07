@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using AutoMapper.Configuration.Annotations;
 using AutoMapper.Configuration.Conventions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using SWD.BBMS.Repositories;
@@ -488,6 +491,152 @@ namespace SWD.BBMS.Services
                     if (!result)
                         throw new Exception("Something wrong when save new flexible booking with new customer in create flexible booking service.");
                 }
+                
+            }
+            catch
+            {
+                throw;
+            }
+            return result;
+        }
+
+        public async Task<bool> CheckinBooking(int id, string userId)
+        {
+            var result = false;
+            try
+            {
+                if (id <= 0)
+                {
+                    throw new Exception("Invalid id in checkin booking service.");
+                }
+                var booking = await bookingRepository.GetBookingById(id);
+                   
+                if (booking == null)
+                    throw new Exception($"Booking with id {id} not found in check-in booking service.");
+                var bookingModel = mapper.Map<BookingModel>(booking);
+                if(bookingModel.Status == BookingModelStatus.Cancelled)
+                {
+                    throw new Exception($"Booking with id {id} is cancelled.");
+                }
+                if (bookingModel.Status == BookingModelStatus.Deleted)
+                {
+                    throw new Exception($"Booking with id {id} is deleted.");
+                }
+                var currentDateTime = DateTime.Now;
+
+                // Check date
+                var today = DateOnly.FromDateTime(currentDateTime);
+                if (bookingModel.Date > today)
+                    throw new Exception($"This booking date is {bookingModel.Date}. It's not yet your booked date, check-in is not possible.");
+                if (bookingModel.Date < today)
+                {
+                    if(bookingModel.Status != BookingModelStatus.Cancelled && bookingModel.Status != BookingModelStatus.Completed)
+                    {
+                        booking.Status = BookingStatus.Cancelled;
+                        booking.ModifiedDate = DateTime.UtcNow;
+                        booking.ModifiedBy = userId;
+                        var updateResult = await bookingRepository.UpdateBooking(booking);
+                        if (!updateResult)
+                            throw new Exception($"Something went wrong when updating booking in check-in service.");
+                    }
+                    throw new Exception($"This booking date is {bookingModel.Date}. The date you booked has passed, the booking has been canceled so check-in cannot be performed.");
+                }
+
+                // Check time
+                var currentTime = TimeOnly.FromDateTime(currentDateTime);
+                if (currentTime < bookingModel.FromTime)
+                    throw new Exception($"This booking starts from {bookingModel.FromTime}. It's not yet your booked time yet, check-in is not possible.");
+
+                if(currentTime > bookingModel.FromTime && currentTime < bookingModel.ToTime)
+                {
+                    // If booking is paid, anytime between from time and to time is accept
+                    if (!bookingModel.IsPaid)
+                    {
+                        // If booking is not paid, wait at most 15 minutes from booking start time
+                        TimeSpan difference = currentTime - bookingModel.FromTime;
+                        if (currentTime < bookingModel.FromTime)
+                        {
+                            // Adjust for the next day by adding 24 hours to endTime
+                            var adjustedEndTime = currentTime.AddHours(24);
+                            difference = adjustedEndTime - bookingModel.FromTime;
+                        }
+                        else
+                        {
+                            // Normal subtraction if endTime is after startTime
+                            difference = currentTime - bookingModel.FromTime;
+                        }
+                        if (difference > TimeSpan.FromMinutes(15))
+                        {
+                            if (bookingModel.Status != BookingModelStatus.Cancelled && bookingModel.Status != BookingModelStatus.Completed)
+                            {
+                                booking.Status = BookingStatus.Cancelled;
+                                booking.ModifiedDate = DateTime.UtcNow;
+                                booking.ModifiedBy = userId;
+                                var updateResult = await bookingRepository.UpdateBooking(booking);
+                                if (!updateResult)
+                                    throw new Exception($"Something went wrong when updating booking in check-in service.");
+                            }
+                            throw new Exception($"This booking start from {bookingModel.FromTime}. Now is {currentTime.ToString("HH:mm")}, We only hold the court for you for a maximum of 15 minutes from start time.");
+                        }
+                    }
+                    booking.Status = BookingStatus.InProgress;
+                    booking.ModifiedDate = DateTime.UtcNow;
+                    booking.ModifiedBy = userId;
+                    booking.CheckinBy = userId;
+                    booking.CheckinTime = DateTime.UtcNow;
+                    result = await bookingRepository.UpdateBooking(booking);
+                    //return result;
+                }
+                else
+                {
+                    throw new Exception($"This booking end at {bookingModel.ToTime}. Now is {currentTime.ToString("HH:mm")}, This booking's playing time has ended.");
+                }
+
+            }
+            catch
+            {
+                throw;
+            }
+            return result;
+        }
+
+        public async Task<bool> CheckoutBooking(int id, string userId)
+        {
+            var result = false;
+            try
+            {
+                if(id <= 0)
+                    throw new Exception("Invalid id in checkin booking service.");
+                if(string.IsNullOrWhiteSpace(userId) || string.IsNullOrEmpty(userId))
+                    throw new Exception("Invalid user id in checkin booking service.");
+                var booking = await bookingRepository.GetBookingById(id);
+                if (booking == null)
+                    throw new Exception($"Booking with id {id} not found in check-in booking service.");
+                var bookingModel = mapper.Map<BookingModel>(booking);
+                if (bookingModel.Status == BookingModelStatus.Cancelled)
+                {
+                    throw new Exception($"Booking with id {id} is cancelled.");
+                }
+                if (bookingModel.Status == BookingModelStatus.Deleted)
+                {
+                    throw new Exception($"Booking with id {id} is deleted.");
+                }
+                if (bookingModel.Status == BookingModelStatus.Completed)
+                {
+                    throw new Exception($"Booking with id {id} is completed.");
+                }
+                if (bookingModel.Status != BookingModelStatus.InProgress)
+                {
+                    throw new Exception($"Booking with id {id} is not checked-in yet, check-out is not possible.");
+                }
+                booking.Status = BookingStatus.Completed;
+                booking.ModifiedBy = userId;
+                booking.ModifiedDate = DateTime.UtcNow;
+                booking.CheckoutBy = userId;
+                booking.CheckoutTime = DateTime.UtcNow;
+                result = await bookingRepository.UpdateBooking(booking);
+                if (!result)
+                    throw new Exception($"Something went wrong when updating booking in check-out service.");
                 
             }
             catch

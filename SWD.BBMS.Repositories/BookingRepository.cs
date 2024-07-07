@@ -17,7 +17,9 @@ namespace SWD.BBMS.Repositories
         public async Task<Booking?> GetBookingById(int id)
         {
             using var dbContext = new BBMSDbContext();
-            return await dbContext.Bookings.FirstOrDefaultAsync(s => s.Id == id);
+            return await dbContext.Bookings
+                .Include(b=> b.BookingType)
+                .FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task<PagedList<Booking>> GetBookings(int pageNumber, int pageSize)

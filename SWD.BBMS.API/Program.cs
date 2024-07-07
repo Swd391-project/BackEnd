@@ -88,6 +88,9 @@ builder.Services.AddScoped<IFileRecordService, FileRecordService>();
 builder.Services.AddScoped<ISortHelper<CourtGroup>, SortHelper<CourtGroup>>();
 builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 builder.Services.AddScoped<IFlexibleBookingRepository, FlexibleBookingRepository>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
+builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 
 
 

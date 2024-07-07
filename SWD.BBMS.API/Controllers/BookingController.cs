@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Extensions;
 using SWD.BBMS.API.EnumParsers;
@@ -19,10 +20,13 @@ namespace SWD.BBMS.API.Controllers
 
         private readonly IBookingService bookingService;
 
-        public BookingController(IJwtService jwtService, IBookingService bookingService)
+        private readonly IVnPayService vnPayService;
+
+        public BookingController(IJwtService jwtService, IBookingService bookingService, IVnPayService vnPayService)
         {
             this.jwtService = jwtService;
             this.bookingService = bookingService;
+            this.vnPayService = vnPayService;
         }
 
         [HttpPost("{id}")]
@@ -264,6 +268,75 @@ namespace SWD.BBMS.API.Controllers
                 return Ok("Booking is deleted.");
             }
             return Ok("Booking is not deleted.");
+        }
+
+        [HttpPut("check-in/{id}")]
+        [Authorize(Roles = "Staff")]
+        public async Task<IActionResult> CheckinBooking(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = false;
+            try
+            {
+                var userId = await jwtService.GetUserId();  
+                if (userId == null)
+                {
+                    return Unauthorized("User is not authenticated.");
+                }
+                result = await bookingService.CheckinBooking(id, userId);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            if (result)
+            {
+                return Ok("Booking is checked-in.");
+            }
+            return Ok("Booking is not checked-in.");
+        }
+
+        [HttpPut("check-out/{id}")]
+        [Authorize(Roles = "Staff")]
+        public async Task<IActionResult> CheckoutBooking(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = false;
+            try
+            {
+                var userId = await jwtService.GetUserId();
+                if (userId == null)
+                {
+                    return Unauthorized("User is not authenticated.");
+                }
+                result = await bookingService.CheckoutBooking(id, userId);
+                if (!result)
+                {
+                    return Ok("Booking is not checked-in.");
+                }
+                var bookingModel = await bookingService.GetBookingById(id);
+                if (bookingModel == null)
+                {
+                    return StatusCode(500, "Booking not found in check-out controller.");
+                }
+                var requestUrl = HttpContext.Request;
+                if (!bookingModel.IsPaid)
+                {
+                    var paymentUrl = vnPayService.CreatePaymentUrlForBooking(bookingModel, HttpContext, $"{requestUrl.Scheme}://{requestUrl.Host}");
+                    return Ok(new { paymentUrl });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            return Ok("Booking is checked-in.");
         }
 
     }

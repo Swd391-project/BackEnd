@@ -21,12 +21,15 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public long TotalCost { get; set; }
 
-        public TimeOnly? CheckinTime { get; set; }
-        public TimeOnly? CheckoutTime { get; set; }
+        public bool IsPaid { get; set; }
 
-        public int? CheckinBy { get; set; }
+        public DateTime? CheckinTime { get; set; }
 
-        public int? CheckoutBy { get; set; }
+        public DateTime? CheckoutTime { get; set; }
+
+        public string? CheckinBy { get; set; }
+
+        public string? CheckoutBy { get; set; }
 
         public DateTime CreatedDate { get; set; }
 

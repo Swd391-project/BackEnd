@@ -1,4 +1,5 @@
-﻿using SWD.BBMS.Repositories;
+﻿using Microsoft.AspNetCore.Http;
+using SWD.BBMS.Repositories;
 using SWD.BBMS.Services.BusinessModels;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,10 @@ namespace SWD.BBMS.Services.Interfaces
         Task<bool> SaveFlexibleBooking(FlexibleBookingModel bookingModel);
 
         Task<List<BookingModel>> GetBookingsByCourtGroupIdAndDate(int id, DateOnly date);
+
+        Task<bool> CheckinBooking(int id, string userId);
+
+        Task<bool> CheckoutBooking(int id, string userId);
 
     }
 }

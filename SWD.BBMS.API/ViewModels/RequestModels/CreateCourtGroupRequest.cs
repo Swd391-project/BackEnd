@@ -19,6 +19,8 @@ namespace SWD.BBMS.API.ViewModels.RequestModels
         [Required]
         public TimeOnly EndTime { get; set; }
 
+        public long? Price { get; set; } = 100000;
+
         public string? ProfileImage { get; set; }
 
         public string? CoverImage { get; set; }

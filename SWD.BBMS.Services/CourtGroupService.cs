@@ -223,7 +223,7 @@ namespace SWD.BBMS.Services
             return new PagedList<CourtGroupModel>(courtGroupModels, courtGroups.TotalCount, courtGroups.CurrentPage, courtGroups.PageSize);
         }
 
-        public async Task<bool> SaveCourtGroup(CourtGroupModel courtGroupModel)
+        public async Task<bool> SaveCourtGroup(CourtGroupModel courtGroupModel, long pricePerHour)
         {
             var result = false;
             try
@@ -249,7 +249,7 @@ namespace SWD.BBMS.Services
                 var closeTime = courtGroupModel.EndTime == time ? new TimeOnly(23, 59) : courtGroupModel.EndTime;
                 var openTime = courtGroupModel.StartTime;
                 var status = SlotStatus.Available;
-                var price = (long)100000;
+                var price = (long)((float)pricePerHour / 2);
                 do
                 {
                     var courtSlot = new CourtSlot();

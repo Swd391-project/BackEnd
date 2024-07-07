@@ -22,7 +22,7 @@ namespace BadmintonRentalSWD
             
             if (!dbContext.PaymentMethods.Any())
             {
-                var paymentMethod = new PaymentMethod
+                var paymentMethod1 = new PaymentMethod
                 {
                     MethodName = "Banking",
                     Description = "ashfksajhfskf",
@@ -31,9 +31,33 @@ namespace BadmintonRentalSWD
                     ModifiedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                     ModifiedDate = DateTime.UtcNow,
                 };
-                dbContext.PaymentMethods.AddRange(paymentMethod);
+                dbContext.PaymentMethods.AddRange(paymentMethod1);
+
+                var paymentMethod2 = new PaymentMethod
+                {
+                    MethodName = "Cash",
+                    Description = "ashfksajhfskf",
+                    CreatedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                    CreatedDate = DateTime.UtcNow,
+                    ModifiedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                    ModifiedDate = DateTime.UtcNow,
+                };
+                dbContext.PaymentMethods.AddRange(paymentMethod2);
+
+                var paymentMethod3 = new PaymentMethod
+                {
+                    MethodName = "VnPay",
+                    Description = "ashfksajhfskf",
+                    CreatedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                    CreatedDate = DateTime.UtcNow,
+                    ModifiedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                    ModifiedDate = DateTime.UtcNow,
+                };
+                dbContext.PaymentMethods.AddRange(paymentMethod3);
+
                 dbContext.SaveChanges();
             }
+            
             if (!dbContext.WeekdayActivities.Any())
             {
                 var values = Enum.GetValues(typeof(Weekday));

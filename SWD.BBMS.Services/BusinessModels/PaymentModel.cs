@@ -7,9 +7,21 @@ namespace SWD.BBMS.Services.BusinessModels
     {
         public int Id { get; set; }
 
+        public string? Name { get; set; }
+
+        public string? Description { get; set; }
+
         public DateTime Date { get; set; }
 
         public long Amount { get; set; }
+
+        public string? TransactionId { get; set; }
+
+        public bool Success { get; set; }
+
+        //public string? Token { get; set; }
+
+        //public string? VnPayResponseCode { get; set; }
 
         public int BookingId { get; set; }
 

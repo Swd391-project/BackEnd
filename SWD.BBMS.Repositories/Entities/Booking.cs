@@ -24,9 +24,11 @@ namespace SWD.BBMS.Repositories.Entities
 
         public long TotalCost { get; set; }
 
-        public TimeOnly? CheckinTime { get; set; }
+        public bool IsPaid { get; set; } = false;
 
-        public TimeOnly? CheckoutTime { get; set; }
+        public DateTime? CheckinTime { get; set; }
+
+        public DateTime? CheckoutTime { get; set; }
 
         public string? CheckinBy { get; set; }
 

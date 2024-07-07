@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SWD.BBMS.Repositories.Data;
@@ -11,9 +12,11 @@ using SWD.BBMS.Repositories.Data;
 namespace SWD.BBMS.Repositories.Migrations
 {
     [DbContext(typeof(BBMSDbContext))]
-    partial class BBMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240706171949_Payment new properties")]
+    partial class Paymentnewproperties
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,25 +53,25 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f0015d89-6728-4830-b480-22d6a976a68e",
+                            Id = "bc5f7e82-5b31-4907-a378-94b7bd85d771",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "216da692-807f-4413-8e4e-6be7c585c67e",
+                            Id = "ead4060b-4293-4ec7-ba08-d64a8b5a6c5a",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "7d3d5c82-cc6a-4bf0-bf3b-5f0b6bbb9541",
+                            Id = "a8095b48-9ab7-4406-afab-c1643ed04c01",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "c701a018-64fe-4087-99b4-1e52e72e76bd",
+                            Id = "f6b23679-695d-4a3a-86dc-1af89a0d4123",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -194,14 +197,14 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<string>("CheckinBy")
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("CheckinTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<TimeOnly?>("CheckinTime")
+                        .HasColumnType("time without time zone");
 
                     b.Property<string>("CheckoutBy")
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("CheckoutTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<TimeOnly?>("CheckoutTime")
+                        .HasColumnType("time without time zone");
 
                     b.Property<string>("Code")
                         .HasColumnType("text");
@@ -229,9 +232,6 @@ namespace SWD.BBMS.Repositories.Migrations
 
                     b.Property<TimeOnly>("FromTime")
                         .HasColumnType("time without time zone");
-
-                    b.Property<bool>("IsPaid")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("ModifiedBy")
                         .IsRequired()
@@ -939,19 +939,19 @@ namespace SWD.BBMS.Repositories.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3e4f501b-11a0-482a-9207-f24427bcb2b2",
-                            CreatedDate = new DateTime(2024, 7, 7, 14, 7, 40, 517, DateTimeKind.Utc).AddTicks(8742),
+                            ConcurrencyStamp = "55557fb9-6108-4b92-bf5d-08255b1138b1",
+                            CreatedDate = new DateTime(2024, 7, 6, 17, 19, 49, 526, DateTimeKind.Utc).AddTicks(683),
                             Email = "admin@bbms.com",
                             EmailConfirmed = false,
                             FullName = "System Admin",
                             LockoutEnabled = false,
-                            ModifiedDate = new DateTime(2024, 7, 7, 14, 7, 40, 517, DateTimeKind.Utc).AddTicks(8754),
+                            ModifiedDate = new DateTime(2024, 7, 6, 17, 19, 49, 526, DateTimeKind.Utc).AddTicks(730),
                             NormalizedUserName = "ADMIN@BBMS.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBxJRrk0pYa+e04+vVaXqaSS/NXat5R4JSVtG1/MjRlSZcO1jYAqX+I12oECR+NOIg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEElwUrBeaiepBJwwFBDbUx5uftvkYIvumqM4WUqXHTyyojRP8qsmOFmT6oir8GZQRg==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
                             Role = "Admin",
-                            SecurityStamp = "2c78046c-8a5a-4042-82a2-acbf2bff51f8",
+                            SecurityStamp = "b94f4fe0-0b3d-4807-94b8-982875568091",
                             Status = 0,
                             TwoFactorEnabled = false,
                             UserName = "admin@bbms.com"
