@@ -53,7 +53,7 @@ namespace SWD.BBMS.Repositories.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Balance = table.Column<string>(type: "text", nullable: false),
+                    Balance = table.Column<double>(type: "double precision", nullable: false),
                     PhoneNumber = table.Column<string>(type: "text", nullable: true),
                     Email = table.Column<string>(type: "text", nullable: true)
                 },
@@ -74,6 +74,21 @@ namespace SWD.BBMS.Repositories.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Customer", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FileRecord",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FileName = table.Column<string>(type: "text", nullable: false),
+                    Data = table.Column<byte[]>(type: "bytea", nullable: false),
+                    ContentType = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FileRecord", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -175,11 +190,13 @@ namespace SWD.BBMS.Repositories.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Address = table.Column<string>(type: "text", nullable: false),
-                    Rate = table.Column<float>(type: "real", nullable: true),
+                    Rate = table.Column<float>(type: "real", nullable: false),
+                    PricePerHour = table.Column<double>(type: "double precision", nullable: false),
                     StartTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     EndTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     ProfileImage = table.Column<string>(type: "text", nullable: true),
                     CoverImage = table.Column<string>(type: "text", nullable: true),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
                     CreatedBy = table.Column<string>(type: "text", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
@@ -204,7 +221,7 @@ namespace SWD.BBMS.Repositories.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Amount = table.Column<long>(type: "bigint", nullable: false),
+                    Amount = table.Column<double>(type: "double precision", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -228,15 +245,19 @@ namespace SWD.BBMS.Repositories.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    TotalHours = table.Column<int>(type: "integer", nullable: false),
-                    RemainingHours = table.Column<int>(type: "integer", nullable: false),
+                    TotalHours = table.Column<float>(type: "real", nullable: false),
+                    RemainingHours = table.Column<float>(type: "real", nullable: false),
                     IssuedDate = table.Column<DateOnly>(type: "date", nullable: false),
                     ExpiredDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    TotalCost = table.Column<double>(type: "double precision", nullable: true),
+                    Note = table.Column<string>(type: "text", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
                     CreatedBy = table.Column<string>(type: "text", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
                     ModifiedBy = table.Column<string>(type: "text", nullable: false),
-                    CustomerId = table.Column<int>(type: "integer", nullable: false)
+                    CustomerId = table.Column<int>(type: "integer", nullable: false),
+                    CourtGroupId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -245,6 +266,38 @@ namespace SWD.BBMS.Repositories.Migrations
                         name: "FK_FlexibleBooking_Customer_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "Customer",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Payment",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Amount = table.Column<double>(type: "double precision", nullable: false),
+                    TransactionId = table.Column<string>(type: "text", nullable: true),
+                    Success = table.Column<bool>(type: "boolean", nullable: false),
+                    CompanyId = table.Column<int>(type: "integer", nullable: false),
+                    PaymentMethodId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payment_Company_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Company",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Payment_PaymentMethod_PaymentMethodId",
+                        column: x => x.PaymentMethodId,
+                        principalTable: "PaymentMethod",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -361,6 +414,7 @@ namespace SWD.BBMS.Repositories.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: true),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
                     CreatedBy = table.Column<string>(type: "text", nullable: false),
@@ -413,7 +467,7 @@ namespace SWD.BBMS.Repositories.Migrations
                     FromTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     ToTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
-                    Price = table.Column<long>(type: "bigint", nullable: false),
+                    Price = table.Column<double>(type: "double precision", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
                     CreatedBy = table.Column<string>(type: "text", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
@@ -439,6 +493,7 @@ namespace SWD.BBMS.Repositories.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Content = table.Column<string>(type: "text", nullable: true),
                     Rate = table.Column<float>(type: "real", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ModifiedBy = table.Column<string>(type: "text", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -469,8 +524,9 @@ namespace SWD.BBMS.Repositories.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Price = table.Column<long>(type: "bigint", nullable: false),
+                    Price = table.Column<double>(type: "double precision", nullable: false),
                     Unit = table.Column<string>(type: "text", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -500,8 +556,10 @@ namespace SWD.BBMS.Repositories.Migrations
                     Status = table.Column<int>(type: "integer", nullable: false),
                     FromTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     ToTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
-                    CheckinTime = table.Column<TimeOnly>(type: "time without time zone", nullable: true),
-                    CheckoutTime = table.Column<TimeOnly>(type: "time without time zone", nullable: true),
+                    TotalCost = table.Column<double>(type: "double precision", nullable: false),
+                    IsPaid = table.Column<bool>(type: "boolean", nullable: false),
+                    CheckinTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CheckoutTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CheckinBy = table.Column<string>(type: "text", nullable: true),
                     CheckoutBy = table.Column<string>(type: "text", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
@@ -510,6 +568,7 @@ namespace SWD.BBMS.Repositories.Migrations
                     ModifiedBy = table.Column<string>(type: "text", nullable: false),
                     CustomerId = table.Column<int>(type: "integer", nullable: false),
                     BookingTypeId = table.Column<int>(type: "integer", nullable: false),
+                    PaymentId = table.Column<int>(type: "integer", nullable: true),
                     CourtId = table.Column<int>(type: "integer", nullable: false),
                     FlexibleBookingId = table.Column<int>(type: "integer", nullable: true)
                 },
@@ -539,6 +598,11 @@ namespace SWD.BBMS.Repositories.Migrations
                         column: x => x.FlexibleBookingId,
                         principalTable: "FlexibleBooking",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Booking_Payment_PaymentId",
+                        column: x => x.PaymentId,
+                        principalTable: "Payment",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -547,7 +611,7 @@ namespace SWD.BBMS.Repositories.Migrations
                 {
                     CourtSlotId = table.Column<int>(type: "integer", nullable: false),
                     BookingTypeId = table.Column<int>(type: "integer", nullable: false),
-                    Cost = table.Column<long>(type: "bigint", nullable: false)
+                    Cost = table.Column<double>(type: "double precision", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -590,56 +654,21 @@ namespace SWD.BBMS.Repositories.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Payment",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Amount = table.Column<long>(type: "bigint", nullable: false),
-                    BookingId = table.Column<int>(type: "integer", nullable: false),
-                    CompanyId = table.Column<int>(type: "integer", nullable: false),
-                    PaymentMethodId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Payment", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Payment_Booking_BookingId",
-                        column: x => x.BookingId,
-                        principalTable: "Booking",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Payment_Company_CompanyId",
-                        column: x => x.CompanyId,
-                        principalTable: "Company",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Payment_PaymentMethod_PaymentMethodId",
-                        column: x => x.PaymentMethodId,
-                        principalTable: "PaymentMethod",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "c36a8f36-ad83-437b-8a53-242691ce8c4d", null, "Admin", "ADMIN" },
-                    { "cb305145-20ed-4132-bc4b-94861badc5f7", null, "Staff", "STAFF" },
-                    { "dbdb6d51-2d25-4bed-aef0-573b6e236936", null, "Customer", "CUSTOMER" },
-                    { "f647500a-7d6e-4dec-8717-de9b6f8844a5", null, "Manager", "MANAGER" }
+                    { "3cd5e335-2a86-4142-b155-353da57636d4", null, "Manager", "MANAGER" },
+                    { "442fbce9-9a77-4716-b2f1-bb2f7ba578e5", null, "Customer", "CUSTOMER" },
+                    { "709079c7-835b-45fd-b519-6945feb91e1f", null, "Admin", "ADMIN" },
+                    { "9b9c4f35-5cd8-4ae4-b97a-77435d93dd4e", null, "Staff", "STAFF" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "CompanyId", "ConcurrencyStamp", "CreatedBy", "CreatedDate", "Email", "EmailConfirmed", "FullName", "Image", "LockoutEnabled", "LockoutEnd", "ModifiedBy", "ModifiedDate", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Role", "SecurityStamp", "Status", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, null, "2a77681f-4ee6-4b57-9085-0454fdd75315", null, new DateTime(2024, 6, 19, 19, 37, 49, 717, DateTimeKind.Utc).AddTicks(219), "admin@bbms.com", false, "System Admin", null, false, null, null, new DateTime(2024, 6, 19, 19, 37, 49, 717, DateTimeKind.Utc).AddTicks(232), null, "ADMIN@BBMS.COM", "AQAAAAIAAYagAAAAEEKZyIYK9hfdbiCxgTLp54TWgPX8DLJf9iWBTZCeDyHuFnBWUC5whQLsSNJ5Wau5Ww==", "1234567890", false, "Admin", "8df2c98c-b66a-4ea5-a51e-b101ad784bcd", 0, false, "admin@bbms.com" });
+                values: new object[] { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, null, "dfd4e2d9-8dbd-4f40-93a5-b53591215a15", null, new DateTime(2024, 7, 13, 16, 32, 48, 600, DateTimeKind.Utc).AddTicks(4036), "admin@bbms.com", false, "System Admin", null, false, null, null, new DateTime(2024, 7, 13, 16, 32, 48, 600, DateTimeKind.Utc).AddTicks(4047), null, "ADMIN@BBMS.COM", "AQAAAAIAAYagAAAAEKCV/M1u72X2zDkmoDafhrHzfndwxUulNHaRqyG4PHnKdDCLNT1LnyN/DiCErj/PCg==", "1234567890", false, "Admin", "3ef1d2ff-b9c7-4b08-b75a-c8902268cd51", 0, false, "admin@bbms.com" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -704,6 +733,11 @@ namespace SWD.BBMS.Repositories.Migrations
                 column: "FlexibleBookingId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Booking_PaymentId",
+                table: "Booking",
+                column: "PaymentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BookingDetail_BookingId",
                 table: "BookingDetail",
                 column: "BookingId");
@@ -747,12 +781,6 @@ namespace SWD.BBMS.Repositories.Migrations
                 name: "IX_FlexibleBooking_CustomerId",
                 table: "FlexibleBooking",
                 column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Payment_BookingId",
-                table: "Payment",
-                column: "BookingId",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payment_CompanyId",
@@ -811,7 +839,7 @@ namespace SWD.BBMS.Repositories.Migrations
                 name: "Feedback");
 
             migrationBuilder.DropTable(
-                name: "Payment");
+                name: "FileRecord");
 
             migrationBuilder.DropTable(
                 name: "Price");
@@ -826,16 +854,13 @@ namespace SWD.BBMS.Repositories.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Booking");
+
+            migrationBuilder.DropTable(
                 name: "WeekdayActivity");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "Booking");
-
-            migrationBuilder.DropTable(
-                name: "PaymentMethod");
 
             migrationBuilder.DropTable(
                 name: "CourtSlot");
@@ -850,10 +875,16 @@ namespace SWD.BBMS.Repositories.Migrations
                 name: "FlexibleBooking");
 
             migrationBuilder.DropTable(
+                name: "Payment");
+
+            migrationBuilder.DropTable(
                 name: "CourtGroup");
 
             migrationBuilder.DropTable(
                 name: "Customer");
+
+            migrationBuilder.DropTable(
+                name: "PaymentMethod");
 
             migrationBuilder.DropTable(
                 name: "Company");

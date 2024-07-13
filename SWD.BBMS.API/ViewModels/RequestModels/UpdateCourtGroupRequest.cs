@@ -6,6 +6,8 @@
 
         public string? Address { get; set; }
 
+        public long? Price { get; set; } = 0;
+
         public TimeOnly? StartTime { get; set; }
 
         public TimeOnly? EndTime { get; set; }

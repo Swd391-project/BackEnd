@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace SWD.BBMS.Services.BusinessModels
 {
@@ -12,6 +13,8 @@ namespace SWD.BBMS.Services.BusinessModels
         public string Address { get; set; }
 
         public float Rate { get; set; } = 0;
+
+        public double PricePerHour { get; set; }
 
         public TimeOnly StartTime { get; set; }
 
@@ -31,8 +34,10 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public string ModifiedBy { get; set; }
 
+        [JsonIgnore]
         public List<CourtModel>? Courts { get; set; }
 
+        [JsonIgnore]
         public List<CourtSlotModel>? CourtSlots { get; set; }
 
         public int CompanyId { get; set; }

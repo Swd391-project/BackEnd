@@ -12,7 +12,7 @@ namespace SWD.BBMS.Repositories.Entities
 
         public string Name { get; set; }
 
-        public long Price { get; set; }
+        public double Price { get; set; }
 
         public string Unit { get; set; }
 

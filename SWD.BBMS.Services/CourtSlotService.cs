@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using SWD.BBMS.Repositories.Interfaces;
 using SWD.BBMS.Services.BusinessModels;
 using SWD.BBMS.Services.Interfaces;
+using SWD.BBMS.Services.Libraries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,12 @@ namespace SWD.BBMS.Services
                 var courtModels = mapper.Map<List<CourtModel>>(courts);
                 var courtModelIds = courtModels.Select(c => c.Id).ToList();
                 var availableSlotModels = new List<AvailableSlotModel>();
+                var currentDate = DateOnly.FromDateTime(DateTimeLibrary.UtcNow());
+                var currentTime = TimeOnly.FromDateTime(DateTimeLibrary.UtcNow());
+                if(currentDate > date)
+                {
+                    throw new Exception($"Today is {currentDate}, can not take available court slots of this court group because {date} is passed.");
+                }
                 foreach(var courtSlotModel in courtSlotModels)
                 {
                     var availableSlotModel = mapper.Map<AvailableSlotModel>(courtSlotModel);
@@ -61,6 +68,10 @@ namespace SWD.BBMS.Services
                         }
                     }
                     availableSlotModel.Status = bookedCourtIds.Count == courtModelIds.Count ? SlotModelStatus.Occupied : SlotModelStatus.Available;
+                    if(currentDate == date)
+                    {
+                        availableSlotModel.Status = availableSlotModel.FromTime < currentTime ? SlotModelStatus.Closed : SlotModelStatus.Available;
+                    }
                     availableSlotModels.Add(availableSlotModel);
                     continue;
                 }

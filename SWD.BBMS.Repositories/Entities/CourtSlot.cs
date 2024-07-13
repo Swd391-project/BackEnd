@@ -16,7 +16,7 @@ namespace SWD.BBMS.Repositories.Entities
 
         public SlotStatus Status { get; set; }
 
-        public long Price { get; set; }
+        public double Price { get; set; }
 
         public DateTime CreatedDate { get; set; }
 

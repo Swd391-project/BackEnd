@@ -77,7 +77,7 @@ namespace BadmintonRentalSWD
                 var company = new Company
                 {
                     Name = "PACK",
-                    Balance = "100,000$",
+                    Balance = 100000000,
                     PhoneNumber = "1122334455",
                     Email = "pack@bbms.com"
                 };

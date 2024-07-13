@@ -22,11 +22,14 @@ namespace SWD.BBMS.Services
 
         private readonly IPaymentRepository paymentRepository;
 
-        public VnPayService(IConfiguration configuration, IPaymentMethodRepository paymentMethodRepository, IPaymentRepository paymentRepository)
+        private readonly IBookingRepository bookingRepository;
+
+        public VnPayService(IConfiguration configuration, IPaymentMethodRepository paymentMethodRepository, IPaymentRepository paymentRepository, IBookingRepository bookingRepository)
         {
             _configuration = configuration;
             this.paymentMethodRepository = paymentMethodRepository;
             this.paymentRepository = paymentRepository;
+            this.bookingRepository = bookingRepository;
         }
 
         public async Task<VnPayPaymentModel> BookingPaymentExecute(int id, IQueryCollection collections)
@@ -42,10 +45,15 @@ namespace SWD.BBMS.Services
                 {
                     throw new Exception("Payment method not found in booking payment execute service.");
                 }
+                var booking = await bookingRepository.GetBookingById(id);
+                if (booking == null)
+                {
+                    throw new Exception("Booking not found in booking payment execute service.");
+                }
                 var payment = new Payment
                 {
                     Amount = response.Amount,
-                    BookingId = id,
+                    Bookings = new List<Booking> { booking},
                     CompanyId = 1,
                     TransactionId = response.TransactionId,
                     Date = response.PayDate,

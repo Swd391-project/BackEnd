@@ -20,7 +20,7 @@ namespace SWD.BBMS.Repositories.Entities
 
         public BookingStatus Status { get; set; }
 
-        public long? TotalCost { get; set; }
+        public double? TotalCost { get; set; }
 
         public string? Note {  get; set; }
 

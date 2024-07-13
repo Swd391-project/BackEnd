@@ -9,7 +9,7 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public DateTime Date { get; set; }
 
-        public long Amount { get; set; }
+        public double Amount { get; set; }
 
         public DateTime CreatedDate { get; set; }
 

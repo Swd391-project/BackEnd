@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace SWD.BBMS.Services.BusinessModels
 {
@@ -11,8 +12,10 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public string PhoneNumber { get; set; }
 
+        [JsonIgnore]
         public List<BookingModel> Bookings { get; set; }
 
+        [JsonIgnore]
         public List<FlexibleBookingModel>? FlexibleBookings { get; set; }
     }
 }

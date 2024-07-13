@@ -12,7 +12,7 @@ namespace SWD.BBMS.Repositories.Entities
 
         public string Name { get; set; }
 
-        public string Balance { get; set; }
+        public double Balance { get; set; }
 
         public string? PhoneNumber { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace SWD.BBMS.Services.BusinessModels
 {
@@ -19,7 +20,7 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public TimeOnly ToTime { get; set; }
 
-        public long TotalCost { get; set; }
+        public double TotalCost { get; set; }
 
         public bool IsPaid { get; set; }
 
@@ -48,6 +49,8 @@ namespace SWD.BBMS.Services.BusinessModels
         public CustomerModel Customer { get; set; }
 
         public List<BookingDetailModel> BookingDetails { get; set; }
+
+        public int? PaymentId { get; set; }
 
         public PaymentModel? Payment { get; set; }
 

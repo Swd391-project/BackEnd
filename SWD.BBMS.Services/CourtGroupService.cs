@@ -223,7 +223,7 @@ namespace SWD.BBMS.Services
             return new PagedList<CourtGroupModel>(courtGroupModels, courtGroups.TotalCount, courtGroups.CurrentPage, courtGroups.PageSize);
         }
 
-        public async Task<bool> SaveCourtGroup(CourtGroupModel courtGroupModel, long pricePerHour)
+        public async Task<bool> SaveCourtGroup(CourtGroupModel courtGroupModel)
         {
             var result = false;
             try
@@ -249,7 +249,7 @@ namespace SWD.BBMS.Services
                 var closeTime = courtGroupModel.EndTime == time ? new TimeOnly(23, 59) : courtGroupModel.EndTime;
                 var openTime = courtGroupModel.StartTime;
                 var status = SlotStatus.Available;
-                var price = (long)((float)pricePerHour / 2);
+                var price = courtGroupModel.PricePerHour / 2;
                 do
                 {
                     var courtSlot = new CourtSlot();
@@ -400,6 +400,53 @@ namespace SWD.BBMS.Services
             {
                 throw;
             }
+        }
+
+        public async Task<bool> UpdateCourtGroupTimeAndPrice(int id, TimeOnly? startTime, TimeOnly? endTime, long pricePerHour)
+        {
+            var result = false;
+            try
+            {
+                var courtGroup = await courtGroupRepository.GetCourtGroupById(id);
+                if( courtGroup == null)
+                {
+                    throw new Exception($"Court group with id {id} not found in update court group time service.");
+                }
+                
+                // Update court slot of court group
+                
+                var pricePerSlot = pricePerHour == 0 ? 0 : (long)((double)pricePerHour / 2);
+                var courtSlots = await courtSlotRepository.GetCourtSlotsByCourtGroupId(id);
+                startTime = startTime == null ? courtGroup.StartTime : startTime;
+                endTime = endTime == null ? courtGroup.EndTime : endTime;
+                foreach(var courtSlot in courtSlots)
+                {
+                    if( courtSlot.FromTime == startTime || courtSlot.ToTime == endTime || (courtSlot.FromTime > startTime && courtSlot.FromTime < endTime))
+                    {
+                        courtSlot.Status = SlotStatus.Available;
+                    }
+                    else
+                    {
+                        courtSlot.Status = SlotStatus.Closed;
+                    }
+                    if(pricePerSlot != 0)
+                    {
+                        courtSlot.Price = pricePerSlot;
+                    }
+                    var updateCourtSlotResult = await courtSlotRepository.UpdateCourtSlot(courtSlot);
+                    if (!updateCourtSlotResult)
+                    {
+                        throw new Exception($"Something went wrong when update court slot in update court group time service.");
+                    }
+                }
+
+                result = true;
+            }
+            catch
+            {
+                throw;
+            }
+            return result;
         }
     }
 }

@@ -14,13 +14,15 @@ namespace SWD.BBMS.Services.Interfaces
     {
         Task<PagedList<CourtGroupModel>> GetCourtGroups(CourtGroupParameters courtGroupParameters);
 
-        Task<bool> SaveCourtGroup(CourtGroupModel courtGroupModel, long pricePerHour);
+        Task<bool> SaveCourtGroup(CourtGroupModel courtGroupModel);
 
         Task<CourtGroupModel> GetCourtGroupById(int id);
 
         Task<List<AvailableCourtSLotModel>> GetAvailableCourtSlotInDate(int id, DateOnly date);
 
         Task<bool> UpdateCourtGroup(int id, Dictionary<string, object> courtGroupDictModel);
+
+        Task<bool> UpdateCourtGroupTimeAndPrice(int id, TimeOnly? startTime, TimeOnly? endTime, long price);
 
         Task<bool> DeleteCourtGroup(int id);
 

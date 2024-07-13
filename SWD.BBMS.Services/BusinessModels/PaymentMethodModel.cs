@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace SWD.BBMS.Services.BusinessModels
 {
@@ -11,6 +12,7 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public string? Description { get; set; }
 
+        [JsonIgnore]
         public List<PaymentModel>? Payments { get; set; }
 
         public DateTime CreatedDate { get; set; }

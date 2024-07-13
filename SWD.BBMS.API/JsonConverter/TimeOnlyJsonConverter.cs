@@ -10,6 +10,16 @@ namespace SWD.BBMS.API.JsonConverter
         {
             // Read the time string from the JSON
             string timeString = reader.GetString();
+
+            if (string.IsNullOrWhiteSpace(timeString) || string.IsNullOrEmpty(timeString))
+            {
+                // Option 1: Return a default value (e.g., TimeOnly.MinValue or some other default)
+                // return TimeOnly.MinValue;
+
+                // Option 2: Throw an exception
+                throw new JsonException("Invalid time format. The time string is null, empty, or whitespace.");
+            }
+
             return TimeOnly.ParseExact(timeString, TimeFormat);
         }
 

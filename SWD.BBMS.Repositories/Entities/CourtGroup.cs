@@ -16,6 +16,8 @@ namespace SWD.BBMS.Repositories.Entities
 
         public float Rate { get; set; } = 0;
 
+        public double PricePerHour { get; set; }
+
         public TimeOnly StartTime { get; set; }
 
         public TimeOnly EndTime { get; set; }

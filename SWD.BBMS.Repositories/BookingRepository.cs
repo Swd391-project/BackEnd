@@ -19,6 +19,11 @@ namespace SWD.BBMS.Repositories
             using var dbContext = new BBMSDbContext();
             return await dbContext.Bookings
                 .Include(b=> b.BookingType)
+                .Include(b => b.Customer)
+                .Include(b => b.Court)
+                .Include(b => b.FlexibleBooking)
+                .Include(b => b.Payment)
+                .Include(b => b.BookingDetails)
                 .FirstOrDefaultAsync(s => s.Id == id);
         }
 

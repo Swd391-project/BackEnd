@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace SWD.BBMS.Services.BusinessModels
 {
@@ -17,7 +18,7 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public BookingModelStatus Status { get; set; }
 
-        public long? TotalCost { get; set; }
+        public double? TotalCost { get; set; }
 
         public string? Note { get; set; }
 
@@ -35,6 +36,7 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public int CourtGroupId { get; set; }
 
+        [JsonIgnore]
         public List<BookingModel>? Bookings { get; set; }
     }
 }

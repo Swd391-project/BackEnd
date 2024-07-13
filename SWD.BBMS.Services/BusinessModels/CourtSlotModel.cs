@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace SWD.BBMS.Services.BusinessModels
 {
@@ -13,7 +14,7 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public SlotModelStatus Status { get; set; }
 
-        public long Price { get; set; }
+        public double Price { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
@@ -25,10 +26,13 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public int CourtGroupId { get; set; }
 
+        [JsonIgnore]
         public CourtGroupModel CourtGroup { get; set; }
 
+        [JsonIgnore]
         public List<BookingDetailModel>? BookingDetails { get; set; }
 
+        [JsonIgnore]
         public List<PriceModel>? Prices { get; set; }
     }
 }

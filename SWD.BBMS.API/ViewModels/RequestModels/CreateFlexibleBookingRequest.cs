@@ -19,8 +19,6 @@ namespace SWD.BBMS.API.ViewModels.RequestModels
         //[Required]
         //public int CourtGroupId { get; set; }
 
-        public int? BookingTypeId { get; set; } = 3;
-
         public string? PhoneNumber { get; set; }
 
         public string? FullName { get; set; }

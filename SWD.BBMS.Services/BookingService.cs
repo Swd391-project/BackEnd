@@ -10,6 +10,7 @@ using SWD.BBMS.Repositories.Entities;
 using SWD.BBMS.Repositories.Interfaces;
 using SWD.BBMS.Services.BusinessModels;
 using SWD.BBMS.Services.Interfaces;
+using SWD.BBMS.Services.Libraries;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -98,6 +99,22 @@ namespace SWD.BBMS.Services
             var result = false;
             try
             {
+                // Check from time and to time 
+                var currentDate = DateTimeLibrary.UtcNow();
+                var currentDateOnly = DateOnly.FromDateTime(currentDate);
+                var currentTime = TimeOnly.FromDateTime(currentDate);
+                if (currentDateOnly < bookingModel.Date)
+                {
+                    throw new Exception($"Today is {currentDateOnly}, can not booking because {bookingModel.Date} is passed.");
+                }
+                if (currentDateOnly == bookingModel.Date)
+                {
+                    if (bookingModel.FromTime < currentTime)
+                    {
+                        throw new Exception($"Now is {currentTime.ToString("HH:mm")}, can not booking because {bookingModel.FromTime} is passed.");
+                    }
+                }
+
                 //Customer
                 if (bookingModel.Customer == null)
                 {
@@ -178,7 +195,7 @@ namespace SWD.BBMS.Services
                 courtSlots = courtSlots.Where(cs => (cs.FromTime == startTime) || (cs.ToTime == endTime) || (cs.FromTime > startTime && cs.FromTime < endTime)).ToList();
                 var booking = mapper.Map<Booking>(bookingModel);
                 booking.BookingDetails = new List<BookingDetail>();
-                long totalCost = 0;
+                double totalCost = 0;
                 foreach(var courtSlot in courtSlots)
                 {
                     var bookingDetail = new BookingDetail
@@ -253,7 +270,7 @@ namespace SWD.BBMS.Services
                 var daysOfWeek = ConvertStringsToDaysOfWeek(bookingModel.Weekdays);
                 var daysOfBooking = GetDaysOfWeekInMonth(firstDayOfMonth, daysOfWeek, daysInMonth);
                 //Bookings
-                long monthTotalCost = 0;
+                double monthTotalCost = 0;
                 foreach (var day in daysOfBooking)
                 {
                     var newBookingModel = new BookingModel
@@ -284,7 +301,7 @@ namespace SWD.BBMS.Services
 
                     var booking = mapper.Map<Booking>(newBookingModel);
                     booking.BookingDetails = new List<BookingDetail>();
-                    long totalCost = 0;
+                    double totalCost = 0;
                     foreach (var courtSlot in courtSlots)
                     {
                         var bookingDetail = new BookingDetail
@@ -522,7 +539,7 @@ namespace SWD.BBMS.Services
                 {
                     throw new Exception($"Booking with id {id} is deleted.");
                 }
-                var currentDateTime = DateTime.Now;
+                var currentDateTime = DateTimeLibrary.UtcNow();
 
                 // Check date
                 var today = DateOnly.FromDateTime(currentDateTime);
@@ -533,7 +550,7 @@ namespace SWD.BBMS.Services
                     if(bookingModel.Status != BookingModelStatus.Cancelled && bookingModel.Status != BookingModelStatus.Completed)
                     {
                         booking.Status = BookingStatus.Cancelled;
-                        booking.ModifiedDate = DateTime.UtcNow;
+                        booking.ModifiedDate = DateTimeLibrary.UtcNowToSave();
                         booking.ModifiedBy = userId;
                         var updateResult = await bookingRepository.UpdateBooking(booking);
                         if (!updateResult)
@@ -545,7 +562,7 @@ namespace SWD.BBMS.Services
                 // Check time
                 var currentTime = TimeOnly.FromDateTime(currentDateTime);
                 if (currentTime < bookingModel.FromTime)
-                    throw new Exception($"This booking starts from {bookingModel.FromTime}. It's not yet your booked time yet, check-in is not possible.");
+                    throw new Exception($"This booking starts from {bookingModel.FromTime}. Now is {currentTime}. It's not yet your booked time yet, check-in is not possible.");
 
                 if(currentTime > bookingModel.FromTime && currentTime < bookingModel.ToTime)
                 {
@@ -565,12 +582,12 @@ namespace SWD.BBMS.Services
                             // Normal subtraction if endTime is after startTime
                             difference = currentTime - bookingModel.FromTime;
                         }
-                        if (difference > TimeSpan.FromMinutes(15))
+                        if (difference > TimeSpan.FromMinutes(30))
                         {
                             if (bookingModel.Status != BookingModelStatus.Cancelled && bookingModel.Status != BookingModelStatus.Completed)
                             {
                                 booking.Status = BookingStatus.Cancelled;
-                                booking.ModifiedDate = DateTime.UtcNow;
+                                booking.ModifiedDate = DateTimeLibrary.UtcNowToSave();
                                 booking.ModifiedBy = userId;
                                 var updateResult = await bookingRepository.UpdateBooking(booking);
                                 if (!updateResult)
@@ -580,10 +597,10 @@ namespace SWD.BBMS.Services
                         }
                     }
                     booking.Status = BookingStatus.InProgress;
-                    booking.ModifiedDate = DateTime.UtcNow;
+                    booking.ModifiedDate = DateTimeLibrary.UtcNowToSave();
                     booking.ModifiedBy = userId;
                     booking.CheckinBy = userId;
-                    booking.CheckinTime = DateTime.UtcNow;
+                    booking.CheckinTime = DateTimeLibrary.UtcNowToSave();
                     result = await bookingRepository.UpdateBooking(booking);
                     //return result;
                 }
@@ -631,9 +648,9 @@ namespace SWD.BBMS.Services
                 }
                 booking.Status = BookingStatus.Completed;
                 booking.ModifiedBy = userId;
-                booking.ModifiedDate = DateTime.UtcNow;
+                booking.ModifiedDate = DateTimeLibrary.UtcNowToSave();
                 booking.CheckoutBy = userId;
-                booking.CheckoutTime = DateTime.UtcNow;
+                booking.CheckoutTime = DateTimeLibrary.UtcNowToSave();
                 result = await bookingRepository.UpdateBooking(booking);
                 if (!result)
                     throw new Exception($"Something went wrong when updating booking in check-out service.");

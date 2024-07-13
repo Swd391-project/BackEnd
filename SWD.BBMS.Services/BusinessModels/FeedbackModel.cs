@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace SWD.BBMS.Services.BusinessModels
 {
@@ -19,6 +20,7 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public int CourtGroupId { get; set; }
 
+        [JsonIgnore]
         public CourtGroupModel CourtGroup { get; set; }
 
         public string UserId { get; set; }

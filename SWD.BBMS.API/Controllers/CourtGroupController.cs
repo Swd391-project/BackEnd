@@ -10,6 +10,7 @@ using SWD.BBMS.Repositories.Parameters;
 using SWD.BBMS.Services;
 using SWD.BBMS.Services.BusinessModels;
 using SWD.BBMS.Services.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 
 namespace SWD.BBMS.API.Controllers
@@ -73,9 +74,10 @@ namespace SWD.BBMS.API.Controllers
                     ProfileImage = request.ProfileImage,
                     CoverImage = request.CoverImage,
                     CreatedBy = userId,
-                    ModifiedBy = userId
+                    ModifiedBy = userId,
+                    PricePerHour = (double)request.Price
                 };
-                result = await courtGroupService.SaveCourtGroup(courtGroupModel, (long)request.Price);
+                result = await courtGroupService.SaveCourtGroup(courtGroupModel);
             }
             catch (Exception ex)
             {
@@ -201,6 +203,24 @@ namespace SWD.BBMS.API.Controllers
             }
             try
             {
+                if(request.StartTime != null)
+                {
+                    if (!ValidateTimeOnly((TimeOnly)request.StartTime))
+                    {
+                        return BadRequest("Time invalid, minute only accept 0 and 30.");
+                    }
+                }
+                if (request.EndTime != null)
+                {
+                    if (!ValidateTimeOnly((TimeOnly)request.EndTime))
+                    {
+                        return BadRequest("Time invalid, minute only accept 0 and 30.");
+                    }
+                }
+                if(request.StartTime != null || request.EndTime != null)
+                {
+                    var result = await courtGroupService.UpdateCourtGroupTimeAndPrice(id, request.StartTime, request.EndTime, (long)request.Price);
+                }
                 var json = JsonSerializer.Serialize(request);
                 if (json == null)
                 {
@@ -245,6 +265,16 @@ namespace SWD.BBMS.API.Controllers
                 return Ok("Court group is deleted.");
             }
             return Ok("Court group is not deleted.");
+        }
+
+        private bool ValidateTimeOnly(TimeOnly time)
+        {
+            var minute = time.Minute;
+            if(minute != 0 && minute != 30)
+            {
+                return false;
+            }
+            return true;
         }
         
     }

@@ -15,7 +15,7 @@ namespace SWD.BBMS.Services.BusinessModels
         public string Token { get; set; }
         public string VnPayResponseCode { get; set; }
 
-        public long Amount { get; set; }
+        public double Amount { get; set; }
 
         public DateTime PayDate { get; set; }
     }

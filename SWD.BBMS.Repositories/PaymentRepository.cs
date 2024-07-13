@@ -1,4 +1,5 @@
-﻿using SWD.BBMS.Repositories.Data;
+﻿using Microsoft.IdentityModel.Tokens;
+using SWD.BBMS.Repositories.Data;
 using SWD.BBMS.Repositories.Entities;
 using SWD.BBMS.Repositories.Interfaces;
 using System;
@@ -17,6 +18,15 @@ namespace SWD.BBMS.Repositories
             try
             {
                 using var dbContext = new BBMSDbContext();
+                var bookings = payment.Bookings;
+                payment.Bookings = new List<Booking>();
+                if(!bookings.IsNullOrEmpty())
+                {
+                    foreach(var booking in bookings)
+                    {
+                        payment.Bookings.Add(await dbContext.Bookings.FindAsync(booking.Id));
+                    }
+                }
                 await dbContext.AddAsync(payment);
                 await dbContext.SaveChangesAsync();
                 result = true;

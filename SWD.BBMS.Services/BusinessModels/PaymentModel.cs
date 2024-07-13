@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace SWD.BBMS.Services.BusinessModels
 {
@@ -13,7 +14,7 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public DateTime Date { get; set; }
 
-        public long Amount { get; set; }
+        public double Amount { get; set; }
 
         public string? TransactionId { get; set; }
 
@@ -23,9 +24,8 @@ namespace SWD.BBMS.Services.BusinessModels
 
         //public string? VnPayResponseCode { get; set; }
 
-        public int BookingId { get; set; }
-
-        public BookingModel Booking { get; set; }
+        [JsonIgnore]
+        public List<BookingModel> Bookings { get; set; }
 
         public int CompanyId { get; set; }
 

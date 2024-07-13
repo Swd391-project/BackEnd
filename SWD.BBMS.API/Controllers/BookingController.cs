@@ -39,10 +39,6 @@ namespace SWD.BBMS.API.Controllers
             var result = false;
             try
             {
-                if (request.BookingTypeId != 1)
-                {
-                    return BadRequest("Booking type is not suitable.");
-                }
                 var userId = await jwtService.GetUserId();
                 var customerModel = new CustomerModel
                 {
@@ -54,7 +50,7 @@ namespace SWD.BBMS.API.Controllers
                     Date = request.Date,
                     FromTime = request.FromTime,
                     ToTime = request.ToTime,
-                    BookingTypeId = request.BookingTypeId,
+                    BookingTypeId = 1,
                     Note = request.Note,
                     Customer = (request.FullName.IsNullOrEmpty() || request.PhoneNumber.IsNullOrEmpty()) ? null : customerModel,
                     CreatedBy = userId,
@@ -84,10 +80,6 @@ namespace SWD.BBMS.API.Controllers
             var result = false;
             try
             {
-                if (request.BookingTypeId != 2)
-                {
-                    return BadRequest("Booking type is not suitable.");
-                }
                 var userId = await jwtService.GetUserId();
                 var customerModel = new CustomerModel
                 {
@@ -99,7 +91,7 @@ namespace SWD.BBMS.API.Controllers
                     Month = request.Month,
                     Year = request.Year,
                     CourtGroupId = id,
-                    BookingTypeId = request.BookingTypeId,
+                    BookingTypeId = 2,
                     FromTime = request.FromTime,
                     ToTime = request.ToTime,
                     CreatedBy = userId,
@@ -131,10 +123,6 @@ namespace SWD.BBMS.API.Controllers
             var result = false;
             try
             {
-                if (request.BookingTypeId != 3)
-                {
-                    return BadRequest("Booking type is not suitable.");
-                }
                 var userId = await jwtService.GetUserId();
                 var customerModel = new CustomerModel
                 {
@@ -191,7 +179,7 @@ namespace SWD.BBMS.API.Controllers
                 Customer = new Customer4BookingList
                 {
                     Id = b.CustomerId,
-                    Name = b.Customer.FullName
+                    FullName = b.Customer.FullName
                 }
             });
 
@@ -230,7 +218,7 @@ namespace SWD.BBMS.API.Controllers
                 Customer = new Customer4BookingList
                 {
                     Id = b.CustomerId,
-                    Name = b.Customer.FullName
+                    FullName = b.Customer.FullName
                 }
             });
             return Ok(response);

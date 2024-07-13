@@ -12,6 +12,6 @@ namespace SWD.BBMS.API.ViewModels.ResponseModels
 
         public string Status { get; set; }
 
-        public long Price { get; set; }
+        public double Price { get; set; }
     }
 }

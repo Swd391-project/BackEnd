@@ -12,7 +12,7 @@ namespace SWD.BBMS.Repositories.Entities
 
         public DateTime Date { get; set; }
 
-        public long Amount { get; set; }
+        public double Amount { get; set; }
 
         public DateTime CreatedDate { get; set; }
 

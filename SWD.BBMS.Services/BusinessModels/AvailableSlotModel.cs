@@ -16,7 +16,7 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public SlotModelStatus Status { get; set; }
 
-        public long Price { get; set; }
+        public double Price { get; set; }
 
 
     }

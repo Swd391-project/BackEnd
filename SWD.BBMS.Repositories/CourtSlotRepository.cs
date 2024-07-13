@@ -69,5 +69,22 @@ namespace SWD.BBMS.Repositories
             }
             return courtSlots;
         }
+
+        public async Task<bool> UpdateCourtSlot(CourtSlot courtSlot)
+        {
+            var result = false;
+            try
+            {
+                using var dbContext = new BBMSDbContext();
+                dbContext.CourtSlots.Attach(courtSlot).State = EntityState.Modified;
+                await dbContext.SaveChangesAsync();
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return result;
+        }
     }
 }

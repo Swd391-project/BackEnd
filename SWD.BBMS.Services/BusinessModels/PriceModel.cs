@@ -5,7 +5,7 @@ namespace SWD.BBMS.Services.BusinessModels
 {
     public class PriceModel
     {
-        public long Cost { get; set; }
+        public double Cost { get; set; }
 
         public int CourtSlotId { get; set; }
 

@@ -50,7 +50,7 @@ namespace SWD.BBMS.API.Controllers
             {
                 var response = await vnPayService.BookingPaymentExecute(id, Request.Query);
 
-                return Json(response);
+                return Ok(response);
             }
             catch (Exception ex)
             {

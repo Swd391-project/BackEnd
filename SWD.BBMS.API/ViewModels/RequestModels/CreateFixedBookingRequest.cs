@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using SWD.BBMS.API.Validations;
 
 namespace SWD.BBMS.API.ViewModels.RequestModels
 {
@@ -11,15 +12,15 @@ namespace SWD.BBMS.API.ViewModels.RequestModels
         public int Year { get; set; }
 
         [Required]
+        [ValidTimeOnly]
         public TimeOnly FromTime { get; set; }
 
         [Required]
+        [ValidTimeOnly]
         public TimeOnly ToTime { get; set; }
 
         //[Required]
         //public int CourtGroupId { get; set; }
-
-        public int? BookingTypeId { get; set; } = 2;
 
         public List<string> Weekdays { get; set; }
 

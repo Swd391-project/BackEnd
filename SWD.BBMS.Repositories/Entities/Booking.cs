@@ -22,7 +22,7 @@ namespace SWD.BBMS.Repositories.Entities
 
         public TimeOnly ToTime { get; set; }
 
-        public long TotalCost { get; set; }
+        public double TotalCost { get; set; }
 
         public bool IsPaid { get; set; } = false;
 
@@ -51,6 +51,8 @@ namespace SWD.BBMS.Repositories.Entities
         public BookingType BookingType { get; set; }
 
         public ICollection<BookingDetail> BookingDetails { get; set; }
+
+        public int? PaymentId { get; set; }
 
         public Payment? Payment { get; set; }
 

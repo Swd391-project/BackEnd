@@ -14,6 +14,7 @@ using BadmintonRentalSWD;
 using SWD.BBMS.API.NamingPolicy;
 using SWD.BBMS.API.JsonConverter;
 using SWD.BBMS.Repositories.Helpers;
+using SWD.BBMS.API.Handlers;
 
 var MyAllowSpecificOrigins = "myAllowSpecificOrigins";
 
@@ -180,6 +181,8 @@ if (app.Environment.IsDevelopment())
     });
 }
 */
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 

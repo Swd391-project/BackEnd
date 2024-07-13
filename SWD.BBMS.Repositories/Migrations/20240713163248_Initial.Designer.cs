@@ -12,8 +12,8 @@ using SWD.BBMS.Repositories.Data;
 namespace SWD.BBMS.Repositories.Migrations
 {
     [DbContext(typeof(BBMSDbContext))]
-    [Migration("20240621202540_Deleted status for feedback and service")]
-    partial class Deletedstatusforfeedbackandservice
+    [Migration("20240713163248_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,25 +53,25 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "856b0a1f-f905-4b72-bb5c-bbbb3f3131ff",
+                            Id = "709079c7-835b-45fd-b519-6945feb91e1f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "61a774d5-89aa-4ffc-96f9-67d1ae238a94",
+                            Id = "9b9c4f35-5cd8-4ae4-b97a-77435d93dd4e",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "182787fa-31d6-4cbd-b00d-24549da5e155",
+                            Id = "3cd5e335-2a86-4142-b155-353da57636d4",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "d25752eb-8108-4cd1-a18c-3c1c387f41ab",
+                            Id = "442fbce9-9a77-4716-b2f1-bb2f7ba578e5",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -197,14 +197,14 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<string>("CheckinBy")
                         .HasColumnType("text");
 
-                    b.Property<TimeOnly?>("CheckinTime")
-                        .HasColumnType("time without time zone");
+                    b.Property<DateTime?>("CheckinTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("CheckoutBy")
                         .HasColumnType("text");
 
-                    b.Property<TimeOnly?>("CheckoutTime")
-                        .HasColumnType("time without time zone");
+                    b.Property<DateTime?>("CheckoutTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Code")
                         .HasColumnType("text");
@@ -233,6 +233,9 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<TimeOnly>("FromTime")
                         .HasColumnType("time without time zone");
 
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("ModifiedBy")
                         .IsRequired()
                         .HasColumnType("text");
@@ -245,11 +248,17 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("text");
 
+                    b.Property<int?>("PaymentId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
                     b.Property<TimeOnly>("ToTime")
                         .HasColumnType("time without time zone");
+
+                    b.Property<double>("TotalCost")
+                        .HasColumnType("double precision");
 
                     b.HasKey("Id");
 
@@ -260,6 +269,8 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("FlexibleBookingId");
+
+                    b.HasIndex("PaymentId");
 
                     b.ToTable("Booking");
                 });
@@ -325,9 +336,8 @@ namespace SWD.BBMS.Repositories.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Balance")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<double>("Balance")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("Email")
                         .HasColumnType("text");
@@ -398,6 +408,9 @@ namespace SWD.BBMS.Repositories.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
@@ -451,10 +464,13 @@ namespace SWD.BBMS.Repositories.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<double>("PricePerHour")
+                        .HasColumnType("double precision");
+
                     b.Property<string>("ProfileImage")
                         .HasColumnType("text");
 
-                    b.Property<float?>("Rate")
+                    b.Property<float>("Rate")
                         .HasColumnType("real");
 
                     b.Property<TimeOnly>("StartTime")
@@ -520,8 +536,8 @@ namespace SWD.BBMS.Repositories.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
 
-                    b.Property<long>("Price")
-                        .HasColumnType("bigint");
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -600,6 +616,31 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.ToTable("Feedback");
                 });
 
+            modelBuilder.Entity("SWD.BBMS.Repositories.Entities.FileRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<byte[]>("Data")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FileRecord");
+                });
+
             modelBuilder.Entity("SWD.BBMS.Repositories.Entities.FlexibleBooking", b =>
                 {
                     b.Property<int>("Id")
@@ -608,12 +649,17 @@ namespace SWD.BBMS.Repositories.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CourtGroupId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("integer");
@@ -629,13 +675,24 @@ namespace SWD.BBMS.Repositories.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
 
-                    b.Property<int>("RemainingHours")
+                    b.Property<string>("Note")
+                        .HasColumnType("text");
+
+                    b.Property<float>("RemainingHours")
+                        .HasColumnType("real");
+
+                    b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.Property<int>("TotalHours")
-                        .HasColumnType("integer");
+                    b.Property<double?>("TotalCost")
+                        .HasColumnType("double precision");
+
+                    b.Property<float>("TotalHours")
+                        .HasColumnType("real");
 
                     b.HasKey("Id");
 
@@ -652,11 +709,8 @@ namespace SWD.BBMS.Repositories.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<long>("Amount")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("BookingId")
-                        .HasColumnType("integer");
+                    b.Property<double>("Amount")
+                        .HasColumnType("double precision");
 
                     b.Property<int>("CompanyId")
                         .HasColumnType("integer");
@@ -664,13 +718,22 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
                     b.Property<int>("PaymentMethodId")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.Property<bool>("Success")
+                        .HasColumnType("boolean");
 
-                    b.HasIndex("BookingId")
-                        .IsUnique();
+                    b.Property<string>("TransactionId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
@@ -721,8 +784,8 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<int>("BookingTypeId")
                         .HasColumnType("integer");
 
-                    b.Property<long>("Cost")
-                        .HasColumnType("bigint");
+                    b.Property<double>("Cost")
+                        .HasColumnType("double precision");
 
                     b.HasKey("CourtSlotId", "BookingTypeId");
 
@@ -763,8 +826,8 @@ namespace SWD.BBMS.Repositories.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long>("Price")
-                        .HasColumnType("bigint");
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("Unit")
                         .IsRequired()
@@ -880,19 +943,19 @@ namespace SWD.BBMS.Repositories.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f4c09d51-dd3e-4b32-b5f4-96fb16c6ff37",
-                            CreatedDate = new DateTime(2024, 6, 21, 20, 25, 39, 921, DateTimeKind.Utc).AddTicks(9457),
+                            ConcurrencyStamp = "dfd4e2d9-8dbd-4f40-93a5-b53591215a15",
+                            CreatedDate = new DateTime(2024, 7, 13, 16, 32, 48, 600, DateTimeKind.Utc).AddTicks(4036),
                             Email = "admin@bbms.com",
                             EmailConfirmed = false,
                             FullName = "System Admin",
                             LockoutEnabled = false,
-                            ModifiedDate = new DateTime(2024, 6, 21, 20, 25, 39, 921, DateTimeKind.Utc).AddTicks(9463),
+                            ModifiedDate = new DateTime(2024, 7, 13, 16, 32, 48, 600, DateTimeKind.Utc).AddTicks(4047),
                             NormalizedUserName = "ADMIN@BBMS.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEH9tQA0ebLONqBGBE4TbCgNT8Lo05qSJZ8qagHeohGTLvN8WD/jhg1KYdqxpu4awGg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKCV/M1u72X2zDkmoDafhrHzfndwxUulNHaRqyG4PHnKdDCLNT1LnyN/DiCErj/PCg==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
                             Role = "Admin",
-                            SecurityStamp = "f0b9a4be-56ae-421e-ba05-1b790c00d2b9",
+                            SecurityStamp = "3ef1d2ff-b9c7-4b08-b75a-c8902268cd51",
                             Status = 0,
                             TwoFactorEnabled = false,
                             UserName = "admin@bbms.com"
@@ -923,8 +986,8 @@ namespace SWD.BBMS.Repositories.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<long>("Amount")
-                        .HasColumnType("bigint");
+                    b.Property<double>("Amount")
+                        .HasColumnType("double precision");
 
                     b.Property<int>("CompanyId")
                         .HasColumnType("integer");
@@ -1028,6 +1091,10 @@ namespace SWD.BBMS.Repositories.Migrations
                         .WithMany("Bookings")
                         .HasForeignKey("FlexibleBookingId");
 
+                    b.HasOne("SWD.BBMS.Repositories.Entities.Payment", "Payment")
+                        .WithMany("Bookings")
+                        .HasForeignKey("PaymentId");
+
                     b.Navigation("BookingType");
 
                     b.Navigation("Court");
@@ -1035,6 +1102,8 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("FlexibleBooking");
+
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("SWD.BBMS.Repositories.Entities.BookingDetail", b =>
@@ -1151,12 +1220,6 @@ namespace SWD.BBMS.Repositories.Migrations
 
             modelBuilder.Entity("SWD.BBMS.Repositories.Entities.Payment", b =>
                 {
-                    b.HasOne("SWD.BBMS.Repositories.Entities.Booking", "Booking")
-                        .WithOne("Payment")
-                        .HasForeignKey("SWD.BBMS.Repositories.Entities.Payment", "BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SWD.BBMS.Repositories.Entities.Company", "Company")
                         .WithMany("Payments")
                         .HasForeignKey("CompanyId")
@@ -1168,8 +1231,6 @@ namespace SWD.BBMS.Repositories.Migrations
                         .HasForeignKey("PaymentMethodId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Booking");
 
                     b.Navigation("Company");
 
@@ -1229,8 +1290,6 @@ namespace SWD.BBMS.Repositories.Migrations
             modelBuilder.Entity("SWD.BBMS.Repositories.Entities.Booking", b =>
                 {
                     b.Navigation("BookingDetails");
-
-                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("SWD.BBMS.Repositories.Entities.BookingType", b =>
@@ -1286,6 +1345,11 @@ namespace SWD.BBMS.Repositories.Migrations
                 });
 
             modelBuilder.Entity("SWD.BBMS.Repositories.Entities.FlexibleBooking", b =>
+                {
+                    b.Navigation("Bookings");
+                });
+
+            modelBuilder.Entity("SWD.BBMS.Repositories.Entities.Payment", b =>
                 {
                     b.Navigation("Bookings");
                 });

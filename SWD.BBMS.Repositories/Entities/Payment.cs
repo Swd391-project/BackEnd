@@ -16,7 +16,7 @@ namespace SWD.BBMS.Repositories.Entities
 
         public DateTime Date { get; set; }
 
-        public long Amount { get; set; }
+        public double Amount { get; set; }
 
         public string? TransactionId { get; set; }
 
@@ -26,9 +26,7 @@ namespace SWD.BBMS.Repositories.Entities
 
         //public string? VnPayResponseCode { get; set; }
 
-        public int BookingId { get; set; }
-
-        public Booking Booking { get; set; }
+        public ICollection<Booking> Bookings { get; set; }
 
         public int CompanyId { get; set; }
 

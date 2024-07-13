@@ -7,7 +7,7 @@ namespace SWD.BBMS.Repositories.Entities
     public class Price
     {
         
-        public long Cost { get; set; }
+        public double Cost { get; set; }
 
         [Key]
         public int CourtSlotId { get; set; }
