@@ -32,12 +32,10 @@ namespace SWD.BBMS.Services
             this.bookingRepository = bookingRepository;
         }
 
-        public async Task<VnPayPaymentModel> BookingPaymentExecute(int id, IQueryCollection collections)
+        public async Task<VnPayPaymentModel> BookingPaymentExecute(IQueryCollection collections)
         {
             try
             {
-                if (id <= 0)
-                    throw new Exception("Invalid id in booking payment execute service.");
                 var pay = new VnPayLibrary();
                 var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
                 var paymentMethod = await paymentMethodRepository.GetPaymentMethodByName(response.PaymentMethodName);
@@ -45,15 +43,34 @@ namespace SWD.BBMS.Services
                 {
                     throw new Exception("Payment method not found in booking payment execute service.");
                 }
-                var booking = await bookingRepository.GetBookingById(id);
-                if (booking == null)
+
+                var orderInfo = response.Description;
+                var bookingIdsString = orderInfo.Split(": ")[1].Trim();
+                var bookingIdStrings = bookingIdsString.Split(",");
+                var bookings = new List<Booking>();
+                for (int i = 0; i < bookingIdStrings.Length; i++)
                 {
-                    throw new Exception("Booking not found in booking payment execute service.");
+                    if (int.TryParse(bookingIdStrings[i].Trim(), out var bookingId))
+                    {
+                        var booking = await bookingRepository.GetBookingById(bookingId);
+                        if (booking == null)
+                        {
+                            throw new Exception($"Booking with id {bookingId} not found in booking payment execute service.");
+                        }
+                        bookings.Add(booking);
+                    }
+                    else
+                    {
+                        throw new Exception("Parse int unsuccess.");
+                    }
                 }
+               
                 var payment = new Payment
                 {
+                    Id = response.OrderId,
+                    Description = response.Description,
                     Amount = response.Amount,
-                    Bookings = new List<Booking> { booking},
+                    Bookings = bookings,
                     CompanyId = 1,
                     TransactionId = response.TransactionId,
                     Date = response.PayDate,
@@ -102,22 +119,22 @@ namespace SWD.BBMS.Services
         {
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
-            var tick = DateTime.Now.Ticks.ToString();
+            var orderId = Guid.NewGuid().ToString();
             var pay = new VnPayLibrary();
             var urlCallBack = currentPath + _configuration["PaymentCallBack:ReturnUrl"] + "/" + bookingModel.Id;
 
             pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
             pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
             pay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
-            pay.AddRequestData("vnp_Amount", ((int)bookingModel.TotalCost * 100).ToString());
+            pay.AddRequestData("vnp_Amount", (bookingModel.TotalCost * 100).ToString());
             pay.AddRequestData("vnp_CreateDate", timeNow.ToString("yyyyMMddHHmmss"));
             pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
             pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
             pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
-            pay.AddRequestData("vnp_OrderInfo", $"{bookingModel.BookingType.Name}");
-            pay.AddRequestData("vnp_OrderType", bookingModel.BookingType.Name);
+            pay.AddRequestData("vnp_OrderInfo", $"Payment for {bookingModel.BookingType.Name} booking: {bookingModel.Id}");
+            pay.AddRequestData("vnp_OrderType", "other");
             pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
-            pay.AddRequestData("vnp_TxnRef", tick);
+            pay.AddRequestData("vnp_TxnRef", orderId);
 
             var paymentUrl =
                 pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);

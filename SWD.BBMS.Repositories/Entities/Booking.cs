@@ -52,7 +52,7 @@ namespace SWD.BBMS.Repositories.Entities
 
         public ICollection<BookingDetail> BookingDetails { get; set; }
 
-        public int? PaymentId { get; set; }
+        public string? PaymentId { get; set; }
 
         public Payment? Payment { get; set; }
 

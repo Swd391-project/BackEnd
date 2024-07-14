@@ -15,6 +15,7 @@ using SWD.BBMS.API.NamingPolicy;
 using SWD.BBMS.API.JsonConverter;
 using SWD.BBMS.Repositories.Helpers;
 using SWD.BBMS.API.Handlers;
+using SWD.BBMS.Services.BusinessModels;
 
 var MyAllowSpecificOrigins = "myAllowSpecificOrigins";
 
@@ -92,6 +93,9 @@ builder.Services.AddScoped<IFlexibleBookingRepository, FlexibleBookingRepository
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+//Momo
+builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
+builder.Services.AddScoped<IMomoService, MomoService>();
 
 
 

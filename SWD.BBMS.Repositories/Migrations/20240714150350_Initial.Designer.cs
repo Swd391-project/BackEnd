@@ -12,7 +12,7 @@ using SWD.BBMS.Repositories.Data;
 namespace SWD.BBMS.Repositories.Migrations
 {
     [DbContext(typeof(BBMSDbContext))]
-    [Migration("20240713163248_Initial")]
+    [Migration("20240714150350_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -53,25 +53,25 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "709079c7-835b-45fd-b519-6945feb91e1f",
+                            Id = "dec5508c-671a-446c-994c-78984030114f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "9b9c4f35-5cd8-4ae4-b97a-77435d93dd4e",
+                            Id = "7a426f10-d49c-4f11-8ff8-477e4dd2e3cc",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "3cd5e335-2a86-4142-b155-353da57636d4",
+                            Id = "c435fe36-c6f4-4f88-b6cc-b2f5740dc208",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "442fbce9-9a77-4716-b2f1-bb2f7ba578e5",
+                            Id = "1e0a9535-a09d-451a-a36d-e94b4ded3a2f",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -248,8 +248,8 @@ namespace SWD.BBMS.Repositories.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("text");
 
-                    b.Property<int?>("PaymentId")
-                        .HasColumnType("integer");
+                    b.Property<string>("PaymentId")
+                        .HasColumnType("text");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -703,11 +703,8 @@ namespace SWD.BBMS.Repositories.Migrations
 
             modelBuilder.Entity("SWD.BBMS.Repositories.Entities.Payment", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<double>("Amount")
                         .HasColumnType("double precision");
@@ -719,9 +716,6 @@ namespace SWD.BBMS.Repositories.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
                         .HasColumnType("text");
 
                     b.Property<int>("PaymentMethodId")
@@ -943,19 +937,19 @@ namespace SWD.BBMS.Repositories.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "dfd4e2d9-8dbd-4f40-93a5-b53591215a15",
-                            CreatedDate = new DateTime(2024, 7, 13, 16, 32, 48, 600, DateTimeKind.Utc).AddTicks(4036),
+                            ConcurrencyStamp = "efb15963-0b54-4e14-ada9-f74ab3420545",
+                            CreatedDate = new DateTime(2024, 7, 14, 15, 3, 49, 940, DateTimeKind.Utc).AddTicks(4694),
                             Email = "admin@bbms.com",
                             EmailConfirmed = false,
                             FullName = "System Admin",
                             LockoutEnabled = false,
-                            ModifiedDate = new DateTime(2024, 7, 13, 16, 32, 48, 600, DateTimeKind.Utc).AddTicks(4047),
+                            ModifiedDate = new DateTime(2024, 7, 14, 15, 3, 49, 940, DateTimeKind.Utc).AddTicks(4701),
                             NormalizedUserName = "ADMIN@BBMS.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKCV/M1u72X2zDkmoDafhrHzfndwxUulNHaRqyG4PHnKdDCLNT1LnyN/DiCErj/PCg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDtzW1eFDWiQtjlY2gze8SgKKRvDED6MC0bMdiCF6P9D0tSIvDTQLIrRCk3duzgwQQ==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
                             Role = "Admin",
-                            SecurityStamp = "3ef1d2ff-b9c7-4b08-b75a-c8902268cd51",
+                            SecurityStamp = "9dff4330-3d77-4127-bf94-4bc91c1002df",
                             Status = 0,
                             TwoFactorEnabled = false,
                             UserName = "admin@bbms.com"

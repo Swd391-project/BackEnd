@@ -7,10 +7,7 @@ namespace SWD.BBMS.Repositories.Entities
     public class Payment
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
-        public string? Name { get; set; }
+        public string Id { get; set; }
 
         public string? Description { get; set; }
 
@@ -21,10 +18,6 @@ namespace SWD.BBMS.Repositories.Entities
         public string? TransactionId { get; set; }
 
         public bool Success { get; set; }
-
-        //public string? Token { get; set; }
-
-        //public string? VnPayResponseCode { get; set; }
 
         public ICollection<Booking> Bookings { get; set; }
 

@@ -28,7 +28,7 @@ namespace SWD.BBMS.Services.Libraries
                 }
             }
 
-            var orderId = Convert.ToInt64(vnPay.GetResponseData("vnp_TxnRef"));
+            var orderId = vnPay.GetResponseData("vnp_TxnRef");
             var vnPayTranId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
             var vnpResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
             var vnpSecureHash =
@@ -51,14 +51,15 @@ namespace SWD.BBMS.Services.Libraries
 
             return new VnPayPaymentModel()
             {
+                OrderId = orderId,
                 Success = transactionStatus == 0 ? true : false,
                 PaymentMethodName = "VnPay",
                 Description = orderInfo,
                 TransactionId = vnPayTranId.ToString(),
                 Token = vnpSecureHash,
                 VnPayResponseCode = vnpResponseCode,
-                Amount = (long)((float)amount / 100),
-                PayDate = DateTime.UtcNow,
+                Amount = (double)amount / 100,
+                PayDate = DateTimeLibrary.UtcNowToSave(),
             };
         }
         public string GetIpAddress(HttpContext context)

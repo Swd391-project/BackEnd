@@ -22,11 +22,14 @@ namespace SWD.BBMS.API.Controllers
 
         private readonly IVnPayService vnPayService;
 
-        public BookingController(IJwtService jwtService, IBookingService bookingService, IVnPayService vnPayService)
+        private readonly IMomoService momoService;
+
+        public BookingController(IJwtService jwtService, IBookingService bookingService, IVnPayService vnPayService, IMomoService momoService)
         {
             this.jwtService = jwtService;
             this.bookingService = bookingService;
             this.vnPayService = vnPayService;
+            this.momoService = momoService;
         }
 
         [HttpPost("{id}")]
@@ -316,8 +319,14 @@ namespace SWD.BBMS.API.Controllers
                 var requestUrl = HttpContext.Request;
                 if (!bookingModel.IsPaid)
                 {
-                    var paymentUrl = vnPayService.CreatePaymentUrlForBooking(bookingModel, HttpContext, $"{requestUrl.Scheme}://{requestUrl.Host}");
-                    return Ok(new { paymentUrl });
+                    //var paymentUrl = vnPayService.CreatePaymentUrlForBooking(bookingModel, HttpContext, $"{requestUrl.Scheme}://{requestUrl.Host}");
+                    var orderInfo = new OrderInfoModel
+                    {
+                        OrderInfo = bookingModel.Id.ToString(),
+                        Amount = bookingModel.TotalCost
+                    };
+                    var momoResponse = await momoService.CreatePaymentAsync(orderInfo, $"{requestUrl.Scheme}://{requestUrl.Host}");
+                    return Ok(new { PaymentUrl = momoResponse.PayUrl });
                 }
             }
             catch (Exception ex)

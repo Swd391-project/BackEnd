@@ -2,6 +2,7 @@
 using SWD.BBMS.Repositories.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Win32;
+using SWD.BBMS.Services.Libraries;
 
 namespace BadmintonRentalSWD
 {
@@ -27,9 +28,9 @@ namespace BadmintonRentalSWD
                     MethodName = "Banking",
                     Description = "ashfksajhfskf",
                     CreatedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9",
-                    CreatedDate = DateTime.UtcNow,
+                    CreatedDate = DateTimeLibrary.UtcNowToSave(),
                     ModifiedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9",
-                    ModifiedDate = DateTime.UtcNow,
+                    ModifiedDate = DateTimeLibrary.UtcNowToSave(),
                 };
                 dbContext.PaymentMethods.AddRange(paymentMethod1);
 
@@ -38,9 +39,9 @@ namespace BadmintonRentalSWD
                     MethodName = "Cash",
                     Description = "ashfksajhfskf",
                     CreatedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9",
-                    CreatedDate = DateTime.UtcNow,
+                    CreatedDate = DateTimeLibrary.UtcNowToSave(),
                     ModifiedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9",
-                    ModifiedDate = DateTime.UtcNow,
+                    ModifiedDate = DateTimeLibrary.UtcNowToSave(),
                 };
                 dbContext.PaymentMethods.AddRange(paymentMethod2);
 
@@ -49,11 +50,22 @@ namespace BadmintonRentalSWD
                     MethodName = "VnPay",
                     Description = "ashfksajhfskf",
                     CreatedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9",
-                    CreatedDate = DateTime.UtcNow,
+                    CreatedDate = DateTimeLibrary.UtcNowToSave(),
                     ModifiedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9",
-                    ModifiedDate = DateTime.UtcNow,
+                    ModifiedDate = DateTimeLibrary.UtcNowToSave(),
                 };
                 dbContext.PaymentMethods.AddRange(paymentMethod3);
+
+                var paymentMethod4 = new PaymentMethod
+                {
+                    MethodName = "Momo",
+                    Description = "ashfksajhfskf",
+                    CreatedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                    CreatedDate = DateTimeLibrary.UtcNowToSave(),
+                    ModifiedBy = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                    ModifiedDate = DateTimeLibrary.UtcNowToSave(),
+                };
+                dbContext.PaymentMethods.AddRange(paymentMethod4);
 
                 dbContext.SaveChanges();
             }

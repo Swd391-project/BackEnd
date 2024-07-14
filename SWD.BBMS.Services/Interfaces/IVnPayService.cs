@@ -17,6 +17,6 @@ namespace SWD.BBMS.Services.Interfaces
 
         VnPayPaymentModel PaymentExecute(IQueryCollection collections);
 
-        Task<VnPayPaymentModel> BookingPaymentExecute(int id, IQueryCollection collections);
+        Task<VnPayPaymentModel> BookingPaymentExecute(IQueryCollection collections);
     }
 }

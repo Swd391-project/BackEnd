@@ -48,7 +48,7 @@ namespace SWD.BBMS.API.Controllers
         {
             try
             {
-                var response = await vnPayService.BookingPaymentExecute(id, Request.Query);
+                var response = await vnPayService.BookingPaymentExecute(Request.Query);
 
                 return Ok(response);
             }

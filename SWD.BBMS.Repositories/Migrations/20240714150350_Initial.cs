@@ -274,9 +274,7 @@ namespace SWD.BBMS.Repositories.Migrations
                 name: "Payment",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
+                    Id = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Amount = table.Column<double>(type: "double precision", nullable: false),
@@ -568,7 +566,7 @@ namespace SWD.BBMS.Repositories.Migrations
                     ModifiedBy = table.Column<string>(type: "text", nullable: false),
                     CustomerId = table.Column<int>(type: "integer", nullable: false),
                     BookingTypeId = table.Column<int>(type: "integer", nullable: false),
-                    PaymentId = table.Column<int>(type: "integer", nullable: true),
+                    PaymentId = table.Column<string>(type: "text", nullable: true),
                     CourtId = table.Column<int>(type: "integer", nullable: false),
                     FlexibleBookingId = table.Column<int>(type: "integer", nullable: true)
                 },
@@ -659,16 +657,16 @@ namespace SWD.BBMS.Repositories.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "3cd5e335-2a86-4142-b155-353da57636d4", null, "Manager", "MANAGER" },
-                    { "442fbce9-9a77-4716-b2f1-bb2f7ba578e5", null, "Customer", "CUSTOMER" },
-                    { "709079c7-835b-45fd-b519-6945feb91e1f", null, "Admin", "ADMIN" },
-                    { "9b9c4f35-5cd8-4ae4-b97a-77435d93dd4e", null, "Staff", "STAFF" }
+                    { "1e0a9535-a09d-451a-a36d-e94b4ded3a2f", null, "Customer", "CUSTOMER" },
+                    { "7a426f10-d49c-4f11-8ff8-477e4dd2e3cc", null, "Staff", "STAFF" },
+                    { "c435fe36-c6f4-4f88-b6cc-b2f5740dc208", null, "Manager", "MANAGER" },
+                    { "dec5508c-671a-446c-994c-78984030114f", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "CompanyId", "ConcurrencyStamp", "CreatedBy", "CreatedDate", "Email", "EmailConfirmed", "FullName", "Image", "LockoutEnabled", "LockoutEnd", "ModifiedBy", "ModifiedDate", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Role", "SecurityStamp", "Status", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, null, "dfd4e2d9-8dbd-4f40-93a5-b53591215a15", null, new DateTime(2024, 7, 13, 16, 32, 48, 600, DateTimeKind.Utc).AddTicks(4036), "admin@bbms.com", false, "System Admin", null, false, null, null, new DateTime(2024, 7, 13, 16, 32, 48, 600, DateTimeKind.Utc).AddTicks(4047), null, "ADMIN@BBMS.COM", "AQAAAAIAAYagAAAAEKCV/M1u72X2zDkmoDafhrHzfndwxUulNHaRqyG4PHnKdDCLNT1LnyN/DiCErj/PCg==", "1234567890", false, "Admin", "3ef1d2ff-b9c7-4b08-b75a-c8902268cd51", 0, false, "admin@bbms.com" });
+                values: new object[] { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, null, "efb15963-0b54-4e14-ada9-f74ab3420545", null, new DateTime(2024, 7, 14, 15, 3, 49, 940, DateTimeKind.Utc).AddTicks(4694), "admin@bbms.com", false, "System Admin", null, false, null, null, new DateTime(2024, 7, 14, 15, 3, 49, 940, DateTimeKind.Utc).AddTicks(4701), null, "ADMIN@BBMS.COM", "AQAAAAIAAYagAAAAEDtzW1eFDWiQtjlY2gze8SgKKRvDED6MC0bMdiCF6P9D0tSIvDTQLIrRCk3duzgwQQ==", "1234567890", false, "Admin", "9dff4330-3d77-4127-bf94-4bc91c1002df", 0, false, "admin@bbms.com" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

@@ -50,7 +50,7 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public List<BookingDetailModel> BookingDetails { get; set; }
 
-        public int? PaymentId { get; set; }
+        public string? PaymentId { get; set; }
 
         public PaymentModel? Payment { get; set; }
 

@@ -48,6 +48,16 @@ namespace SWD.BBMS.Services
                 foreach(var courtSlotModel in courtSlotModels)
                 {
                     var availableSlotModel = mapper.Map<AvailableSlotModel>(courtSlotModel);
+                    if (currentDate == date)
+                    {
+                        availableSlotModel.Status = availableSlotModel.FromTime < currentTime ? SlotModelStatus.Closed : SlotModelStatus.Available;
+                    }
+                    if (availableSlotModel.Status == SlotModelStatus.Closed)
+                    {
+                        availableSlotModels.Add(availableSlotModel);
+                        continue;
+                    }
+                        
                     if (courtSlotModel.BookingDetails.IsNullOrEmpty())
                     {
                         availableSlotModel.Status = SlotModelStatus.Available;
@@ -68,10 +78,6 @@ namespace SWD.BBMS.Services
                         }
                     }
                     availableSlotModel.Status = bookedCourtIds.Count == courtModelIds.Count ? SlotModelStatus.Occupied : SlotModelStatus.Available;
-                    if(currentDate == date)
-                    {
-                        availableSlotModel.Status = availableSlotModel.FromTime < currentTime ? SlotModelStatus.Closed : SlotModelStatus.Available;
-                    }
                     availableSlotModels.Add(availableSlotModel);
                     continue;
                 }

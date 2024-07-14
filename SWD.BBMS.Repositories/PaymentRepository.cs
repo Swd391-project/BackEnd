@@ -19,13 +19,23 @@ namespace SWD.BBMS.Repositories
             {
                 using var dbContext = new BBMSDbContext();
                 var bookings = payment.Bookings;
+                var newBookings = new List<Booking>();
                 payment.Bookings = new List<Booking>();
                 if(!bookings.IsNullOrEmpty())
                 {
                     foreach(var booking in bookings)
                     {
-                        payment.Bookings.Add(await dbContext.Bookings.FindAsync(booking.Id));
+                        var existedBooking = await dbContext.Bookings.FindAsync(booking.Id);
+                        if(existedBooking == null)
+                        {
+                            throw new Exception($"Booking with id {booking.Id} not found in SavePayment() repository.");
+                        }
+                        newBookings.Add(existedBooking);
                     }
+                }
+                if(!newBookings.IsNullOrEmpty())
+                {
+                    payment.Bookings = newBookings;
                 }
                 await dbContext.AddAsync(payment);
                 await dbContext.SaveChangesAsync();

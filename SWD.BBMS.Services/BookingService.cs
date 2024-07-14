@@ -103,7 +103,7 @@ namespace SWD.BBMS.Services
                 var currentDate = DateTimeLibrary.UtcNow();
                 var currentDateOnly = DateOnly.FromDateTime(currentDate);
                 var currentTime = TimeOnly.FromDateTime(currentDate);
-                if (currentDateOnly < bookingModel.Date)
+                if (currentDateOnly > bookingModel.Date)
                 {
                     throw new Exception($"Today is {currentDateOnly}, can not booking because {bookingModel.Date} is passed.");
                 }
@@ -222,6 +222,28 @@ namespace SWD.BBMS.Services
             try
             {
                 var existingCustomerId = 0;
+                // Check month
+                var currentDate = DateTimeLibrary.UtcNow();
+                var currentDateOnly = DateOnly.FromDateTime(currentDate);
+                var lastDayForBooking = DateTime.DaysInMonth(bookingModel.Year, bookingModel.Month) - 7;
+                if(bookingModel.Year < currentDateOnly.Year)
+                {
+                    throw new Exception($"This is year {currentDateOnly.Year}, can not book for year {bookingModel.Year} because it had passed.");
+                } else if(bookingModel.Year == currentDateOnly.Year)
+                {
+                    if(bookingModel.Month < currentDateOnly.Month)
+                    {
+                        throw new Exception($"This is month {currentDateOnly.Month}, can not book for month {bookingModel.Month} because it had passed.");
+                    } else if (bookingModel.Month == currentDateOnly.Month)
+                    {
+                        throw new Exception($"Schedule booking for month {bookingModel.Month} is not accepted anymore, please book for next months.");
+                    } else if (bookingModel.Month == currentDateOnly.Month + 1)
+                    {
+                        if (currentDateOnly.Day > lastDayForBooking)
+                            throw new Exception($"Schedule booking for month {bookingModel.Month} is only accepted until the end of date {new DateOnly(currentDateOnly.Year, currentDateOnly.Month, lastDayForBooking)}. Remember to book before play-month at least 7 days.");
+                    }
+                }
+
                 //Customer
                 if (bookingModel.Customer == null)
                 {
