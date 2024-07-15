@@ -14,6 +14,8 @@ namespace SWD.BBMS.Repositories.Helpers
     {
         private ICourtGroupRepository courtGroupRepository;
         private ISortHelper<CourtGroup> courtGroupSortHelper;
+        private IBookingRepository bookingRepository;
+        private ISortHelper<Booking> bookingSortHelper;
 
         public ICourtGroupRepository CourtGroup
         {
@@ -27,9 +29,22 @@ namespace SWD.BBMS.Repositories.Helpers
             }
         }
 
-        public RepositoryWrapper(ISortHelper<CourtGroup> courtGroupSortHelper)
+        public IBookingRepository Booking
+        {
+            get
+            {
+                if (bookingRepository == null)
+                {
+                    bookingRepository = new BookingRepository(bookingSortHelper);
+                }
+                return bookingRepository;
+            }
+        }
+
+        public RepositoryWrapper(ISortHelper<CourtGroup> courtGroupSortHelper, ISortHelper<Booking> bookingSortHelper)
         {
             this.courtGroupSortHelper = courtGroupSortHelper;
+            this.bookingSortHelper = bookingSortHelper;
         }
     }
 }

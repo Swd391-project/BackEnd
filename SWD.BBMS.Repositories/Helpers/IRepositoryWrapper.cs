@@ -10,5 +10,7 @@ namespace SWD.BBMS.Repositories.Helpers
     public interface IRepositoryWrapper
     {
         ICourtGroupRepository CourtGroup { get; }
+
+        IBookingRepository Booking { get; }
     }
 }

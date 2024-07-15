@@ -16,6 +16,7 @@ using SWD.BBMS.API.JsonConverter;
 using SWD.BBMS.Repositories.Helpers;
 using SWD.BBMS.API.Handlers;
 using SWD.BBMS.Services.BusinessModels;
+using SWD.BBMS.Services.JsonConverters;
 
 var MyAllowSpecificOrigins = "myAllowSpecificOrigins";
 
@@ -28,6 +29,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.PropertyNamingPolicy = new KebabCaseNamingPolicy();
     options.JsonSerializerOptions.Converters.Add(new TimeOnlyJsonConverter());
+    options.JsonSerializerOptions.Converters.Add(new BookingStatusJsonConverter());
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -87,8 +89,12 @@ builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<ICourtGroupActivityRepository, CourtGroupActivityRepository>();
 builder.Services.AddScoped<IFileRecordRepository, FileRecordRepository>();
 builder.Services.AddScoped<IFileRecordService, FileRecordService>();
+
+// Sorting
 builder.Services.AddScoped<ISortHelper<CourtGroup>, SortHelper<CourtGroup>>();
+builder.Services.AddScoped<ISortHelper<Booking>, SortHelper<Booking>>();
 builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+
 builder.Services.AddScoped<IFlexibleBookingRepository, FlexibleBookingRepository>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();

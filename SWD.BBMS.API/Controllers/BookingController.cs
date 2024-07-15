@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Extensions;
 using SWD.BBMS.API.EnumParsers;
 using SWD.BBMS.API.ViewModels.RequestModels;
 using SWD.BBMS.API.ViewModels.ResponseModels;
+using SWD.BBMS.Repositories.Parameters;
 using SWD.BBMS.Services;
 using SWD.BBMS.Services.BusinessModels;
 using SWD.BBMS.Services.Interfaces;
@@ -39,7 +40,6 @@ namespace SWD.BBMS.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = false;
             try
             {
                 var userId = await jwtService.GetUserId();
@@ -60,17 +60,14 @@ namespace SWD.BBMS.API.Controllers
                     ModifiedBy = userId,
                     Status = BookingModelStatus.Confirmed
                 };
-                result = await bookingService.SaveBooking(id, bookingModel);
+                var newBookingId = await bookingService.SaveBooking(id, bookingModel);
+                var newBooking = await bookingService.GetBookingById(newBookingId);
+                return Ok(newBooking);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
-            if (result)
-            {
-                return Ok("Booking is created.");
-            }
-            return Ok("Booking is not created.");
         }
 
         [HttpPost("fixed/{id}")]
@@ -236,6 +233,48 @@ namespace SWD.BBMS.API.Controllers
             }
             var feedbackModel = await bookingService.GetBookingById(id);
             return Ok(feedbackModel);
+        }
+
+        [HttpGet("booking-history/{id}")]
+        public async Task<IActionResult> GetBookingsHistoryOfUser(string id, [FromQuery] BookingParameters bookingParameters)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var bookingModels = await bookingService.GetBookingsHistoryByUserId(id, bookingParameters);
+            var metadata = new
+            {
+                bookingModels.TotalCount,
+                bookingModels.PageSize,
+                bookingModels.CurrentPage,
+                bookingModels.TotalPages,
+                bookingModels.HasNext,
+                bookingModels.HasPrevious
+            };
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
+            return Ok(bookingModels);
+        }
+
+        [HttpGet("user-booking/{id}")]
+        public async Task<IActionResult> GetUserBookings(string id, [FromQuery] BookingParameters bookingParameters)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var bookingModels = await bookingService.GetUserBookingsByUserId(id, bookingParameters);
+            var metadata = new
+            {
+                bookingModels.TotalCount,
+                bookingModels.PageSize,
+                bookingModels.CurrentPage,
+                bookingModels.TotalPages,
+                bookingModels.HasNext,
+                bookingModels.HasPrevious
+            };
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
+            return Ok(bookingModels);
         }
 
         [HttpDelete("{id}")]

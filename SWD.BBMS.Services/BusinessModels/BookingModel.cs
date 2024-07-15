@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using SWD.BBMS.Services.JsonConverters;
 
 namespace SWD.BBMS.Services.BusinessModels
 {
@@ -14,6 +15,7 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public string? Note { get; set; }
 
+        [JsonConverter(typeof(BookingStatusJsonConverter))]
         public BookingModelStatus Status { get; set; }
 
         public TimeOnly FromTime { get; set; }

@@ -1,4 +1,5 @@
 ﻿using SWD.BBMS.Repositories.Entities;
+using SWD.BBMS.Repositories.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +19,9 @@ namespace SWD.BBMS.Repositories.Interfaces
         Task<Booking?> GetBookingById(int id);
 
         Task<List<Booking>> GetBookingsByCourtGroupIdAndDate(int id, DateOnly date);
+
+        Task<PagedList<Booking>> GetBookingsHistoryByUserId(string id, BookingParameters bookingParameters);
+
+        Task<PagedList<Booking>> GetUserBookingsByUserId(string id, BookingParameters bookingParameters);
     }
 }

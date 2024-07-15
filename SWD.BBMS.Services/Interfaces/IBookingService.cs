@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using SWD.BBMS.Repositories;
+using SWD.BBMS.Repositories.Entities;
+using SWD.BBMS.Repositories.Parameters;
 using SWD.BBMS.Services.BusinessModels;
 using System;
 using System.Collections.Generic;
@@ -11,7 +13,7 @@ namespace SWD.BBMS.Services.Interfaces
 {
     public interface IBookingService
     {
-        Task<bool> SaveBooking(int id, BookingModel bookingModel);
+        Task<int> SaveBooking(int id, BookingModel bookingModel);
 
         Task<PagedList<BookingModel>> GetBookings(int pageNumber, int pageSize);
 
@@ -28,6 +30,10 @@ namespace SWD.BBMS.Services.Interfaces
         Task<bool> CheckinBooking(int id, string userId);
 
         Task<bool> CheckoutBooking(int id, string userId);
+
+        Task<PagedList<BookingModel>> GetBookingsHistoryByUserId(string id, BookingParameters bookingParameters);
+
+        Task<PagedList<BookingModel>> GetUserBookingsByUserId(string id, BookingParameters bookingParameters);
 
     }
 }

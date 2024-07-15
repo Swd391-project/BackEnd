@@ -13,7 +13,7 @@ namespace SWD.BBMS.Services.Interfaces
 
         string CreatePaymentUrl(PaymentModel paymentModel, HttpContext context, string currentPath);
 
-        string CreatePaymentUrlForBooking(BookingModel bookingModel, HttpContext context, string currentPath);
+        string CreatePaymentUrlForBooking(List<BookingModel> bookingModels, HttpContext context, string currentPath);
 
         VnPayPaymentModel PaymentExecute(IQueryCollection collections);
 

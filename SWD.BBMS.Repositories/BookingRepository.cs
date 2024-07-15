@@ -2,7 +2,9 @@
 using Microsoft.IdentityModel.Tokens;
 using SWD.BBMS.Repositories.Data;
 using SWD.BBMS.Repositories.Entities;
+using SWD.BBMS.Repositories.Helpers;
 using SWD.BBMS.Repositories.Interfaces;
+using SWD.BBMS.Repositories.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,12 @@ namespace SWD.BBMS.Repositories
 {
     public class BookingRepository : IBookingRepository
     {
+        private ISortHelper<Booking> sortHelper;
+
+        public BookingRepository(ISortHelper<Booking> sortHelper)
+        {
+            this.sortHelper = sortHelper;
+        }
 
         public async Task<Booking?> GetBookingById(int id)
         {
@@ -54,6 +62,61 @@ namespace SWD.BBMS.Repositories
                     .Where(b => b.Date == date)
                     .ToListAsync();
                 return bookings;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<PagedList<Booking>> GetBookingsHistoryByUserId(string id, BookingParameters bookingParameters)
+        {
+            try
+            {
+                using var dbContext = new BBMSDbContext();
+                var user = await dbContext.Users.FindAsync(id);
+                if(user == null)
+                {
+                    throw new Exception($"User with id {id} not found in GetBookingsHistoryByUserId() repository.");
+                }
+                var bookings = dbContext.Bookings
+                    .Include(b => b.Customer)
+                    .Include(b => b.Court).ThenInclude(c => c.CourtGroup)
+                    .Where(b => (b.Customer.PhoneNumber.Equals(user.PhoneNumber)) 
+                                && (b.Status == BookingStatus.Cancelled 
+                                || b.Status == BookingStatus.Completed 
+                                || b.Status == BookingStatus.Expired))
+                    .AsQueryable();
+                    
+                return await PagedList<Booking>
+                    .ToPagedList(bookings, bookingParameters.PageNumber, bookingParameters.PageSize);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<PagedList<Booking>> GetUserBookingsByUserId(string id, BookingParameters bookingParameters)
+        {
+            try
+            {
+                using var dbContext = new BBMSDbContext();
+                var user = await dbContext.Users.FindAsync(id);
+                if (user == null)
+                {
+                    throw new Exception($"User with id {id} not found in GetBookingsHistoryByUserId() repository.");
+                }
+                var bookings = dbContext.Bookings
+                    .Include(b => b.Customer)
+                    .Include(b => b.Court).ThenInclude(c => c.CourtGroup)
+                    .Where(b => (b.Customer.PhoneNumber.Equals(user.PhoneNumber)) 
+                                && (b.Status == BookingStatus.Confirmed
+                                || b.Status == BookingStatus.InProgress))
+                    .AsQueryable();
+
+                return await PagedList<Booking>
+                    .ToPagedList(bookings, bookingParameters.PageNumber, bookingParameters.PageSize);
             }
             catch (Exception ex)
             {

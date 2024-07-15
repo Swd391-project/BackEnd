@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using SWD.BBMS.Repositories;
 using SWD.BBMS.Repositories.Entities;
 using SWD.BBMS.Repositories.Interfaces;
+using SWD.BBMS.Repositories.Parameters;
 using SWD.BBMS.Services.BusinessModels;
 using SWD.BBMS.Services.Interfaces;
 using SWD.BBMS.Services.Libraries;
@@ -94,9 +95,8 @@ namespace SWD.BBMS.Services
             }
         }
 
-        public async Task<bool> SaveBooking(int id, BookingModel bookingModel)
+        public async Task<int> SaveBooking(int id, BookingModel bookingModel)
         {
-            var result = false;
             try
             {
                 // Check from time and to time 
@@ -180,8 +180,8 @@ namespace SWD.BBMS.Services
                         existingFlexibleBookings[0].RemainingHours -= totalHours;
                         existingFlexibleBookings[0].ModifiedDate = DateTime.UtcNow;
                         existingFlexibleBookings[0].ModifiedBy = bookingModel.CreatedBy;
-                        result = await flexibleBookingRepository.UpdateFlexibleBooking(existingFlexibleBookings[0]);
-                        if (!result)
+                        var updateResult = await flexibleBookingRepository.UpdateFlexibleBooking(existingFlexibleBookings[0]);
+                        if (!updateResult)
                             throw new Exception("Something wrong when update existing flexible booking in create flexible booking service.");
                     }
                 }
@@ -207,13 +207,13 @@ namespace SWD.BBMS.Services
                     totalCost += courtSlot.Price;
                 }
                 booking.TotalCost = totalCost;
-                result = await bookingRepository.SaveBooking(booking);
+                var result = await bookingRepository.SaveBooking(booking);
+                return booking.Id;
             }
             catch
             {
                 throw;
             }
-            return result;
         }
 
         public async Task<bool> SaveFixedBooking(RecurrenceBookingModel bookingModel)
@@ -683,6 +683,34 @@ namespace SWD.BBMS.Services
                 throw;
             }
             return result;
+        }
+
+        public async Task<PagedList<BookingModel>> GetBookingsHistoryByUserId(string id, BookingParameters bookingParameters)
+        {
+            try
+            {
+                var bookings = await bookingRepository.GetBookingsHistoryByUserId(id, bookingParameters);
+                var bookingModels = mapper.Map<PagedList<BookingModel>>(bookings);
+                return new PagedList<BookingModel>(bookingModels, bookings.TotalCount, bookings.CurrentPage, bookings.PageSize);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<PagedList<BookingModel>> GetUserBookingsByUserId(string id, BookingParameters bookingParameters)
+        {
+            try
+            {
+                var bookings = await bookingRepository.GetUserBookingsByUserId(id, bookingParameters);
+                var bookingModels = mapper.Map<PagedList<BookingModel>>(bookings);
+                return new PagedList<BookingModel>(bookingModels, bookings.TotalCount, bookings.CurrentPage, bookings.PageSize);
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

@@ -43,8 +43,8 @@ namespace SWD.BBMS.API.Controllers
             return Json(response);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> BookingPaymentCallback(int id)
+        [HttpGet("payment-callback")]
+        public async Task<IActionResult> BookingPaymentCallback()
         {
             try
             {

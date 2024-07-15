@@ -78,6 +78,13 @@ namespace SWD.BBMS.Services
                     PaymentMethodId = paymentMethod.Id
                 };
                 var result = await paymentRepository.SavePayment(payment);
+                foreach(var booking in bookings)
+                {
+                    booking.IsPaid = true;
+                    booking.PaymentId = payment.Id;
+                    if(!await bookingRepository.UpdateBooking(booking))
+                        throw new Exception("Something went wrong when update booking in booking payment execute service.");
+                }
                 if (!result)
                     throw new Exception("Something went wrong when saving new payment in booking payment execute service.");
                 return response;
@@ -105,7 +112,7 @@ namespace SWD.BBMS.Services
             pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
             pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
             pay.AddRequestData("vnp_OrderInfo", $"{paymentModel.Name} {paymentModel.Description} {paymentModel.Amount}");
-            pay.AddRequestData("vnp_OrderType", "Daily");
+            pay.AddRequestData("vnp_OrderType", "other");
             pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
             pay.AddRequestData("vnp_TxnRef", tick);
 
@@ -115,23 +122,35 @@ namespace SWD.BBMS.Services
             return paymentUrl;
         }
 
-        public string CreatePaymentUrlForBooking(BookingModel bookingModel, HttpContext context, string currentPath)
+        public string CreatePaymentUrlForBooking(List<BookingModel> bookingModels, HttpContext context, string currentPath)
         {
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
             var orderId = Guid.NewGuid().ToString();
             var pay = new VnPayLibrary();
-            var urlCallBack = currentPath + _configuration["PaymentCallBack:ReturnUrl"] + "/" + bookingModel.Id;
+            var urlCallBack = currentPath + _configuration["PaymentCallBack:ReturnUrl"];
+            double totalPrice = 0;
+            var bookingIdsString = "";
+            for (int i = 0; i < bookingModels.Count; i++)
+            {
+                totalPrice += bookingModels[i].TotalCost;
+                if (i == bookingModels.Count - 1)
+                {
+                    bookingIdsString += bookingModels[i].Id;
+                    continue;
+                }
+                bookingIdsString += bookingModels[i].Id + ",";
+            }
 
             pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
             pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
             pay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
-            pay.AddRequestData("vnp_Amount", (bookingModel.TotalCost * 100).ToString());
+            pay.AddRequestData("vnp_Amount", (totalPrice * 100).ToString());
             pay.AddRequestData("vnp_CreateDate", timeNow.ToString("yyyyMMddHHmmss"));
             pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
             pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
             pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
-            pay.AddRequestData("vnp_OrderInfo", $"Payment for {bookingModel.BookingType.Name} booking: {bookingModel.Id}");
+            pay.AddRequestData("vnp_OrderInfo", $"Payment for {bookingModels[0].BookingType.Name} booking: " + bookingIdsString);
             pay.AddRequestData("vnp_OrderType", "other");
             pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
             pay.AddRequestData("vnp_TxnRef", orderId);
