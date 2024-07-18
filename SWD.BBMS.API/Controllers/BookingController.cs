@@ -196,6 +196,47 @@ namespace SWD.BBMS.API.Controllers
             return Ok(response);
         }
 
+        [HttpGet("bookings-dashboard-piechart")]
+        public async Task<IActionResult> GetBookingsDashboardPieChart()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var bookingModels = await bookingService.GetBookingsDashboardPieChart();
+            var response = new List<BookingsDashboardPieChartResponse>();
+            foreach(var booking in bookingModels)
+            {
+                var responseItem = new BookingsDashboardPieChartResponse
+                {
+                    Bookings = await bookingService.GetAmountByStatus(booking.Status.GetDisplayName()),
+                    Browser = booking.Status.GetDisplayName(),
+                    Fill = "var(--color-"+booking.Status.GetDisplayName()+")"
+                };
+                response.Add(responseItem);
+            }
+
+            return Ok(response);
+        }
+
+        [HttpGet("bookings-dashboard-radialchart")]
+        public async Task<IActionResult> GetBookingsDashboardRadialChart()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var bookingModels = await bookingService.GetBookings();
+            var response = new BookingsDashboardRadialChartResponse
+            {
+                Month = DateTime.Now.Month,
+                ThisMonthBooking = bookingModels.Where(b => b.CreatedDate.Month == DateTime.Now.Month).Count(),
+                ThisYearBooking = bookingModels.Where(b => b.CreatedDate.Year == DateTime.Now.Year).Count(),
+            };
+
+            return Ok(response);
+        }
+
         [HttpGet("court-group/{id}")]
         public async Task<IActionResult> GetBookingsByCourtGroupId(int id, [FromQuery] DateOnly date)
         {

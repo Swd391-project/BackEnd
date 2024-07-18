@@ -712,5 +712,43 @@ namespace SWD.BBMS.Services
                 throw;
             }
         }
+
+        public async Task<List<BookingModel>> GetBookingsDashboardPieChart()
+        {
+            try
+            {
+                var bookings = await bookingRepository.GetBookingsDashboardPieChart();
+                var bookingModel = mapper.Map<List<BookingModel>>(bookings);
+                return bookingModel;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public Task<int> GetAmountByStatus(string status)
+        {
+            try
+            {
+                return bookingRepository.GetAmountByStatus(status);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public Task<List<Booking>> GetBookings()
+        {
+            try
+            {
+                return bookingRepository.GetBookings();
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

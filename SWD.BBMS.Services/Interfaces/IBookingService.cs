@@ -17,6 +17,12 @@ namespace SWD.BBMS.Services.Interfaces
 
         Task<PagedList<BookingModel>> GetBookings(int pageNumber, int pageSize);
 
+        Task<List<BookingModel>> GetBookingsDashboardPieChart();
+
+        Task<int> GetAmountByStatus(string status);
+
+        Task<List<Booking>> GetBookings();
+
         Task<BookingModel> GetBookingById(int id);
 
         Task<bool> DeleteBooking(int id);
