@@ -12,6 +12,7 @@ namespace SWD.BBMS.Services
 
         public EmailService(IConfiguration configuration, IUserService userService, IServiceService serviceService, IBookingService bookingService)
         {
+            _configuration = configuration;
         }
 
         public async Task SendEmailAsync(string toEmail, string subject, string message)
