@@ -34,6 +34,8 @@ namespace SWD.BBMS.Repositories.Entities
 
         public string? CheckoutBy { get; set; }
 
+        public double? ServicesPrice { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public string CreatedBy { get; set; }
@@ -63,6 +65,8 @@ namespace SWD.BBMS.Repositories.Entities
         public int? FlexibleBookingId { get; set; }
 
         public FlexibleBooking? FlexibleBooking { get; set; }
+
+        public ICollection<BookingService> BookingServices { get; set; }
 
     }
 }

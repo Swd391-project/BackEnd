@@ -69,6 +69,8 @@ namespace SWD.BBMS.Repositories.Data
 
         public DbSet<FileRecord> FileRecords { get; set; }
 
+        public DbSet<BookingService> BookingServices { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -305,6 +307,17 @@ namespace SWD.BBMS.Repositories.Data
                 .HasOne(b => b.Payment)
                 .WithMany(p => p.Bookings)
                 .HasForeignKey(b => b.PaymentId);
+
+            modelBuilder.Entity<BookingService>()
+                .HasKey(bs => new { bs.BookingId, bs.ServiceId });
+            modelBuilder.Entity<BookingService>()
+                .HasOne(bs => bs.Booking)
+                .WithMany(b => b.BookingServices)
+                .HasForeignKey(bs => bs.BookingId);
+            modelBuilder.Entity<BookingService>()
+                .HasOne(bs => bs.Service)
+                .WithMany(s => s.BookingServices)
+                .HasForeignKey(bs => bs.ServiceId);
 
         }
     }

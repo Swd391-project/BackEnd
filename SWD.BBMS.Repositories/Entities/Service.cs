@@ -29,5 +29,7 @@ namespace SWD.BBMS.Repositories.Entities
         public int CourtGroupId {  get; set; }
         
         public CourtGroup CourtGroup { get; set; }
+
+        public ICollection<BookingService> BookingServices { get; set; }
     }
 }

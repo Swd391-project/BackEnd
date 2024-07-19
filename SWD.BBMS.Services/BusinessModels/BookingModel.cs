@@ -34,6 +34,8 @@ namespace SWD.BBMS.Services.BusinessModels
 
         public string? CheckoutBy { get; set; }
 
+        public double? ServicesPrice { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public string CreatedBy { get; set; }
@@ -63,6 +65,8 @@ namespace SWD.BBMS.Services.BusinessModels
         public int? FlexibleBookingId { get; set; }
 
         public FlexibleBookingModel? FlexibleBooking { get; set; }
+
+        public List<BookingServiceModel> BookingServices { get; set; }
 
     }
 }

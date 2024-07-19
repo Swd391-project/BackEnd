@@ -26,5 +26,8 @@ namespace SWD.BBMS.Services.BusinessModels
 
         [JsonIgnore]
         public CourtGroupModel CourtGroup { get; set; }
+
+        [JsonIgnore]
+        public List<BookingServiceModel> BookingServices { get; set; }
     }
 }

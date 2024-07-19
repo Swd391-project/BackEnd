@@ -86,7 +86,7 @@ builder.Services.AddScoped<ICourtService, CourtService>();
 builder.Services.AddScoped<IWeekdayActivityRepository, WeekdayActivityRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
-builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<IBookingService, SWD.BBMS.Services.BookingService>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICourtSlotRepository, CourtSlotRepository>();
