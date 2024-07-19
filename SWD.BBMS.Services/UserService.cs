@@ -102,6 +102,32 @@ namespace SWD.BBMS.Services
             return result;
         }
 
+        public async Task<int> GetStaffs()
+        {
+            try
+            {
+                var user = await userRepository.GetStaffs();
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<int> GetUsersNoPaging()
+        {
+            try
+            {
+                var user = await userRepository.GetUsersNoPaging();
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<UserModel>? GetUserById(string id)
         {
             try
@@ -145,6 +171,7 @@ namespace SWD.BBMS.Services
                 throw new Exception(ex.Message);
             }
         }
+
 
         public async Task<bool> LoginUser(UserModel userModel, string password)
         {

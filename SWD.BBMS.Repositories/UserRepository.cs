@@ -38,6 +38,34 @@ namespace SWD.BBMS.Repositories
             }
         }
 
+        public async Task<int> GetUsersNoPaging()
+        {
+            try
+            {
+                using var dbContext = new BBMSDbContext();
+                var result = await dbContext.Users.Where(u => !u.Role.Equals("Admin") && !u.Role.Equals("Staff") && !u.Role.Equals("Manager")).CountAsync();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<int> GetStaffs()
+        {
+            try
+            {
+                using var dbContext = new BBMSDbContext();
+                var result = await dbContext.Users.Where(u => !u.Role.Equals("Admin") && !u.Role.Equals("Customer")).CountAsync();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<bool> ExistsById(string id)
         {
             try

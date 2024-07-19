@@ -13,6 +13,8 @@ namespace SWD.BBMS.Services.Interfaces
     {
         Task<PagedList<CourtModel>> GetCourts(int pageNumber, int pageSize);
 
+        Task<List<CourtModel>> GetCourtsNoPaging();
+
         Task<bool> SaveCourt(CourtModel model);
 
         Task<bool> UpdateCourtStatus(int id, CourtModelStatus status);

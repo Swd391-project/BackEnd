@@ -10,6 +10,10 @@ namespace SWD.BBMS.Repositories.Interfaces
 
         Task<PagedList<User>> GetUsers(int pageNumber, int pageSize);
 
+        Task<int> GetUsersNoPaging();
+
+        Task<int> GetStaffs();
+
         Task<User>? GetUserById(string id);
 
         Task<bool> UpdateUser(User user);

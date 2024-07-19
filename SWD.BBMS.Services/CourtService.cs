@@ -93,6 +93,20 @@ namespace SWD.BBMS.Services
             }
         }
 
+        public async Task<List<CourtModel>> GetCourtsNoPaging()
+        {
+            try
+            {
+                var courts = await courtRepository.GetCourtsNoPaging();
+                var courtModels = mapper.Map<List<CourtModel>>(courts);
+                return courtModels;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         public async Task<bool> SaveCourt(CourtModel model)
         {
             var result = false;
