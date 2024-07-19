@@ -18,6 +18,12 @@ namespace SWD.BBMS.Repositories.Interfaces
 
         Task<PagedList<Booking>> GetBookings(int pageNumber, int pageSize);
 
+        Task<List<Booking>> GetBookingsDashboardPieChart();
+
+        Task<int> GetAmountByStatus(string status);
+
+        Task<List<Booking>> GetBookings();
+
         Task<Booking?> GetBookingById(int id);
 
         Task<List<Booking>> GetBookingsByCourtGroupIdAndDate(int id, DateOnly date);

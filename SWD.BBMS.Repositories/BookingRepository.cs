@@ -66,6 +66,67 @@ namespace SWD.BBMS.Repositories
             }
         }
 
+        public async Task<List<Booking>> GetBookingsDashboardPieChart()
+        {
+            try
+            {
+                using var dbContext = new BBMSDbContext();
+                var bookings = await dbContext.Bookings
+                    .Include(b => b.BookingType)
+                    .Include(b => b.Customer)
+                    .Include(b => b.Court)
+                    .Include(b => b.FlexibleBooking)
+                    .Include(b => b.Payment)
+                    .Include(b => b.BookingDetails)
+                    .Where(b => b.CreatedDate.Year == DateTime.UtcNow.Year)
+                    .ToListAsync();
+                // Group by status and select the first entry in each group
+                var groupedBookings = bookings
+                    .GroupBy(b => b.Status)
+                    .ToDictionary(g => g.Key, g => g.First());
+
+                // Get all possible statuses
+                var allStatuses = Enum.GetValues(typeof(BookingStatus)).Cast<BookingStatus>();
+
+                // Create the final list including all statuses
+                var finalBookings = allStatuses.Select(status =>
+                    groupedBookings.ContainsKey(status) ? groupedBookings[status] : new Booking { Status = status }
+                ).OrderBy(b => (int)b.Status).ToList();
+
+                return finalBookings;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<int> GetAmountByStatus(string status)
+        {
+            try
+            {
+                using var dbContext = new BBMSDbContext();
+                var statusEnum = Enum.Parse<BookingStatus>(status);
+                var bookings = await dbContext.Bookings
+                    .Where(b => b.Status == statusEnum && b.CreatedDate.Year == DateTime.UtcNow.Year)
+                    .ToListAsync();
+                
+                var amount = bookings.Count();
+                return amount;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<Booking>> GetBookings()
+        {
+            using var dbContext = new BBMSDbContext();
+            var bookings = await dbContext.Bookings.ToListAsync();
+            return bookings;
+        }
+
         public async Task<List<Booking>> GetBookingsByCourtGroupIdAndDate(int id, DateOnly date)
         {
             try
