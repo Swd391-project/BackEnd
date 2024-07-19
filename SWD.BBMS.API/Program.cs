@@ -17,6 +17,7 @@ using SWD.BBMS.Repositories.Helpers;
 using SWD.BBMS.API.Handlers;
 using SWD.BBMS.Services.BusinessModels;
 using SWD.BBMS.Services.JsonConverters;
+using SWD.BBMS.Services.BackgroundServices;
 
 var MyAllowSpecificOrigins = "myAllowSpecificOrigins";
 
@@ -25,6 +26,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.PropertyNamingPolicy = new KebabCaseNamingPolicy();
@@ -34,6 +36,13 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Background Service
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole(); // Add console logging
+builder.Logging.SetMinimumLevel(LogLevel.Information);
+builder.Services.AddHostedService<MyBackgroundService>();
+
 
 builder.Services.AddSwaggerGen(option =>
 {
@@ -99,6 +108,8 @@ builder.Services.AddScoped<IFlexibleBookingRepository, FlexibleBookingRepository
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+
 //Momo
 builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
 builder.Services.AddScoped<IMomoService, MomoService>();

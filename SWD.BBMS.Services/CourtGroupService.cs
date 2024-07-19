@@ -247,7 +247,7 @@ namespace SWD.BBMS.Services
                 //Court slots
                 courtGroup.CourtSlots = new List<CourtSlot>();
                 var time = new TimeOnly(0, 0);
-                var closeTime = courtGroupModel.EndTime == time ? new TimeOnly(23, 59) : courtGroupModel.EndTime;
+                var closeTime = courtGroupModel.EndTime;
                 var openTime = courtGroupModel.StartTime;
                 var status = SlotStatus.Available;
                 var price = courtGroupModel.PricePerHour / 2;
@@ -420,9 +420,15 @@ namespace SWD.BBMS.Services
                 var courtSlots = await courtSlotRepository.GetCourtSlotsByCourtGroupId(id);
                 startTime = startTime == null ? courtGroup.StartTime : startTime;
                 endTime = endTime == null ? courtGroup.EndTime : endTime;
+                if (endTime == new TimeOnly(0, 0))
+                    endTime = new TimeOnly(23, 59);
                 foreach(var courtSlot in courtSlots)
                 {
-                    if( courtSlot.FromTime == startTime || courtSlot.ToTime == endTime || (courtSlot.FromTime > startTime && courtSlot.FromTime < endTime))
+                    if (startTime == new TimeOnly(0, 0) && endTime == new TimeOnly(23, 59))
+                    {
+                        courtSlot.Status = SlotStatus.Available;
+                    }
+                    else if( courtSlot.FromTime == startTime || courtSlot.ToTime == endTime || (courtSlot.FromTime > startTime && courtSlot.FromTime < endTime))
                     {
                         courtSlot.Status = SlotStatus.Available;
                     }

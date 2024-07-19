@@ -27,7 +27,7 @@ namespace SWD.BBMS.Services.Interfaces
 
         Task<bool> DeleteBooking(int id);
 
-        Task<bool> SaveFixedBooking(RecurrenceBookingModel bookingModel);
+        Task<ScheduleBookingModel> SaveFixedBooking(RecurrenceBookingModel bookingModel);
 
         Task<bool> SaveFlexibleBooking(FlexibleBookingModel bookingModel);
 

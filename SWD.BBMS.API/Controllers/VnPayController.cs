@@ -24,8 +24,7 @@ namespace SWD.BBMS.API.Controllers
             var model = new Services.BusinessModels.PaymentModel
             {
                 Amount = request.Amount,
-                Description = request.Description,
-                Name = request.Name
+                Description = request.Description
             };
 
             var requestUrl = HttpContext.Request;
