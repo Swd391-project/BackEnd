@@ -1,10 +1,12 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SWD.BBMS.Repositories.Data;
 using SWD.BBMS.Repositories.Entities;
 using SWD.BBMS.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,6 +14,23 @@ namespace SWD.BBMS.Repositories
 {
     public class PaymentRepository : IPaymentRepository
     {
+        public async Task<Payment?> GetPaymentByBookingId(int bookingId)
+        {
+            try
+            {
+                using var dbContext = new BBMSDbContext();
+                var payment = await dbContext.Payments
+                    .Include(p => p.PaymentMethod)
+                    .Include(p => p.Bookings)
+                    .FirstOrDefaultAsync(p => p.Bookings.Any(b => b.Id == bookingId));
+                return payment;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<bool> SavePayment(Payment payment)
         {
             var result = false;

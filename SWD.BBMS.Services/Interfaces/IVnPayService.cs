@@ -18,5 +18,7 @@ namespace SWD.BBMS.Services.Interfaces
         VnPayPaymentModel PaymentExecute(IQueryCollection collections);
 
         Task<VnPayPaymentModel> BookingPaymentExecute(IQueryCollection collections);
+
+        Task<VnpayRefundRequestDataModel> CreateRefundPaymentUrl(HttpContext context, PaymentModel paymentModel, string userId);
     }
 }

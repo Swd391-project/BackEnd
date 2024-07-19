@@ -12,5 +12,7 @@ namespace SWD.BBMS.Services.Interfaces
     {
         Task<MomoCreatePaymentResponseModel> CreatePaymentAsync(OrderInfoModel model, string currentPath);
         Task<MomoExecuteResponseModel> PaymentExecuteAsync(IQueryCollection collection);
+
+        Task<MomoRefundResponseModel> CreateRequestDataForMomoRefund(PaymentModel paymentModel);
     }
 }

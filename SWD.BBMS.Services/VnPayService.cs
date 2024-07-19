@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using RestSharp;
 using SWD.BBMS.Repositories.Entities;
 using SWD.BBMS.Repositories.Interfaces;
 using SWD.BBMS.Services.BusinessModels;
@@ -111,7 +113,7 @@ namespace SWD.BBMS.Services
             pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
             pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
             pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
-            pay.AddRequestData("vnp_OrderInfo", $"{paymentModel.Name} {paymentModel.Description} {paymentModel.Amount}");
+            pay.AddRequestData("vnp_OrderInfo", $"{paymentModel.Description} {paymentModel.Amount}");
             pay.AddRequestData("vnp_OrderType", "other");
             pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
             pay.AddRequestData("vnp_TxnRef", tick);
@@ -159,6 +161,68 @@ namespace SWD.BBMS.Services
                 pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
 
             return paymentUrl;
+        }
+
+        public async Task<VnpayRefundRequestDataModel> CreateRefundPaymentUrl(HttpContext context, PaymentModel paymentModel, string userId)
+        {
+            var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
+            var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
+            var tick = Guid.NewGuid().ToString();
+            var pay = new VnPayLibrary();
+            var version = _configuration["Vnpay:Version"];
+            var tmnCode = _configuration["Vnpay:TmnCode"];
+            var createdDate = timeNow.ToString("yyyyMMddHHmmss");
+            var refundPercent = (double)75 / (double)100;
+            var amount = (paymentModel.Amount * refundPercent * 100).ToString();
+            var ipAddr = pay.GetIpAddress(context);
+            var orderInfo = "Refund of " + paymentModel.Description;
+            var transactionNo = paymentModel.TransactionId;
+            var transactionDate = paymentModel.Date.ToString("yyyyMMddHHmmss");
+            var transactionType = "03";
+            var command = "refund";
+            //userId = "ad086284-8b4d-4cc1-a1da-a9c9f31131ce";
+            var orderId = paymentModel.Id;
+
+            var paymentUrl = 
+                pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
+
+            var client = new RestClient(_configuration["Vnpay:MerchantUrl"]);
+            var request = new RestRequest() { Method = Method.Post };
+            request.AddHeader("Content-Type", "application/json; charset=UTF-8");
+
+            var rawData = tick + "|" + version + "|" + command + "|" + tmnCode + "|" 
+                + transactionType + "|" + orderId 
+                + "|" + amount + "|" 
+                + transactionNo + "|" 
+                + transactionDate + "|" + userId + "|" 
+                + createdDate + "|" + ipAddr + "|" + orderInfo;
+
+            var secureHash = pay.HmacSha512(_configuration["Vnpay:HashSecret"], rawData);
+
+            var requestData = new VnpayRefundRequestDataModel
+            {
+                RequestId = tick,
+                Version = version,
+                TmnCode = tmnCode,
+                CreateDate = createdDate,
+                TxnRef = orderId,
+                Amount = amount,
+                CreateBy = userId,
+                IpAddr = ipAddr,
+                OrderInfo = orderInfo,
+                TransactionNo = transactionNo,
+                TransactionDate = transactionDate,
+                SecureHash = secureHash,
+                Command = command,
+                TransactionType = transactionType
+            };
+
+            //request.AddParameter("application/json", JsonConvert.SerializeObject(requestData), ParameterType.RequestBody);
+
+            //var response = await client.ExecuteAsync(request);
+
+            //return JsonConvert.DeserializeObject<VnpayRefundResponseModel>(response.Content);
+            return requestData;
         }
 
         public VnPayPaymentModel PaymentExecute(IQueryCollection collections)

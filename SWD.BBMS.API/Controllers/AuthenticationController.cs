@@ -57,7 +57,8 @@ namespace SWD.BBMS.API.Controllers
                     PhoneNumber = register.PhoneNumber,
                     Role = register.Role,
                     CreatedBy = createdBy,
-                    ModifiedBy = createdBy
+                    ModifiedBy = createdBy,
+                    Image = register.Image
                 };
 
                 var result = await userService.CreateUser(user, register.Password);

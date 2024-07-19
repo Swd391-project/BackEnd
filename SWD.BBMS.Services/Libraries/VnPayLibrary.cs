@@ -39,7 +39,19 @@ namespace SWD.BBMS.Services.Libraries
                 vnPay.ValidateSignature(vnpSecureHash, hashSecret); //check Signature
 
             var amount = Convert.ToInt64(vnPay.GetResponseData("vnp_Amount"));
-            //var payDate = DateTime.Parse(vnPay.GetResponseData("vnp_PayDate"));
+            var payDateString = vnPay.GetResponseData("vnp_PayDate");
+            DateTime payDate;
+            bool success = DateTime
+                .TryParseExact(payDateString, "yyyyMMddHHmmss", null, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out payDate);
+
+            if (success)
+            {
+                Console.WriteLine(payDate); // Output: 7/18/2024 12:30:45 PM (UTC)
+            }
+            else
+            {
+                Console.WriteLine("Invalid date time string");
+            }
             var transactionId = vnPay.GetResponseData("vnp_TransactionNo");
             var transactionStatus = Convert.ToInt32(vnPay.GetResponseData("vnp_TransactionStatus"));
 
@@ -59,7 +71,7 @@ namespace SWD.BBMS.Services.Libraries
                 Token = vnpSecureHash,
                 VnPayResponseCode = vnpResponseCode,
                 Amount = (double)amount / 100,
-                PayDate = DateTimeLibrary.UtcNowToSave(),
+                PayDate = payDate,
             };
         }
         public string GetIpAddress(HttpContext context)
@@ -141,7 +153,7 @@ namespace SWD.BBMS.Services.Libraries
             return myChecksum.Equals(inputHash, StringComparison.InvariantCultureIgnoreCase);
         }
 
-        private string HmacSha512(string key, string inputData)
+        public string HmacSha512(string key, string inputData)
         {
             var hash = new StringBuilder();
             var keyBytes = Encoding.UTF8.GetBytes(key);

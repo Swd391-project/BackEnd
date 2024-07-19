@@ -10,6 +10,8 @@ namespace SWD.BBMS.Repositories.Interfaces
 {
     public interface IBookingRepository
     {
+        Task<List<Booking>> GetAllBookingsByStatusAndDate(BookingStatus bookingStatus, DateOnly date);
+
         Task<bool> SaveBooking(Booking booking);
 
         Task<bool> UpdateBooking(Booking booking);
