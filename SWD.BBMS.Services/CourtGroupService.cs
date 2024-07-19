@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SWD.BBMS.Services
 {
@@ -447,6 +448,20 @@ namespace SWD.BBMS.Services
                 throw;
             }
             return result;
+        }
+
+        public async Task<List<CourtGroupModel>> GetCourtGroupsNoPaging()
+        {
+            try
+            {
+                var courtGroup = await courtGroupRepository.GetCourtGroupsNoPaging();
+                var courtGroupModel = mapper.Map<List<CourtGroupModel>>(courtGroup);
+                return courtGroupModel;
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

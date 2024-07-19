@@ -33,6 +33,8 @@ namespace SWD.BBMS.Services.Interfaces
 
         Task<List<BookingModel>> GetBookingsByCourtGroupIdAndDate(int id, DateOnly date);
 
+        Task<List<BookingModel>> GetBookingsByCourtGroupIdAndMonth(int id, DateTime date);
+
         Task<bool> CheckinBooking(int id, string userId);
 
         Task<bool> CheckoutBooking(int id, string userId);

@@ -26,6 +26,8 @@ namespace SWD.BBMS.Repositories.Interfaces
 
         Task<List<Booking>> GetBookingsByCourtGroupIdAndDate(int id, DateOnly date);
 
+        Task<List<Booking>> GetBookingsByCourtGroupIdAndMonth(int id, DateTime date);
+
         Task<PagedList<Booking>> GetBookingsHistoryByUserId(string id, BookingParameters bookingParameters);
 
         Task<PagedList<Booking>> GetUserBookingsByUserId(string id, BookingParameters bookingParameters);

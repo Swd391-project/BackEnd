@@ -750,5 +750,19 @@ namespace SWD.BBMS.Services
                 throw;
             }
         }
+
+        public async Task<List<BookingModel>> GetBookingsByCourtGroupIdAndMonth(int id, DateTime date)
+        {
+            try
+            {
+                var bookings = await bookingRepository.GetBookingsByCourtGroupIdAndMonth(id, date);
+                var bookingModels = mapper.Map<List<BookingModel>>(bookings);
+                return bookingModels;
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

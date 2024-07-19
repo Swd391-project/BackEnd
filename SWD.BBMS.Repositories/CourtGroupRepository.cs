@@ -39,6 +39,12 @@ namespace SWD.BBMS.Repositories
                 .FirstOrDefaultAsync(cg => cg.Id == id);
         }
 
+        public async Task<List<CourtGroup>> GetCourtGroupsNoPaging()
+        {
+            using var dbContext = new BBMSDbContext();
+            return await dbContext.CourtGroups.ToListAsync();
+        }
+
         public async Task<PagedList<CourtGroup>> GetCourtGroups(CourtGroupParameters courtGroupParameters)
         {
             try

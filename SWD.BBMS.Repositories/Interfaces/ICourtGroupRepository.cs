@@ -12,6 +12,8 @@ namespace SWD.BBMS.Repositories.Interfaces
     {
         Task<PagedList<CourtGroup>> GetCourtGroups(CourtGroupParameters courtGroupParameters);
 
+        Task<List<CourtGroup>> GetCourtGroupsNoPaging();
+
         Task<bool> SaveCourtGroup(CourtGroup courtGroup);
 
         Task<CourtGroup?> FindCourtGroup(int id);

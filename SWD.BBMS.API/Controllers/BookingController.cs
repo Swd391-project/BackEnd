@@ -9,6 +9,7 @@ using SWD.BBMS.Repositories.Parameters;
 using SWD.BBMS.Services;
 using SWD.BBMS.Services.BusinessModels;
 using SWD.BBMS.Services.Interfaces;
+using System.Globalization;
 using System.Text.Json;
 
 namespace SWD.BBMS.API.Controllers
@@ -20,15 +21,18 @@ namespace SWD.BBMS.API.Controllers
         private readonly IJwtService jwtService;
 
         private readonly IBookingService bookingService;
-
+        
+        private readonly ICourtGroupService courtGroupService;
+        
         private readonly IVnPayService vnPayService;
 
         private readonly IMomoService momoService;
 
-        public BookingController(IJwtService jwtService, IBookingService bookingService, IVnPayService vnPayService, IMomoService momoService)
+        public BookingController(IJwtService jwtService, IBookingService bookingService, ICourtGroupService courtGroupService, IVnPayService vnPayService, IMomoService momoService)
         {
             this.jwtService = jwtService;
             this.bookingService = bookingService;
+            this.courtGroupService = courtGroupService;
             this.vnPayService = vnPayService;
             this.momoService = momoService;
         }
@@ -230,10 +234,45 @@ namespace SWD.BBMS.API.Controllers
             var response = new BookingsDashboardRadialChartResponse
             {
                 Month = DateTime.Now.Month,
-                ThisMonthBooking = bookingModels.Where(b => b.CreatedDate.Month == DateTime.Now.Month).Count(),
-                ThisYearBooking = bookingModels.Where(b => b.CreatedDate.Year == DateTime.Now.Year).Count(),
+                ThisMonthBooking = bookingModels.Where(b => b.Date.Month == DateTime.Now.Month).Count(),
+                ThisYearBooking = bookingModels.Where(b => b.Date.Year == DateTime.Now.Year).Count(),
             };
 
+            return Ok(response);
+        }
+
+        [HttpGet("bookings-dashboard-linechart")]
+        public async Task<IActionResult> GetBookingsByCourtGroupIdAndDate()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            List<BookingsDashboardLineChartResponse> response = new List<BookingsDashboardLineChartResponse>();
+            DateTime currentDate = DateTime.UtcNow;
+            var courtGroups = await courtGroupService.GetCourtGroupsNoPaging();
+            for (int i = 1; i <= 6; i++)
+            {
+                DateTime pastDate = currentDate.AddMonths(-i);
+                var courtList = new List<CourtListLineChart>();
+                foreach (var courtGroup in courtGroups)
+                {
+                    var bookingAmount = await bookingService.GetBookingsByCourtGroupIdAndMonth(courtGroup.Id ,pastDate);
+                    var item = new CourtListLineChart
+                    {
+                        CourtGroupName = courtGroup.Name,
+                        BookingAmount = bookingAmount.Count
+                    };
+                    courtList.Add(item);
+                }
+                var courtGroupList = new BookingsDashboardLineChartResponse
+                {
+                    Month = DateTimeFormatInfo.CurrentInfo.GetMonthName(pastDate.Month),
+                    courtGroups = courtList
+                };
+                response.Add(courtGroupList);
+            }
+            
             return Ok(response);
         }
 

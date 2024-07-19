@@ -14,6 +14,8 @@ namespace SWD.BBMS.Services.Interfaces
     {
         Task<PagedList<CourtGroupModel>> GetCourtGroups(CourtGroupParameters courtGroupParameters);
 
+        Task<List<CourtGroupModel>> GetCourtGroupsNoPaging();
+
         Task<bool> SaveCourtGroup(CourtGroupModel courtGroupModel);
 
         Task<CourtGroupModel> GetCourtGroupById(int id);
