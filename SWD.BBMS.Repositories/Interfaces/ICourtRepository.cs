@@ -11,6 +11,8 @@ namespace SWD.BBMS.Repositories.Interfaces
     {
         Task<PagedList<Court>> GetCourts(int pageNumber, int pageSize);
 
+        Task<List<Court>> GetCourtsNoPaging();
+
         Task<Court?> FindCourt(int id);
 
         Task<bool> SaveCourt(Court court);  

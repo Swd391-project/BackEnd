@@ -23,16 +23,22 @@ namespace SWD.BBMS.API.Controllers
         private readonly IBookingService bookingService;
         
         private readonly ICourtGroupService courtGroupService;
+
+        private readonly IUserService userService;
+
+        private readonly ICourtService courtService;
         
         private readonly IVnPayService vnPayService;
 
         private readonly IMomoService momoService;
 
-        public BookingController(IJwtService jwtService, IBookingService bookingService, ICourtGroupService courtGroupService, IVnPayService vnPayService, IMomoService momoService)
+        public BookingController(IJwtService jwtService, IBookingService bookingService, ICourtGroupService courtGroupService, IUserService userService, ICourtService courtService, IVnPayService vnPayService, IMomoService momoService)
         {
             this.jwtService = jwtService;
             this.bookingService = bookingService;
             this.courtGroupService = courtGroupService;
+            this.userService = userService;
+            this.courtService = courtService;
             this.vnPayService = vnPayService;
             this.momoService = momoService;
         }
@@ -268,6 +274,27 @@ namespace SWD.BBMS.API.Controllers
                 response.Add(courtGroupList);
             }
             
+            return Ok(response);
+        }
+
+        [HttpGet("dashboard-overall")]
+        public async Task<IActionResult> GetDashboardValue()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var courts = await courtService.GetCourtsNoPaging();
+            var bookings = await bookingService.GetBookings();
+
+            var response = new DashboardValues
+            {
+                Users = await userService.GetUsersNoPaging(),
+                Courts = courts.Count,
+                Staffs = await userService.GetStaffs(),
+                Bookings = bookings.Count,
+            };
+
             return Ok(response);
         }
 

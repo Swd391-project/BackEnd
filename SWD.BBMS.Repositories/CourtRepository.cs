@@ -57,6 +57,21 @@ namespace SWD.BBMS.Repositories
             return courts;
         }
 
+        public async Task<List<Court>> GetCourtsNoPaging()
+        {
+            var courts = new List<Court>();
+            try
+            {
+                using var dbContext = new BBMSDbContext();
+                courts = await dbContext.Courts.Include(c => c.CourtGroup).OrderBy(c => c.Id).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return courts;
+        }
+
         public async Task<List<Court>> GetCourtsByCourtGroupId(int courtGroupId)
         {
             var courts = new List<Court>();
