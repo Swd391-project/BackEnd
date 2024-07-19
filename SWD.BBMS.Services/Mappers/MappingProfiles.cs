@@ -70,6 +70,9 @@ namespace SWD.BBMS.Services.Mappers
             CreateMap<Payment, PaymentModel>()
                 .ReverseMap();
 
+            CreateMap<PaymentMethod, PaymentMethodModel>()
+                .ReverseMap();
+
             CreateMap<FlexibleBooking, FlexibleBookingModel>()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapToBookingModelStatus(src.Status)))
                 .ReverseMap()

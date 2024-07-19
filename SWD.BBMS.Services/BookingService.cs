@@ -216,9 +216,8 @@ namespace SWD.BBMS.Services
             }
         }
 
-        public async Task<bool> SaveFixedBooking(RecurrenceBookingModel bookingModel)
+        public async Task<ScheduleBookingModel> SaveFixedBooking(RecurrenceBookingModel bookingModel)
         {
-            var result = false;
             try
             {
                 var existingCustomerId = 0;
@@ -293,6 +292,8 @@ namespace SWD.BBMS.Services
                 var daysOfBooking = GetDaysOfWeekInMonth(firstDayOfMonth, daysOfWeek, daysInMonth);
                 //Bookings
                 double monthTotalCost = 0;
+                var customerId = 0;
+                var idsString = "";
                 foreach (var day in daysOfBooking)
                 {
                     var newBookingModel = new BookingModel
@@ -335,17 +336,53 @@ namespace SWD.BBMS.Services
                         totalCost += courtSlot.Price;
                     }
                     booking.TotalCost = totalCost;
-                    result = await bookingRepository.SaveBooking(booking);
+                    var result = await bookingRepository.SaveBooking(booking);
                     if (!result)
                         break;
                     monthTotalCost += totalCost;
+                    customerId = booking.CustomerId;
+                    idsString += booking.Id + ",";
                 }
+                var daysOfBookingString = "";
+                for(int i = 0; i < daysOfBooking.Count; i++)
+                {
+                    if(i ==  daysOfBooking.Count - 1)
+                    {
+                        daysOfBookingString += daysOfBooking[i].ToString();
+                        continue;
+                    }
+                    daysOfBookingString += daysOfBooking[i].ToString() + ", ";
+                }
+                var daysOfWeekString = "";
+                for (int i = 0; i < daysOfWeek.Count; i++)
+                {
+                    if (i == daysOfWeek.Count - 1)
+                    {
+                        daysOfWeekString += daysOfWeek[i].ToString();
+                        continue;
+                    }
+                    daysOfWeekString += daysOfWeek[i].ToString() + ", ";
+                }
+                var bookingCustomer = await customerRepository.FindCustomer(customerId);
+                var bookingCourtGroup = await courtGroupRepository.FindCourtGroup(bookingModel.CourtGroupId);
+                var scheduleBookingModel = new ScheduleBookingModel
+                {
+                    Ids = idsString.Remove(idsString.Length - 1),
+                    BookingDates = daysOfBookingString,
+                    DaysOfWeek = daysOfWeekString,
+                    FromTime = bookingModel.FromTime,
+                    ToTime = bookingModel.ToTime,
+                    CourtGroupName = bookingCourtGroup.Name,
+                    Customer = mapper.Map<CustomerModel>(bookingCustomer),
+                    TotalPrice = monthTotalCost
+                };
+
+                return scheduleBookingModel;
             }
             catch
             {
                 throw;
             }
-            return result;
         }
 
         private async Task<int> GetCourtIdAvailableForBookingOfCourtGroup(int courtGroupId, DateOnly date, TimeOnly fromTime, TimeOnly toTime)

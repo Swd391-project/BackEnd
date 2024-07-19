@@ -77,7 +77,6 @@ namespace SWD.BBMS.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = false;
             try
             {
                 var userId = await jwtService.GetUserId();
@@ -100,17 +99,13 @@ namespace SWD.BBMS.API.Controllers
                     Customer = (request.FullName.IsNullOrEmpty() || request.PhoneNumber.IsNullOrEmpty()) ? null : customerModel
                 };
               
-                result = await bookingService.SaveFixedBooking(recurrenceBooking);
+                var result = await bookingService.SaveFixedBooking(recurrenceBooking);
+                return Ok(result);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
-            if (result)
-            {
-                return Ok("Fixed Booking is created.");
-            }
-            return Ok("Fixed Booking is not created.");
         }
 
         [HttpPost("flexible/{id}")]
@@ -357,7 +352,18 @@ namespace SWD.BBMS.API.Controllers
                 {
                     return Unauthorized("User is not authenticated.");
                 }
+                var bookingModel = await bookingService.GetBookingById(id);
+                if (bookingModel == null)
+                {
+                    return BadRequest($"Booking with id {id} not found in CheckinBooking() controller.");
+                }
                 result = await bookingService.CheckinBooking(id, userId);
+                bookingModel = await bookingService.GetBookingById(id);
+                if (!bookingModel.IsPaid)
+                {
+                    return Ok(bookingModel);
+                }
+
             }
             catch (Exception ex)
             {

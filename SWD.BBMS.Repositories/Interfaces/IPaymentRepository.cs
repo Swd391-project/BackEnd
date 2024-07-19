@@ -10,5 +10,7 @@ namespace SWD.BBMS.Repositories.Interfaces
     public interface IPaymentRepository
     {
         Task<bool> SavePayment(Payment payment);
+
+        Task<Payment?> GetPaymentByBookingId(int bookingId);
     }
 }

@@ -21,5 +21,7 @@ namespace SWD.BBMS.API.ViewModels.RequestModels
         public string Password { get; set; }
 
         public string? Role { get; set; } = "Customer";
+
+        public string? Image {  get; set; }
     }
 }

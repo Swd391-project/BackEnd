@@ -22,6 +22,22 @@ namespace SWD.BBMS.Repositories
             this.sortHelper = sortHelper;
         }
 
+        public async Task<List<Booking>> GetAllBookingsByStatusAndDate(BookingStatus bookingStatus, DateOnly date)
+        {
+            try
+            {
+                using var dbContext = new BBMSDbContext();
+                var bookings = await dbContext.Bookings
+                    .Where(b => b.Status == bookingStatus && b.Date == date)
+                    .ToListAsync();
+                return bookings;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<Booking?> GetBookingById(int id)
         {
             using var dbContext = new BBMSDbContext();

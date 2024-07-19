@@ -76,6 +76,44 @@ namespace SWD.BBMS.Services
             return JsonConvert.DeserializeObject<MomoCreatePaymentResponseModel>(response.Content);
         }
 
+        public async Task<MomoRefundResponseModel> CreateRequestDataForMomoRefund(PaymentModel paymentModel)
+        {
+            var partnerCode = _options.Value.PartnerCode;
+            var orderId = Guid.NewGuid().ToString();
+            var refundPercent = (double)75 / (double)100;
+            var amount = (paymentModel.Amount * refundPercent).ToString();
+            var transId = paymentModel.TransactionId;
+            var lang = "vi";
+            var description = "Refund of " + paymentModel.Description;
+            var accessKey = _options.Value.AccessKey;
+            var rawData = 
+                $"accessKey={accessKey}&amount={amount}&description={description}&orderId={orderId}&partnerCode={partnerCode}&requestId={orderId}&transId={transId}";
+            var signature = ComputeHmacSha256(rawData, _options.Value.SecretKey);
+
+            var requestData = new
+            {
+                partnerCode = partnerCode,
+                orderId = orderId,
+                requestId = orderId,
+                amount = amount,
+                transId = transId,
+                lang = lang,
+                description = description,
+                signature = signature
+            };
+
+            var client = new RestClient("https://test-payment.momo.vn/v2/gateway/api/refund");
+            var request = new RestRequest() { Method = Method.Post };
+            request.AddHeader("Content-Type", "application/json; charset=UTF-8");
+
+            request.AddParameter("application/json", JsonConvert.SerializeObject(requestData), ParameterType.RequestBody);
+
+            var response = await client.ExecuteAsync(request);
+
+            return JsonConvert.DeserializeObject<MomoRefundResponseModel>(response.Content);
+
+        }
+
         public async Task<MomoExecuteResponseModel> PaymentExecuteAsync(IQueryCollection collection)
         {
             var amount = collection.First(s => s.Key == "amount").Value;
