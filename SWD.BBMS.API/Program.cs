@@ -99,6 +99,9 @@ builder.Services.AddScoped<ICourtGroupActivityRepository, CourtGroupActivityRepo
 builder.Services.AddScoped<IFileRecordRepository, FileRecordRepository>();
 builder.Services.AddScoped<IFileRecordService, FileRecordService>();
 
+// Email
+builder.Services.AddScoped<IEmailService, EmailService>();
+
 // Sorting
 builder.Services.AddScoped<ISortHelper<CourtGroup>, SortHelper<CourtGroup>>();
 builder.Services.AddScoped<ISortHelper<Booking>, SortHelper<Booking>>();

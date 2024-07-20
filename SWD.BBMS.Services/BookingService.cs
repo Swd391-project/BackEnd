@@ -154,7 +154,7 @@ namespace SWD.BBMS.Services
                 bookingModel.CourtId = courtId;
 
                 //Flexible booking
-                if(bookingModel.Customer == null)
+                if (bookingModel.Customer == null)
                 {
                     var existingFlexibleBookings = await flexibleBookingRepository
                         .GetFlexibleBookingByCustomerIdAndCourtGroupIdAndMonth(bookingModel.CustomerId, id, bookingModel.Date.Month);
@@ -196,7 +196,7 @@ namespace SWD.BBMS.Services
                 var booking = mapper.Map<Booking>(bookingModel);
                 booking.BookingDetails = new List<BookingDetail>();
                 double totalCost = 0;
-                foreach(var courtSlot in courtSlots)
+                foreach (var courtSlot in courtSlots)
                 {
                     var bookingDetail = new BookingDetail
                     {
@@ -225,18 +225,21 @@ namespace SWD.BBMS.Services
                 var currentDate = DateTimeLibrary.UtcNow();
                 var currentDateOnly = DateOnly.FromDateTime(currentDate);
                 var lastDayForBooking = DateTime.DaysInMonth(bookingModel.Year, bookingModel.Month) - 7;
-                if(bookingModel.Year < currentDateOnly.Year)
+                if (bookingModel.Year < currentDateOnly.Year)
                 {
                     throw new Exception($"This is year {currentDateOnly.Year}, can not book for year {bookingModel.Year} because it had passed.");
-                } else if(bookingModel.Year == currentDateOnly.Year)
+                }
+                else if (bookingModel.Year == currentDateOnly.Year)
                 {
-                    if(bookingModel.Month < currentDateOnly.Month)
+                    if (bookingModel.Month < currentDateOnly.Month)
                     {
                         throw new Exception($"This is month {currentDateOnly.Month}, can not book for month {bookingModel.Month} because it had passed.");
-                    } else if (bookingModel.Month == currentDateOnly.Month)
+                    }
+                    else if (bookingModel.Month == currentDateOnly.Month)
                     {
                         throw new Exception($"Schedule booking for month {bookingModel.Month} is not accepted anymore, please book for next months.");
-                    } else if (bookingModel.Month == currentDateOnly.Month + 1)
+                    }
+                    else if (bookingModel.Month == currentDateOnly.Month + 1)
                     {
                         if (currentDateOnly.Day > lastDayForBooking)
                             throw new Exception($"Schedule booking for month {bookingModel.Month} is only accepted until the end of date {new DateOnly(currentDateOnly.Year, currentDateOnly.Month, lastDayForBooking)}. Remember to book before play-month at least 7 days.");
@@ -279,9 +282,9 @@ namespace SWD.BBMS.Services
                 var startTime = bookingModel.FromTime;
                 var endTime = bookingModel.ToTime;
                 courtSlots = courtSlots
-                    .Where(cs 
-                        => (cs.FromTime == startTime) 
-                        || (cs.ToTime == endTime) 
+                    .Where(cs
+                        => (cs.FromTime == startTime)
+                        || (cs.ToTime == endTime)
                         || (cs.FromTime > startTime && cs.FromTime < endTime))
                     .ToList();
 
@@ -309,7 +312,7 @@ namespace SWD.BBMS.Services
                         ModifiedBy = bookingModel.CreatedBy,
                         ModifiedDate = DateTime.UtcNow
                     };
-                    if(existingCustomerId == 0)
+                    if (existingCustomerId == 0)
                     {
                         newBookingModel.Customer = bookingModel.Customer;
                     }
@@ -391,25 +394,25 @@ namespace SWD.BBMS.Services
             {
                 var courts = await courtRepository.GetCourtsByCourtGroupId(courtGroupId);
                 var courtModels = mapper.Map<List<CourtModel>>(courts);
-                foreach(var courtModel in courtModels)
+                foreach (var courtModel in courtModels)
                 {
                     if (courtModel.Bookings.IsNullOrEmpty())
                     {
                         return courtModel.Id;
                     }
                     var isOccupied = false;
-                    foreach(var bookingModel in courtModel.Bookings)
+                    foreach (var bookingModel in courtModel.Bookings)
                     {
-                        if(bookingModel.Date != date 
-                            || bookingModel.Status == BookingModelStatus.Cancelled 
+                        if (bookingModel.Date != date
+                            || bookingModel.Status == BookingModelStatus.Cancelled
                             || bookingModel.Status == BookingModelStatus.Completed)
                         {
                             continue;
                         }
-                        foreach(var bookingDetailModel in bookingModel.BookingDetails)
+                        foreach (var bookingDetailModel in bookingModel.BookingDetails)
                         {
-                            if(bookingDetailModel.CourtSlot.FromTime ==  fromTime 
-                                || bookingDetailModel.CourtSlot.ToTime == toTime 
+                            if (bookingDetailModel.CourtSlot.FromTime == fromTime
+                                || bookingDetailModel.CourtSlot.ToTime == toTime
                                 || (bookingDetailModel.CourtSlot.FromTime > fromTime && bookingDetailModel.CourtSlot.FromTime < toTime))
                             {
                                 isOccupied = true;
@@ -475,7 +478,7 @@ namespace SWD.BBMS.Services
             try
             {
                 var bookings = await bookingRepository.GetBookingsByCourtGroupIdAndDate(id, date);
-                var bookingModels = mapper.Map<List<BookingModel>>(bookings);   
+                var bookingModels = mapper.Map<List<BookingModel>>(bookings);
                 return bookingModels;
             }
             catch
@@ -527,23 +530,23 @@ namespace SWD.BBMS.Services
                     throw new Exception($"Court group with id {bookingModel.CourtGroupId} not found in create flexible booking service.");
 
                 var flexibleBooking = mapper.Map<FlexibleBooking>(bookingModel);
-                if(existingCustomerId != 0)
+                if (existingCustomerId != 0)
                 {
                     // Find flexible booking of customer at court group
                     var existingFlexibleBookings = await flexibleBookingRepository
                         .GetFlexibleBookingByCustomerIdAndCourtGroupIdAndMonth(existingCustomerId, bookingModel.CourtGroupId, bookingModel.ExpiredDate.Month);
-                    if(!existingFlexibleBookings.IsNullOrEmpty())
+                    if (!existingFlexibleBookings.IsNullOrEmpty())
                     {
                         var firstFlexibleBooking = existingFlexibleBookings[0];
                         firstFlexibleBooking.TotalHours += bookingModel.TotalHours;
                         firstFlexibleBooking.RemainingHours += bookingModel.RemainingHours;
                         firstFlexibleBooking.Note = bookingModel.Note;
-                        for(int i = 1; i < existingFlexibleBookings.Count; i++)
+                        for (int i = 1; i < existingFlexibleBookings.Count; i++)
                         {
                             firstFlexibleBooking.TotalHours += existingFlexibleBookings[i].TotalHours;
                             firstFlexibleBooking.RemainingHours += existingFlexibleBookings[i].RemainingHours;
                             var deleteResult = await flexibleBookingRepository.DeleteFlexibleBooking(existingFlexibleBookings[i]);
-                            if(!deleteResult)
+                            if (!deleteResult)
                                 throw new Exception("Something wrong when delete existing flexible booking in create flexible booking service.");
                         }
                         firstFlexibleBooking.ModifiedDate = DateTime.UtcNow;
@@ -567,7 +570,7 @@ namespace SWD.BBMS.Services
                     if (!result)
                         throw new Exception("Something wrong when save new flexible booking with new customer in create flexible booking service.");
                 }
-                
+
             }
             catch
             {
@@ -586,11 +589,11 @@ namespace SWD.BBMS.Services
                     throw new Exception("Invalid id in checkin booking service.");
                 }
                 var booking = await bookingRepository.GetBookingById(id);
-                   
+
                 if (booking == null)
                     throw new Exception($"Booking with id {id} not found in check-in booking service.");
                 var bookingModel = mapper.Map<BookingModel>(booking);
-                if(bookingModel.Status == BookingModelStatus.Cancelled)
+                if (bookingModel.Status == BookingModelStatus.Cancelled)
                 {
                     throw new Exception($"Booking with id {id} is cancelled.");
                 }
@@ -606,7 +609,7 @@ namespace SWD.BBMS.Services
                     throw new Exception($"This booking date is {bookingModel.Date}. It's not yet your booked date, check-in is not possible.");
                 if (bookingModel.Date < today)
                 {
-                    if(bookingModel.Status != BookingModelStatus.Cancelled && bookingModel.Status != BookingModelStatus.Completed)
+                    if (bookingModel.Status != BookingModelStatus.Cancelled && bookingModel.Status != BookingModelStatus.Completed)
                     {
                         booking.Status = BookingStatus.Cancelled;
                         booking.ModifiedDate = DateTimeLibrary.UtcNowToSave();
@@ -623,7 +626,7 @@ namespace SWD.BBMS.Services
                 if (currentTime < bookingModel.FromTime)
                     throw new Exception($"This booking starts from {bookingModel.FromTime}. Now is {currentTime}. It's not yet your booked time yet, check-in is not possible.");
 
-                if(currentTime > bookingModel.FromTime && currentTime < bookingModel.ToTime)
+                if (currentTime > bookingModel.FromTime && currentTime < bookingModel.ToTime)
                 {
                     // If booking is paid, anytime between from time and to time is accept
                     if (!bookingModel.IsPaid)
@@ -681,9 +684,9 @@ namespace SWD.BBMS.Services
             var result = false;
             try
             {
-                if(id <= 0)
+                if (id <= 0)
                     throw new Exception("Invalid id in checkin booking service.");
-                if(string.IsNullOrWhiteSpace(userId) || string.IsNullOrEmpty(userId))
+                if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrEmpty(userId))
                     throw new Exception("Invalid user id in checkin booking service.");
                 var booking = await bookingRepository.GetBookingById(id);
                 if (booking == null)
@@ -713,7 +716,7 @@ namespace SWD.BBMS.Services
                 result = await bookingRepository.UpdateBooking(booking);
                 if (!result)
                     throw new Exception($"Something went wrong when updating booking in check-out service.");
-                
+
             }
             catch
             {
